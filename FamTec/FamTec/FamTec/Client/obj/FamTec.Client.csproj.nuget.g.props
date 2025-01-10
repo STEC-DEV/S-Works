@@ -23,11 +23,14 @@
     <Import Project="$(NuGetPackageRoot)microsoft.entityframeworkcore.design\7.0.18\build\net6.0\Microsoft.EntityFrameworkCore.Design.props" Condition="Exists('$(NuGetPackageRoot)microsoft.entityframeworkcore.design\7.0.18\build\net6.0\Microsoft.EntityFrameworkCore.Design.props')" />
     <Import Project="$(NuGetPackageRoot)microsoft.aspnetcore.components.webassembly.authentication\7.0.20\buildTransitive\Microsoft.AspNetCore.Components.WebAssembly.Authentication.props" Condition="Exists('$(NuGetPackageRoot)microsoft.aspnetcore.components.webassembly.authentication\7.0.20\buildTransitive\Microsoft.AspNetCore.Components.WebAssembly.Authentication.props')" />
     <Import Project="$(NuGetPackageRoot)microsoft.aspnetcore.components.webassembly\7.0.18\build\net7.0\Microsoft.AspNetCore.Components.WebAssembly.props" Condition="Exists('$(NuGetPackageRoot)microsoft.aspnetcore.components.webassembly\7.0.18\build\net7.0\Microsoft.AspNetCore.Components.WebAssembly.props')" />
+    <Import Project="C:\Program Files\DevExpress 24.1\Components\Offline Packages\devexpress.blazor.themes\24.1.7\buildTransitive\DevExpress.Blazor.Themes.props" Condition="Exists('C:\Program Files\DevExpress 24.1\Components\Offline Packages\devexpress.blazor.themes\24.1.7\buildTransitive\DevExpress.Blazor.Themes.props')" />
+    <Import Project="C:\Program Files\DevExpress 24.1\Components\Offline Packages\devexpress.blazor\24.1.7\buildTransitive\net5.0\DevExpress.Blazor.props" Condition="Exists('C:\Program Files\DevExpress 24.1\Components\Offline Packages\devexpress.blazor\24.1.7\buildTransitive\net5.0\DevExpress.Blazor.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgMicrosoft_NET_Sdk_WebAssembly_Pack Condition=" '$(PkgMicrosoft_NET_Sdk_WebAssembly_Pack)' == '' ">C:\Users\kyw\.nuget\packages\microsoft.net.sdk.webassembly.pack\9.0.0</PkgMicrosoft_NET_Sdk_WebAssembly_Pack>
     <PkgMicrosoft_NET_ILLink_Tasks Condition=" '$(PkgMicrosoft_NET_ILLink_Tasks)' == '' ">C:\Users\kyw\.nuget\packages\microsoft.net.illink.tasks\7.0.100-1.23211.1</PkgMicrosoft_NET_ILLink_Tasks>
     <PkgMicrosoft_EntityFrameworkCore_Tools Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools)' == '' ">C:\Users\kyw\.nuget\packages\microsoft.entityframeworkcore.tools\7.0.18</PkgMicrosoft_EntityFrameworkCore_Tools>
     <PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer Condition=" '$(PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer)' == '' ">C:\Users\kyw\.nuget\packages\microsoft.aspnetcore.components.webassembly.devserver\7.0.18</PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer>
+    <PkgDevExpress_Data Condition=" '$(PkgDevExpress_Data)' == '' ">C:\Program Files\DevExpress 24.1\Components\Offline Packages\devexpress.data\24.1.7</PkgDevExpress_Data>
   </PropertyGroup>
 </Project>

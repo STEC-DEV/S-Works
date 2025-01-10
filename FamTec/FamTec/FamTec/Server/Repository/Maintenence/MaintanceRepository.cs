@@ -1,6 +1,8 @@
-﻿using FamTec.Server.Databases;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +10,6 @@ using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
 using System.Data;
 using System.Diagnostics;
-using System.Linq;
 
 namespace FamTec.Server.Repository.Maintenence
 {
@@ -37,7 +38,185 @@ namespace FamTec.Server.Repository.Maintenence
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-        public async Task<List<MaintanceWeekCount>?> GetMaintanceDashBoardData(DateTime startOfWeek, DateTime EndOfWeek, int placeid)
+
+        /// <summary>
+        /// 대쉬보드용 1년치 유지보수 비용 조회
+        /// </summary>
+        /// <param name="StartDate"></param>
+        /// <param name="LastDate"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async Task<List<MaintanceYearPriceDTO>?> GetMaintenanceYearData(DateTime StartDate, DateTime LastDate, int placeid)
+        {
+            try
+            {
+                // Step 1: StartDate와 LastDate로부터 해당 연도의 월 리스트 생성
+                var months = Enumerable.Range(1, 12)
+                    .Select(month => new DateTime(StartDate.Year, month, 1))
+                    .ToList();
+
+                // 1. 건물 테이블 조회
+                List<BuildingTb>? BuildingTB = await context.BuildingTbs
+                    .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .ToListAsync();
+
+                if (BuildingTB is not [_, ..])
+                    return null;
+
+                // 2. 층 테이블 조회
+                List<FloorTb>? FloorTB = await context.FloorTbs
+                    .Where(m => BuildingTB.Select(b => b.Id).Contains(m.BuildingTbId) && m.DelYn != true)
+                    .ToListAsync();
+
+                if (FloorTB is not [_, ..])
+                    return null;
+
+                // 3. 공간 테이블 조회
+                List<RoomTb>? RoomTB = await context.RoomTbs
+                    .Where(m => FloorTB.Select(f => f.Id).Contains(m.FloorTbId) && m.DelYn != true)
+                    .ToListAsync();
+
+                if (RoomTB is not [_, ..])
+                    return null;
+
+                // 4. 설비 테이블 조회
+                List<FacilityTb>? FacilityList = await context.FacilityTbs
+                    .Where(m => RoomTB.Select(r => r.Id).Contains(m.RoomTbId) && m.DelYn != true)
+                    .ToListAsync();
+
+                if (FacilityList is not [_, ..])
+                    return null;
+
+                // 5. 설비 ID 리스트
+                List<int> FacilityIdx = FacilityList.Select(m => m.Id).ToList();
+
+                // 6. 월간 유지보수 이력 조회
+                var MaintanceDays = await context.MaintenenceHistoryTbs
+                    .Where(m => m.DelYn != true &&
+                                FacilityIdx.Contains(m.FacilityTbId) &&
+                    m.CreateDt >= StartDate &&
+                                m.CreateDt <= LastDate)
+                    .Select(m => new
+                    {
+                        m.FacilityTbId,
+                        m.CreateDt.Month // 월만 추출
+                    })
+                    .ToListAsync();
+
+
+               
+                Console.WriteLine("asa");
+
+                return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// 대쉬보드용 금일 유지보수 이력 리스트
+        /// </summary>
+        /// <param name="NowDate"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async Task<List<MaintenanceDaysDTO>?> GetMaintenanceDaysData(DateTime NowDate, int placeid)
+        {
+            try
+            {
+
+                // Step 1: 다중 Join을 통해 Place에 속한 유지보수 데이터 가져오기
+                var maintenenceList = await (
+                    from maintenance in context.MaintenenceHistoryTbs
+                    join facility in context.FacilityTbs on maintenance.FacilityTbId equals facility.Id
+                    join room in context.RoomTbs on facility.RoomTbId equals room.Id
+                    join floor in context.FloorTbs on room.FloorTbId equals floor.Id
+                    join building in context.BuildingTbs on floor.BuildingTbId equals building.Id
+                    where maintenance.DelYn != true &&
+                          maintenance.CreateDt.Date == NowDate &&
+                          (maintenance.Type == 0 || maintenance.Type == 1) &&
+                          building.PlaceTbId == placeid
+                    select new
+                    {
+                        Maintenance = maintenance,
+                        FacilityType = facility.Type // FacilityTb의 설비 유형 필드
+                    })
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                // Step 2: Type == 0인 데이터의 ID 목록 추출
+                var type0Ids = maintenenceList.Where(m => m.Maintenance.Type == 0).Select(m => m.Maintenance.Id).ToList();
+
+                // Step 3: UseMaintenenceMaterialTb와 MaterialTb를 Join하여 자재 정보 가져오기
+                var useMaterialList = await (
+                    from useMaterial in context.UseMaintenenceMaterialTbs
+                    join material in context.MaterialTbs on useMaterial.MaterialTbId equals material.Id
+                    where useMaterial.DelYn != true &&
+                          type0Ids.Contains(useMaterial.MaintenanceTbId)
+                    select new
+                    {
+                        useMaterial.MaintenanceTbId,
+                        MaterialID = material.Id,
+                        MaterialName = material.Name,
+                        UseMaterialNum = useMaterial.Num
+                    })
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                // Step 4: 자재 사용 목록을 DTO로 변환
+                var materialDtoList = useMaterialList
+                    .GroupBy(um => um.MaintenanceTbId)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(um => new MaintenanceUseMaterialDTO
+                        {
+                            MaterialID = um.MaterialID,
+                            MaterialName = um.MaterialName,
+                            UseMaterialNum = um.UseMaterialNum
+                        }).ToList()
+                    );
+
+                // Step 5: MaintenanceDaysDTO 생성
+                List<MaintenanceDaysDTO> result = maintenenceList.Select(maintenance => new MaintenanceDaysDTO
+                {
+                    FacilityType = maintenance.FacilityType, // FacilityTb에서 가져온 설비 유형
+                    WorkType  = maintenance.Maintenance.Type == 0 ? "자체작업" : "외주작업",
+                    WorkContent = maintenance.Maintenance.Name,
+                    Worker = maintenance.Maintenance.Worker,
+
+                    // 자재 사용 개수 합계
+                    TotalUseMaterialNum = maintenance.Maintenance.Type == 0
+                        ? materialDtoList.ContainsKey(maintenance.Maintenance.Id) ? materialDtoList[maintenance.Maintenance.Id].Sum(x => x.UseMaterialNum) : 0
+                        : 0,
+
+                    // 자재 사용 목록
+                    UseList = maintenance.Maintenance.Type == 0
+                        ? materialDtoList.ContainsKey(maintenance.Maintenance.Id) ? materialDtoList[maintenance.Maintenance.Id] : new List<MaintenanceUseMaterialDTO>()
+                        : new List<MaintenanceUseMaterialDTO>()
+                }).ToList();
+
+                // Step 6: 결과 반환
+                Console.WriteLine("");
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+        public async Task<List<MaintanceWeekCount>?> GetMaintanceDashBoardData(DateTime StartDate, DateTime EndDate, int placeid)
         {
             try
             {
@@ -203,8 +382,8 @@ namespace FamTec.Server.Repository.Maintenence
                 var MaintanceDays = await context.MaintenenceHistoryTbs
                     .Where(m => m.DelYn != true &&
                                 FacilityIdx.Contains(m.FacilityTbId) &&
-                                m.CreateDt >= startOfWeek &&
-                                m.CreateDt <= EndOfWeek)
+                                m.CreateDt >= StartDate.AddDays(1) &&
+                                m.CreateDt <= EndDate)
                     .Select(m => new
                     {
                         m.FacilityTbId,
@@ -222,9 +401,9 @@ namespace FamTec.Server.Repository.Maintenence
                     .ToList();
 
                 // 8. 모든 날짜 리스트 생성
-                var allDates = Enumerable.Range(0, 1 + EndOfWeek.AddDays(-1).Subtract(startOfWeek).Days)
-                                 .Select(offset => startOfWeek.AddDays(offset).Date)
-                                 .ToList();
+                var allDates = Enumerable.Range(0, 1 + EndDate.Subtract(StartDate.AddDays(1)).Days)
+                    .Select(offset => StartDate.AddDays(offset + 1).Date)
+                    .ToList();
 
                 // 9. 날짜별 데이터 그룹화 및 0으로 채우기
                 var result = allDates
@@ -235,6 +414,7 @@ namespace FamTec.Server.Repository.Maintenence
                      ElecType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "전기"),
                      liftType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "승강"),
                      FireType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "소방"),
+                     BeautyType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "미화"),
                      ConstructType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "건축"),
                      NetWorkType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "통신"),
                      SecurityType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "보안")

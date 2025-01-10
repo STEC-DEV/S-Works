@@ -59,7 +59,8 @@ namespace FamTec.Server.Repository.Store
                             RoomId = m.RoomTbId,
                             RoomName = m.RoomTb?.Name,       // RoomTb의 Name 사용
                             MaterialID = m.MaterialTbId,
-                            MaterialName = m.MaterialTb?.Name // MaterialTb의 Name 사용
+                            MaterialName = m.MaterialTb?.Name, // MaterialTb의 Name 사용
+                            Date = m.CreateDt
                         }).ToList(),
 
                     OutPutList = StoreList
@@ -73,10 +74,10 @@ namespace FamTec.Server.Repository.Store
                             RoomId = m.RoomTbId,
                             RoomName = m.RoomTb?.Name,
                             MaterialID = m.MaterialTbId,
-                            MaterialName = m.MaterialTb?.Name
+                            MaterialName = m.MaterialTb?.Name,
+                            Date = m.CreateDt
                         }).ToList(),
 
-                    InOutCount = StoreList.Count // 입출고 총 카운트
                 };
 
                 return model;

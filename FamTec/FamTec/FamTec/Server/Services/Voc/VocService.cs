@@ -746,55 +746,61 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<VocWeekCountDTO>?> GetVocDashBoardWeeksDataService(HttpContext context)
+        public async Task<ResponseList<VocWeekCountDTO>?> GetVocDashBoardWeeksDataService(HttpContext context)
         {
             try
             {
+                #region Regacy
+                /*
+                   if (context is null)
+                       return new ResponseUnit<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                   string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                   if(String.IsNullOrWhiteSpace(placeidx))
+                       return new ResponseUnit<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                   DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+                   // 현재 요일 (0: 일요일, 1: 월요일, ..., 6: 토요일)
+                   DayOfWeek currentDayOfWeek = NowDate.DayOfWeek;
+
+
+                   // 현재 날짜가 있는 주의 첫날(월요일)을 구하기 위해 현재 요일에서 DayOfWeek.Monday를 빼기
+                   int daysToSubtract = (int)currentDayOfWeek - (int)DayOfWeek.Monday;
+
+                   // 일요일인 경우, 주의 첫날을 월요일로 설정하기 위해 7을 더함
+                   if (daysToSubtract < 0)
+                   {
+                       daysToSubtract += 7;
+                   }
+
+                   // 주의 첫날(월요일) 계산
+                   DateTime startOfWeek = NowDate.AddDays(-daysToSubtract);
+                   DateTime EndOfWeek = startOfWeek.AddDays(7);
+            */
+                #endregion
+
                 if (context is null)
-                    return new ResponseUnit<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseList<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
-                if(String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseList<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-                // 현재 요일 (0: 일요일, 1: 월요일, ..., 6: 토요일)
-                DayOfWeek currentDayOfWeek = NowDate.DayOfWeek;
+                DateTime startOfWeek = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+              
+                DateTime EndOfWeek = startOfWeek.AddDays(-7);
 
-                // 현재 날짜가 있는 주의 첫날(월요일)을 구하기 위해 현재 요일에서 DayOfWeek.Monday를 빼기
-                int daysToSubtract = (int)currentDayOfWeek - (int)DayOfWeek.Monday;
-
-                // 일요일인 경우, 주의 첫날을 월요일로 설정하기 위해 7을 더함
-                if (daysToSubtract < 0)
-                {
-                    daysToSubtract += 7;
-                }
-
-                // 주의 첫날(월요일) 계산
-                DateTime startOfWeek = NowDate.AddDays(-daysToSubtract);
-                DateTime EndOfWeek = startOfWeek.AddDays(7);
 
                 List<VocWeekCountDTO>? model = await VocInfoRepository.GetDashBoardWeeksData(startOfWeek, EndOfWeek).ConfigureAwait(false);
+
+
                 if (model is not null && model.Any())
                 {
-                    VocWeekCountDTO dto = new VocWeekCountDTO();
-                    dto.Date = DateTime.Now;
-                    dto.DefaultType = model.Sum(m => m.DefaultType);
-                    dto.MachineType = model.Sum(m => m.MachineType);
-                    dto.ElecType = model.Sum(m => m.ElecType);
-                    dto.liftType = model.Sum(m => m.liftType);
-                    dto.ConstructType = model.Sum(m => m.ConstructType);
-                    dto.FireType = model.Sum(m => m.FireType);
-                    dto.NetWorkType = model.Sum(m => m.NetWorkType);
-                    dto.BeautyType = model.Sum(m => m.BeautyType);
-                    dto.SecurityType = model.Sum(m => m.SecurityType);
-
-
-                    return new ResponseUnit<VocWeekCountDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseList<VocWeekCountDTO>() { message = "요청이 정상처리되었습니다.", data = model, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseList<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
             }
             catch(Exception ex)
@@ -803,7 +809,7 @@ namespace FamTec.Server.Services.Voc
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseList<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -812,28 +818,28 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<VocWeekCountDTO>?> GetVocDashBoardDaysDataService(HttpContext context)
+        public async Task<ResponseUnit<VocDaysCountDTO>?> GetVocDashBoardDaysDataService(HttpContext context)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<VocDaysCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<VocDaysCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
 
-                VocWeekCountDTO? model = await VocInfoRepository.GetDashBoardDaysData(NowDate).ConfigureAwait(false);
+                VocDaysCountDTO? model = await VocInfoRepository.GetDashBoardDaysData(NowDate).ConfigureAwait(false);
                 if(model is not null)
                 {
                     
-                    return new ResponseUnit<VocWeekCountDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseUnit<VocDaysCountDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseUnit<VocDaysCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
             }
             catch(Exception ex)
@@ -842,7 +848,7 @@ namespace FamTec.Server.Services.Voc
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<VocDaysCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -885,5 +891,50 @@ namespace FamTec.Server.Services.Voc
                 return new ResponseUnit<VocDaysStatusCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+        /// <summary>
+        /// DashBoard용 일주일치 처리유형별 발생건수 (미처리, 처리중, 처리완료)
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<ResponseList<VocWeekStatusCountDTO>?> GetVocWeeksStatusDataService(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<VocWeekStatusCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseList<VocWeekStatusCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // 함수시작일 금일 -7일
+                DateTime ToDays = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+
+                DateTime StartDate = ToDays.AddDays(-7);
+                DateTime EndOfWeek = ToDays.AddDays(1).AddTicks(-1);
+
+                List<VocWeekStatusCountDTO>? model = await VocInfoRepository.GetDashBoardWeeksStatusData(StartDate, EndOfWeek);
+
+                if (model is not null)
+                {
+                    return new ResponseList<VocWeekStatusCountDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                }
+                else
+                {
+                    return new ResponseList<VocWeekStatusCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<VocWeekStatusCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+
     }
 }

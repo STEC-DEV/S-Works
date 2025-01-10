@@ -32,7 +32,6 @@ namespace FamTec.Server.Services.Voc
         /// <returns></returns>
         public Task<ResponseList<VocListDTO>> GetDateVocSearchList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, DateTime StartDate, DateTime EndDate);
 
-
         /// <summary>
         /// 사업장별 VOC 리스트 조회
         /// </summary>
@@ -66,7 +65,6 @@ namespace FamTec.Server.Services.Voc
         /// <returns></returns>
         public Task<ResponseUnit<bool?>> UpdateVocTypeService(HttpContext context, UpdateVocDTO dto);
 
-
         /// <summary>
         /// DashBoard용 금일 처리유형별 발생건수
         /// </summary>
@@ -75,11 +73,18 @@ namespace FamTec.Server.Services.Voc
         public Task<ResponseUnit<VocDaysStatusCountDTO>?> GetVocDaysStatusDataService(HttpContext context);
 
         /// <summary>
+        /// DashBoard용 일주일치 처리유형별 발생건수
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<ResponseList<VocWeekStatusCountDTO>?> GetVocWeeksStatusDataService(HttpContext context);
+
+        /// <summary>
         /// DashBoard용 하루치 각 타입별 카운트
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<VocWeekCountDTO>?> GetVocDashBoardDaysDataService(HttpContext context);
+        public Task<ResponseUnit<VocDaysCountDTO>?> GetVocDashBoardDaysDataService(HttpContext context);
         
 
         /// <summary>
@@ -87,6 +92,6 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<VocWeekCountDTO>?> GetVocDashBoardWeeksDataService(HttpContext context);
+        public Task<ResponseList<VocWeekCountDTO>?> GetVocDashBoardWeeksDataService(HttpContext context);
     }
 }

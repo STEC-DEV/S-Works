@@ -1,0 +1,22 @@
+[2025-01-10 오전 8:17:14]	System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'count')
+   at System.Linq.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument)
+   at System.Linq.Enumerable.Range(Int32 start, Int32 count)
+   at FamTec.Server.Repository.Voc.VocInfoRepository.GetDashBoardWeeksData(DateTime StartDate, DateTime EndDate) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Voc\VocInfoRepository.cs:line 153
+[2025-01-10 오전 8:32:58]	System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'count')
+   at System.Linq.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument)
+   at System.Linq.Enumerable.Range(Int32 start, Int32 count)
+   at FamTec.Server.Repository.Voc.VocInfoRepository.GetDashBoardWeeksData(DateTime StartDate, DateTime EndDate) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Voc\VocInfoRepository.cs:line 153
+[2025-01-10 오전 8:32:58]	System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'count')
+   at System.Linq.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument)
+   at System.Linq.Enumerable.Range(Int32 start, Int32 count)
+   at FamTec.Server.Repository.Voc.VocInfoRepository.GetDashBoardWeeksData(DateTime StartDate, DateTime EndDate) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Voc\VocInfoRepository.cs:line 153
+   at FamTec.Server.Services.Voc.VocService.GetVocDashBoardWeeksDataService(HttpContext context) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Voc\VocService.cs:line 794
+[2025-01-10 오전 8:33:12]	System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'count')
+   at System.Linq.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument)
+   at System.Linq.Enumerable.Range(Int32 start, Int32 count)
+   at FamTec.Server.Repository.Voc.VocInfoRepository.GetDashBoardWeeksData(DateTime StartDate, DateTime EndDate) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Voc\VocInfoRepository.cs:line 153
+[2025-01-10 오전 8:33:12]	System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'count')
+   at System.Linq.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument)
+   at System.Linq.Enumerable.Range(Int32 start, Int32 count)
+   at FamTec.Server.Repository.Voc.VocInfoRepository.GetDashBoardWeeksData(DateTime StartDate, DateTime EndDate) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Voc\VocInfoRepository.cs:line 153
+   at FamTec.Server.Services.Voc.VocService.GetVocDashBoardWeeksDataService(HttpContext context) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Voc\VocService.cs:line 794

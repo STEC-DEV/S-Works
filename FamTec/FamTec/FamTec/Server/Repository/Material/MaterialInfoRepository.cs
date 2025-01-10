@@ -95,6 +95,7 @@ namespace FamTec.Server.Repository.Material
                          SafeNum = safeNum,         // MaterialTb의 SafeNum
                          Distance = distance        // SafeNum과 합계 차이의 절대값
                      })
+                     .Where(m => m.TotalNum <= m.SafeNum)
                      .Take(10) // 상위 10개 결과 가져오기
                      .ToListAsync();
 

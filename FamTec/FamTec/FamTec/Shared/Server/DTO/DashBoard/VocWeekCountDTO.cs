@@ -3,7 +3,7 @@
     public class VocWeekCountDTO
     {
         /// <summary>
-        /// 날짜 구분
+        /// 날짜
         /// </summary>
         public DateTime Date { get; set; }
 
@@ -51,5 +51,6 @@
         /// 보안 카운트
         /// </summary>
         public int SecurityType { get; set; }
+
     }
 }

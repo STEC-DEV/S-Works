@@ -12,10 +12,6 @@
         /// </summary>
         public List<InOutDataDTO> OutPutList { get; set; } = new List<InOutDataDTO>();
 
-        /// <summary>
-        /// 입출고 총카운트
-        /// </summary>
-        public int InOutCount { get; set; }
     }
 
     public class InOutDataDTO
@@ -59,6 +55,11 @@
         /// 자재명칭
         /// </summary>
         public string? MaterialName { get; set; }
+
+        /// <summary>
+        /// 날짜
+        /// </summary>
+        public DateTime Date { get; set; }
 
     }
 }

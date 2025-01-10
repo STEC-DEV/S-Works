@@ -40,7 +40,7 @@ namespace FamTec.Server.Controllers.Material
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/GetSafeNumCount")]
+        [Route("sign/v2/GetSafeNumCount")]
         public async Task<IActionResult> GetSafeNumCount()
         {
             try

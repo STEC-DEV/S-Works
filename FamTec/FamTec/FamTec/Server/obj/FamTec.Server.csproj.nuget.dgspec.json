@@ -70,6 +70,10 @@
               "target": "Package",
               "version": "[0.102.2, )"
             },
+            "DevExpress.Blazor": {
+              "target": "Package",
+              "version": "[24.1.7, )"
+            },
             "Microsoft.AspNetCore.Components.Authorization": {
               "target": "Package",
               "version": "[7.0.20, )"

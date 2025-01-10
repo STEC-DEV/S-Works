@@ -6,7 +6,6 @@ using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO.Compression;
 
 namespace FamTec.Server.Controllers.Voc
 {
@@ -36,10 +35,11 @@ namespace FamTec.Server.Controllers.Voc
             this.FileService = _fileservice;
         }
 
-
+        /* ##################  */
+        // [2]. 민원발생현황 - 금일
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/GetVocDaysStatusCount")]
+        [Route("sign/v2/GetVocDaysStatusCount")]
         public async Task<IActionResult> GetVocDaysStatusCount()
         {
             try
@@ -63,9 +63,44 @@ namespace FamTec.Server.Controllers.Voc
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return Problem("서버에서 처리할 수 없는 요청입니다.");
+                return Problem("서버에서 처리할 수 없는 요청입니다.",statusCode: 500);
             }
         }
+
+        /// <summary>
+        /// [2]. 민원발생현황 - 일주일
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/v2/GetVocWeeksStatusCount")]
+        public async Task<IActionResult> GetVocWeekStatusCount()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<VocWeekStatusCountDTO>? model = await VocService.GetVocWeeksStatusDataService(HttpContext).ConfigureAwait(false);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.",statusCode: 500);
+            }
+        }
+
 
         /// <summary>
         /// DashBoad 하루치 유형별 발생건수
@@ -73,7 +108,7 @@ namespace FamTec.Server.Controllers.Voc
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/GetVocDaysCount")]
+        [Route("sign/v2/GetVocDaysCount")]
         public async Task<IActionResult> GetVocDaysCount()
         {
             try
@@ -81,7 +116,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<VocWeekCountDTO>? model = await VocService.GetVocDashBoardDaysDataService(HttpContext).ConfigureAwait(false);
+                ResponseUnit<VocDaysCountDTO>? model = await VocService.GetVocDashBoardDaysDataService(HttpContext).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -99,6 +134,9 @@ namespace FamTec.Server.Controllers.Voc
                 return Problem("서버에서 처리할 수 없는 요청입니다.");
             }
         }
+ 
+       
+
 
         /// <summary>
         /// DashBoad 일주일간의 유형별 발생건수
@@ -106,7 +144,7 @@ namespace FamTec.Server.Controllers.Voc
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/GetVocWeekCount")]
+        [Route("sign/v2/GetVocWeekCount")]
         public async Task<IActionResult> GetVocWeekCount()
         {
             try
@@ -114,7 +152,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<VocWeekCountDTO>? model = await VocService.GetVocDashBoardWeeksDataService(HttpContext).ConfigureAwait(false);
+                ResponseList<VocWeekCountDTO>? model = await VocService.GetVocDashBoardWeeksDataService(HttpContext).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -137,6 +175,10 @@ namespace FamTec.Server.Controllers.Voc
             }
             
         }
+
+
+
+        /* ##################  */
 
         /// <summary>
         /// 

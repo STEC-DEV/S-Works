@@ -36,7 +36,7 @@ namespace FamTec.Server.Controllers.Store
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/GetToDayInOutCount")]
+        [Route("sign/v2/GetToDayInOutCount")]
         public async Task<IActionResult> GetToDayInOutCount()
         {
             try
@@ -64,6 +64,9 @@ namespace FamTec.Server.Controllers.Store
             }
         }
 
+        #region Regacy
+
+        /*
         /// <summary>
         /// 자재별 일주일치 입출고 카운트 -- 대쉬보드
         /// </summary>
@@ -100,6 +103,9 @@ namespace FamTec.Server.Controllers.Store
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
+        */
+
+        #endregion
 
         /// <summary>
         /// 입고 등록 - 수정완료

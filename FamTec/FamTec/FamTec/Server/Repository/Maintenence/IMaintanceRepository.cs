@@ -1,4 +1,5 @@
 ﻿using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
 
@@ -6,7 +7,25 @@ namespace FamTec.Server.Repository.Maintenence
 {
     public interface IMaintanceRepository
     {
+
+        /// <summary>
+        /// 대쉬보드용 금일 유지보수 이력 리스트
+        /// </summary>
+        /// <param name="NowDate"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        Task<List<MaintenanceDaysDTO>?> GetMaintenanceDaysData(DateTime NowDate, int placeid);
+
         Task<List<MaintanceWeekCount>?> GetMaintanceDashBoardData(DateTime startOfWeek, DateTime EndOfWeek, int placeid);
+
+        /// <summary>
+        /// 대쉬보드용 1년치 유지보수비용 조회
+        /// </summary>
+        /// <param name="StartDate"></param>
+        /// <param name="LastDate"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        Task<List<MaintanceYearPriceDTO>?> GetMaintenanceYearData(DateTime StartDate, DateTime LastDate, int placeid);
 
         /// <summary>
         /// 유지보수 ID로 유지보수 검색

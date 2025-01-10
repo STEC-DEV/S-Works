@@ -3,6 +3,7 @@ using FamTec.Server.Services;
 using FamTec.Server.Services.Maintenance;
 using FamTec.Server.Services.UseMaintenence;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.AspNetCore.Authorization;
@@ -39,10 +40,81 @@ namespace FamTec.Server.Controllers.Maintenance
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+        /// <summary>
+        /// 금일 유지보수 이력
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/GetMaintanceCount")]
-        public async Task<IActionResult> GetMaintanceCount()
+        [Route("sign/v2/GetMaintenanceDaysList")]
+        public async Task<IActionResult> GetMaintenanceDaysList()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<MaintenanceDaysDTO>? model = await MaintanceService.GetMaintenanceDaysList(HttpContext).ConfigureAwait(false);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 대시보드용 유지보수비용추이(1년)
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/v2/GetMaintenanceYearPrice")]
+        public async Task<IActionResult> GetMaintenanceYearPrice()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<MaintanceYearPriceDTO>? model = await MaintanceService.GetMaintenanceYearPriceList(HttpContext);
+                if (model == null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 설비 유지보수 건수 (7일)
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/v2/GetMaintenanceCount")]
+        public async Task<IActionResult> GetMaintenanceCount()
         {
             try
             {

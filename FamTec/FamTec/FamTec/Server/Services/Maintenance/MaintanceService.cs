@@ -1,12 +1,15 @@
-﻿using FamTec.Server.Hubs;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Maintenence;
 using FamTec.Server.Repository.User;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FamTec.Server.Services.Maintenance
 {
@@ -43,10 +46,83 @@ namespace FamTec.Server.Services.Maintenance
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+        /// <summary>
+        /// 대쉬보드용 금일 유지보수 이력 리스트
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<ResponseList<MaintenanceDaysDTO>?> GetMaintenanceDaysList(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<MaintenanceDaysDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseList<MaintenanceDaysDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+
+                List<MaintenanceDaysDTO>? model = await MaintanceRepository.GetMaintenanceDaysData(NowDate, Convert.ToInt32(placeidx));
+
+
+                return new ResponseList<MaintenanceDaysDTO>() { message = "OK", data = model, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<MaintenanceDaysDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 대쉬보드용 1년치 유지보수비용 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<ResponseList<MaintanceYearPriceDTO>?> GetMaintenanceYearPriceList(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<MaintanceYearPriceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseList<MaintanceYearPriceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // 현재 년도의 1월 1일
+                DateTime firstDayOfYear = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0);
+
+                // 현재년도의 마지막 12년도의 일의 11시59분59초
+                DateTime lastDayOfDecember = new DateTime(DateTime.Now.Year, 12, DateTime.DaysInMonth(DateTime.Now.Year, 12), 23, 59, 59);
+
+                List<MaintanceYearPriceDTO>? model = await MaintanceRepository.GetMaintenanceYearData(firstDayOfYear, lastDayOfDecember, Convert.ToInt32(placeid));
+
+                
+
+                return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<MaintanceYearPriceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
         public async Task<ResponseList<MaintanceWeekCount>?> GetMaintanceDashBoardDataService(HttpContext context)
         {
             try
             {
+                #region Regacy
+                /*
                 if (context is null)
                     return new ResponseList<MaintanceWeekCount>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -71,6 +147,22 @@ namespace FamTec.Server.Services.Maintenance
                 // 월요일
                 DateTime startOfWeek = NowDate.AddDays(-daysToSubtract);
                 DateTime EndOfWeek = startOfWeek.AddDays(7);
+                */
+                #endregion
+
+                if (context is null)
+                    return new ResponseList<MaintanceWeekCount>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseList<MaintanceWeekCount>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                DateTime ToDays = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+
+                DateTime startOfWeek = ToDays.AddDays(-7);
+
+                DateTime EndOfWeek = ToDays.AddDays(1).AddTicks(-1);
+
 
                 List<MaintanceWeekCount>? WeekListData = await MaintanceRepository.GetMaintanceDashBoardData(startOfWeek, EndOfWeek, Convert.ToInt32(placeid));
                 if (WeekListData is null)

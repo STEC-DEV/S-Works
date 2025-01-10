@@ -1,12 +1,26 @@
 ﻿using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
-using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Services.Maintenance
 {
     public interface IMaintanceService
     {
+        /// <summary>
+        /// DashBoard용 금일 유지보수 List
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<ResponseList<MaintenanceDaysDTO>?> GetMaintenanceDaysList(HttpContext context);
+
+        /// <summary>
+        /// DashBoard용 1년치 타입별 유지보수 금액
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<ResponseList<MaintanceYearPriceDTO>?> GetMaintenanceYearPriceList(HttpContext context);
+
         /// <summary>
         /// DashBoard용 일주일치 유지보수 카운트
         /// </summary>

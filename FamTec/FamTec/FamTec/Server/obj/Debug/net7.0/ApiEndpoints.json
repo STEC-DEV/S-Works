@@ -4155,16 +4155,6 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
-    "Method": "GetMaintanceCount",
-    "RelativePath": "api/Maintenance/sign/GetMaintanceCount",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
     "Method": "GetMaintanceHistory",
     "RelativePath": "api/Maintenance/sign/GetMaintanceHistory",
     "HttpMethod": "GET",
@@ -4249,6 +4239,36 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
+    "Method": "GetMaintenanceCount",
+    "RelativePath": "api/Maintenance/sign/v2/GetMaintenanceCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
+    "Method": "GetMaintenanceDaysList",
+    "RelativePath": "api/Maintenance/sign/v2/GetMaintenanceDaysList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
+    "Method": "GetMaintenanceYearPrice",
+    "RelativePath": "api/Maintenance/sign/v2/GetMaintenanceYearPrice",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -4443,16 +4463,6 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
-    "Method": "GetMaterialCount",
-    "RelativePath": "api/Material/sign/GetMaterialCount",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
     "Method": "ImportMaterialForm",
     "RelativePath": "api/Material/sign/ImportMaterial",
     "HttpMethod": "POST",
@@ -4572,6 +4582,16 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
+    "Method": "GetSafeNumCount",
+    "RelativePath": "api/Material/sign/v2/GetSafeNumCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -5334,16 +5354,6 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
-    "Method": "GetInOutWeekCount",
-    "RelativePath": "api/Store/sign/GetInOutWeekCount",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
     "Method": "GetLocationMaterial",
     "RelativePath": "api/Store/sign/GetLocationMaterial",
     "HttpMethod": "GET",
@@ -5454,16 +5464,6 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
-    "Method": "GetToDayInOutCount",
-    "RelativePath": "api/Store/sign/GetToDayInOutCount",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
     "Method": "OutInventoryService",
     "RelativePath": "api/Store/sign/OutInventory",
     "HttpMethod": "POST",
@@ -5476,6 +5476,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "GetToDayInOutCount",
+    "RelativePath": "api/Store/sign/v2/GetToDayInOutCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -6127,26 +6137,6 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
-    "Method": "GetVocDaysCount",
-    "RelativePath": "api/Voc/sign/GetVocDaysCount",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
-    "Method": "GetVocDaysStatusCount",
-    "RelativePath": "api/Voc/sign/GetVocDaysStatusCount",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
     "Method": "GetVocFilterList",
     "RelativePath": "api/Voc/sign/GetVocFilterList",
     "HttpMethod": "GET",
@@ -6270,16 +6260,6 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
-    "Method": "GetVocWeekCount",
-    "RelativePath": "api/Voc/sign/GetVocWeekCount",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
     "Method": "UpdateVocType",
     "RelativePath": "api/Voc/sign/UpdateVocType",
     "HttpMethod": "PUT",
@@ -6292,6 +6272,46 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "GetVocDaysCount",
+    "RelativePath": "api/Voc/sign/v2/GetVocDaysCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "GetVocDaysStatusCount",
+    "RelativePath": "api/Voc/sign/v2/GetVocDaysStatusCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "GetVocWeekCount",
+    "RelativePath": "api/Voc/sign/v2/GetVocWeekCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "GetVocWeekStatusCount",
+    "RelativePath": "api/Voc/sign/v2/GetVocWeeksStatusCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
