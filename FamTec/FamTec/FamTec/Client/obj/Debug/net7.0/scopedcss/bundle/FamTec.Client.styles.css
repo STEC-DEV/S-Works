@@ -3558,6 +3558,28 @@ svg:hover[b-ijf8ad7z4n]{
 svg[b-ijf8ad7z4n] {
     width: 1rem;
 }
+/* /Pages/CommonComponents/IconButton/Question.razor.rz.scp.css */
+.icon[b-0c4k1js49m]{
+    display:flex;
+    align-items:center;
+
+    height:100%;
+}
+
+.icon:hover[b-0c4k1js49m]{
+    cursor : pointer;
+
+}
+
+
+/*.icon:hover > svg{
+    fill: var(--main-color);
+}*/
+
+svg[b-0c4k1js49m] {
+    transition: all .2s;
+    
+}
 /* /Pages/CommonComponents/IconButton/RightLineButton.razor.rz.scp.css */
 .ibtn :hover[b-uh1f150cmr] {
     cursor: pointer;

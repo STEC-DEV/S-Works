@@ -1,6 +1,7 @@
 ﻿@page "/facility/{FacType}"
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Facility.Machine.MachineMain.Components
+@using FamTec.Client.Pages.Normal.Voc.VocMain.utill
 @using FamTec.Shared.Client.DTO.Normal.Facility
 @using FamTec.Shared.Server.DTO
 @inherits PermissionComponentBase
@@ -11,9 +12,10 @@
             <span class="title">
                 @title 설비
             </span>
+            <div class="header-options">
             @if (HasEditPermission())
             {
-                <div class="header-options">
+                
                     <Input Placeholder="목록에서 검색"
                            Type="text"
                            ValueChanged="OnSearch" />
@@ -23,9 +25,13 @@
                         <Button Name="삭제" Width=true Type=1 OnClick="@OnIsDel" />
                     }
 
-                </div>
+                
             }
-            
+            @if(FilterData !=null && FilterData.Count>0)
+            {
+                <ExportButton OnClick="Export" />
+            }
+            </div>
         </div>
         <div class="content">
             @if (FilterData == null)
@@ -202,5 +208,35 @@
     private void OnIsDel()
     {
         isDel = !isDel;
+    }
+
+
+
+    /*
+     * export
+     */
+    private async Task Export()
+    {
+        if (ListFacility.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "데이터가 존재하지 않습니다.");
+            return;
+        }
+        List<string> colName = new List<string>
+        {
+            "설비이름",
+            "형식",
+            "수량",
+            "위치",
+            "규격용량",
+            "설치년월",
+            "내용년수",
+            "교체년월",
+
+        };
+        string date = DateTime.Now.ToString("yyyyMMdd");
+        var excel = ExcelService.getInstance(JS);
+        string excelTitle = $"{title}설비목록_{date}";
+        await excel.ExportFacility(ListFacility, colName, excelTitle,title);
     }
 }

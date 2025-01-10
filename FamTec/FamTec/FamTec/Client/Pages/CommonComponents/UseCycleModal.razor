@@ -93,7 +93,8 @@
             
             ResponseUnit<ApiResponse> res = await apiManager.GetUnitAsync<ApiResponse>($"CommonFacility/sign/RequestAPI?searchData={searchData}");
             if(res.code != 200){
-                await JS.InvokeVoidAsync("alert", "조회 실패");
+                Console.WriteLine(res);
+                await JS.InvokeVoidAsync("alert", $"조회 실패({res?.data?.Response.Header.ResultCode})");
             }
             if (res.data.Response.Body.Items == null){
                 useCycleData = new List<Item>();

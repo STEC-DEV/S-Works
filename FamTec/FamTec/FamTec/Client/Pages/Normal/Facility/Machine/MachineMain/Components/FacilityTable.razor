@@ -22,6 +22,11 @@
             </th>
             <th class="th">
                 <span>
+                    건물
+                </span>
+            </th>
+            <th class="th">
+                <span>
                     위치
                 </span>
             </th>
@@ -83,6 +88,9 @@
                     </td>
                     <td class="td" @onclick="()=>OnDetail(row.Id)">
                         @row.Num
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.BuildingName
                     </td>
                     <td class="td" @onclick="()=>OnDetail(row.Id)">
                         @row.RoomName

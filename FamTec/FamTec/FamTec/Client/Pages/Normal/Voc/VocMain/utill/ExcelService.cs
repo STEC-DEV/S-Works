@@ -326,6 +326,71 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
 
         }
 
+        /// <summary>
+        /// 설비
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="colName"></param>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        public async Task ExportFacility(List<FacilityListDTO> data, List<string> colName, string title, string facType)
+        {//option 0은 월간 조회, 1은 기간조회
+
+
+            var workbook = new XLWorkbook();
+            var properties = typeof(ListVocDTO).GetProperties();
+
+
+            var worksheet = workbook.Worksheets.Add($"{facType}설비 목록");
+
+            foreach (var header in colName.Select((value, idx) => (value, idx)))
+            {
+                worksheet.Column(header.idx + 1).Width = 25;
+                worksheet.Cell(1, header.idx + 1).Value = header.value;
+            }
+
+
+            foreach (var row in data.Select((value, idx) => (value, idx)))
+            {
+                worksheet.Cell(row.idx + 2, 1).Value = row.value.Name;
+                worksheet.Cell(row.idx + 2, 2).Value = row.value.Type;
+                worksheet.Cell(row.idx + 2, 3).Value = row.value.Num;
+                worksheet.Cell(row.idx + 2, 4).Value = row.value.RoomName;
+                worksheet.Cell(row.idx + 2, 5).Value = row.value.StandardCapacity;
+                worksheet.Cell(row.idx + 2, 6).Value = row.value.EquipDT;
+                worksheet.Cell(row.idx + 2, 7).Value = row.value.LifeSpan;
+                worksheet.Cell(row.idx + 2, 8).Value = row.value.ChangeDT;
+            }
+
+            // 전체 데이터 범위 테두리 설정
+            int totalRows = data.Count + 1; // 헤더 포함
+            int totalCols = colName.Count;
+            var fullRange = worksheet.Range(1, 1, totalRows, totalCols);
+
+            // 전체 범위에 테두리 적용
+            fullRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            fullRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            //worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
+
+            //헤더
+            var range = worksheet.Range(1, 1, 1, colName.Count);
+            range.Style.Fill.BackgroundColor = XLColor.FromArgb(217, 217, 217);
+
+
+
+
+            using var ms = new MemoryStream();
+            workbook.SaveAs(ms);
+            var content = ms.ToArray();
+
+            // 파일 다운로드
+            await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", $"{title}.xlsx", Convert.ToBase64String(content));
+
+        }
+
+
+
 
         /// <summary>
         /// 입출고
