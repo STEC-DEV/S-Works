@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using FamTec.Client.Shared.Provider;
+using DevExpress.Blazor;
+
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -42,7 +44,9 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
 builder.Services.AddScoped<PermissionService>();
-builder.Services.AddAuthorizationCore();
+builder.Services.AddDevExpressBlazor(configure => configure.BootstrapVersion = BootstrapVersion.v5);
+
+
 
 
 // 연결 -- 아래 코드 (게시용)

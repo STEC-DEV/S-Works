@@ -1,0 +1,21 @@
+﻿.icon{
+    display:flex;
+    align-items:center;
+
+    height:100%;
+}
+
+.icon:hover{
+    cursor : pointer;
+
+}
+
+
+/*.icon:hover > svg{
+    fill: var(--main-color);
+}*/
+
+svg {
+    transition: all .2s;
+    
+}

@@ -31,7 +31,7 @@
                             <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z" />
                         </svg>
                     </div>
-                    
+
                     @if (AlarmData?.Count != 0)
                     {
                         <div class="count">
@@ -43,7 +43,7 @@
                         <TimeLine  AlarmData="@AlarmData" OnLoad="@OnLoadAlarmData" />
                     }
                 </li>
-                
+
             }
             @if (UserType != null)
             {
@@ -79,11 +79,13 @@
                     </li>
                 }
             }
-            
+            <li class="nav-tab-item scale" @onclick="DownloadHelp">
+                <Question Color="white"/>
+            </li>
             <li class="nav-tab-item scale">
                 <NavLink class="nav-tab-link" @onclick="OnLogOut">Logout</NavLink>
             </li>
-            
+
         </ul>
     </div>
 </div>
@@ -135,7 +137,7 @@
         await OnLoginMode();
 
         PalceName = await (_authStateProvider as CustomAuthProvider).GetPlaceName();
-        
+
         valid = await (_authStateProvider as CustomAuthProvider).GetJwtTokenAsync();
         if (!LoginMode & !string.IsNullOrEmpty(valid))
         {
@@ -235,7 +237,7 @@
         // HubConnection이 null이 아닌지 확인
         if (IsConnected)
         {
-            
+
             // 메시지 수신 처리
             HubObject.hubConnection.On<string>("ReceiveVoc", async (message) =>
             {
@@ -389,9 +391,25 @@
 
     public void MoveSetting()
     {
-       
+
         Navigation.NavigateTo("/setting");
     }
 
+
+
+    /*
+    * 설명서 다운
+    * --
+    */
+    protected async Task DownloadHelp()
+    {
+        string url = LoginMode ? "AdminPlace/sign/DownloadAdminGuideForm" : "User/sign/DownloadUserGuideForm";
+        var filebytes = await apiManager.GetFileAsync(url);
+        var base64 = Convert.ToBase64String(filebytes);
+        var fileurl = $"data:application/pdf;base64,{base64}";
+
+        string title = LoginMode ? "S-Works_관리자설명서_1.3.pdf" : "S-Works_사용자설명서_1.3.pdf";
+        await JS.InvokeVoidAsync("downloadFile", fileurl, title);
+    }
 
 }

@@ -12,6 +12,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility
         public string? Name { get; set; }
         public string? Type { get; set; }
         public int? Num { get; set; }
+        public string? BuildingName { get; set; }
         public string? RoomName { get; set; }
         public string? StandardCapacity { get; set; }    
         public string? LifeSpan { get; set; }

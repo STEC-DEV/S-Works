@@ -1,0 +1,239 @@
+﻿@page "/dashboard"
+
+<div>
+    <DxChart T="VocChartDate" Data="voc" BarGroupWidth="50">
+        <DxChartBarSeries name="발생"
+            T="VocChartDate"
+            TArgument="string"
+            TValue="int"
+            argumentfield="pasi => pasi.Date.ToString()"
+            valuefield="pasi => pasi.Value"
+            summarymethod="Enumerable.Sum"
+            color="System.Drawing.Color.Gray"
+            filter='pasi => pasi.typeName == "발생"' />
+        <DxChartBarSeries Name="미처리"
+            T="VocChartDate"
+            TArgument="string"
+            TValue="int"
+            ArgumentField="pasi => pasi.Date.ToString()"
+            ValueField="pasi => pasi.Value"
+            SummaryMethod="Enumerable.Sum"
+            Filter='pasi => pasi.typeName == "미처리"' />
+        <DxChartBarSeries Name="처리중"
+            T="VocChartDate"
+            TArgument="string"
+            TValue="int"
+            ArgumentField="pasi => pasi.Date.ToString()"
+            ValueField="pasi => pasi.Value"
+            SummaryMethod="Enumerable.Sum"
+            Filter='pasi => pasi.typeName == "처리완료"' />
+        <DxChartBarSeries Name="처리완료"
+            T="VocChartDate"
+            TArgument="string"
+            TValue="int"
+            ArgumentField="pasi => pasi.Date.ToString()"
+            ValueField="pasi => pasi.Value"
+            SummaryMethod="Enumerable.Sum"
+            Filter='pasi => pasi.typeName == "처리완료"' />
+        <DxChartTooltip Enabled="true"
+        Position="RelativePosition.Outside">
+            <div style="margin: 0.75rem">
+                <div class="fw-bold">@context.Point.Argument</div>
+                <div>Age Group: @context.Point.SeriesName</div>
+                <div>Population: @($"{context.Point.Value:N0}")</div>
+            </div>
+        </DxChartTooltip>
+    </DxChart>
+
+
+</div>
+
+@code {
+    public class VocChartDate{
+        public DateTime Date { get; set; }
+        public int Value{ get; set; }
+        public string typeName { get; set; }
+    }
+
+    List<VocChartDate> voc = new List<VocChartDate>() {
+       // 7일 전
+    new VocChartDate
+    {
+        Date = DateTime.Now.AddDays(-6),
+        Value = 35,
+        typeName = "발생"
+    },
+    new VocChartDate
+    {
+        Date = DateTime.Now.AddDays(-6),
+        Value = 42,
+        typeName = "미처리"
+    },
+    // 6일 전
+    new VocChartDate
+    {
+        Date = DateTime.Now.AddDays(-5),
+        Value = 28,
+        typeName = "처리중"
+    },
+    new VocChartDate
+    {
+        Date = DateTime.Now.AddDays(-5),
+        Value = 55,
+        typeName = "미처리"
+    },
+    // 5일 전
+    new VocChartDate
+    {
+        Date = DateTime.Now.AddDays(-4),
+        Value = 63,
+        typeName = "처리완료"
+    },
+    new VocChartDate
+    {
+        Date = DateTime.Now.AddDays(-4),
+        Value = 47,
+        typeName = "발생"
+    },
+    // 4일 전
+    new VocChartDate
+    {
+        Date = DateTime.Now.AddDays(-3),
+        Value = 51,
+        typeName = "처리중"
+    },
+    new VocChartDate
+    {
+        Date = DateTime.Now.AddDays(-3),
+        Value = 38,
+        typeName = "미처리"
+    },
+    // 3일 전
+    new VocChartDate
+    {
+        Date = DateTime.Now.AddDays(-2),
+        Value = 72,
+        typeName = "처리완료"
+    },
+    new VocChartDate
+    {
+        Date = DateTime.Now.AddDays(-2),
+        Value = 45,
+        typeName = "발생"
+    },
+    // 2일 전
+    new VocChartDate
+    {
+        Date = DateTime.Now.AddDays(-1),
+        Value = 59,
+        typeName = "처리중"
+    },
+    new VocChartDate
+    {
+        Date = DateTime.Now.AddDays(-1),
+        Value = 44,
+        typeName = "미처리"
+    },
+    // 오늘
+    new VocChartDate
+    {
+        Date = DateTime.Now,
+        Value = 67,
+        typeName = "발생"
+    },
+    new VocChartDate
+    {
+        Date = DateTime.Now,
+        Value = 53,
+        typeName = "미처리"
+    }
+
+    };
+
+    public class VocWeekStatusCountDTO
+    {
+        /// <summary>
+        /// 날짜 구분
+        /// </summary>
+        public DateTime Date { get; set; }
+
+        /// <summary>
+        /// 미처리
+        /// </summary>
+        public int UnProcessed { get; set; }
+
+        /// <summary>
+        /// 처리중
+        /// </summary>
+
+        public int Processing { get; set; }
+
+        /// <summary>
+        /// 처리완료
+        /// </summary>
+        public int Completed { get; set; }
+    }
+
+
+    List<VocWeekStatusCountDTO> vocWeekStatus = new List<VocWeekStatusCountDTO>()
+{
+    new VocWeekStatusCountDTO
+    {
+        Date = DateTime.Now.AddDays(-6),
+        UnProcessed = 15,
+        Processing = 8,
+        Completed = 12
+    },
+    new VocWeekStatusCountDTO
+    {
+        Date = DateTime.Now.AddDays(-5),
+        UnProcessed = 18,
+        Processing = 10,
+        Completed = 9
+    },
+    new VocWeekStatusCountDTO
+    {
+        Date = DateTime.Now.AddDays(-4),
+        UnProcessed = 12,
+        Processing = 15,
+        Completed = 14
+    },
+    new VocWeekStatusCountDTO
+    {
+        Date = DateTime.Now.AddDays(-3),
+        UnProcessed = 20,
+        Processing = 12,
+        Completed = 10
+    },
+    new VocWeekStatusCountDTO
+    {
+        Date = DateTime.Now.AddDays(-2),
+        UnProcessed = 16,
+        Processing = 14,
+        Completed = 15
+    },
+    new VocWeekStatusCountDTO
+    {
+        Date = DateTime.Now.AddDays(-1),
+        UnProcessed = 14,
+        Processing = 18,
+        Completed = 13
+    },
+    new VocWeekStatusCountDTO
+    {
+        Date = DateTime.Now,
+        UnProcessed = 22,
+        Processing = 11,
+        Completed = 8
+    }
+};
+
+
+
+    protected override Task OnInitializedAsync()
+    {
+     
+        return base.OnInitializedAsync();
+    }
+
+}

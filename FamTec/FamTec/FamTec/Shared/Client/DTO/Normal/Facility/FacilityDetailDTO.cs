@@ -76,6 +76,16 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility
         public string RoomName { get; set; }
 
         /// <summary>
+        /// 건물 인덱스
+        /// </summary>
+        public int? BuildingId { get; set; }
+
+        /// <summary>
+        /// 건물 이름
+        /// </summary>
+       public string BuildingName { get; set; }
+
+        /// <summary>
         /// 이미지
         /// </summary>
         public byte[] Image { get; set; }
@@ -104,6 +114,8 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility
  
             RoomId = source.RoomId;
             RoomName = source.RoomName;
+            BuildingId = source.BuildingId;
+            BuildingName = source.BuildingName;
             Image = source.Image;
             ImageName = source.ImageName;
         }
