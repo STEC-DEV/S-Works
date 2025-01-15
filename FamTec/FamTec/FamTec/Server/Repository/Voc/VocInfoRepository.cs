@@ -53,6 +53,7 @@ namespace FamTec.Server.Repository.Voc
                 model.UnProcessed = UnProcessList.Count();
                 model.Processing = ProcessingList.Count();
                 model.Completed = CompletedList.Count();
+                model.Total = UnProcessList.Count() + ProcessingList.Count() + CompletedList.Count();
 
                 return model;
             }
@@ -95,7 +96,7 @@ namespace FamTec.Server.Repository.Voc
                 var model = allDates
                     .Select(date => new VocWeekStatusCountDTO
                     {
-                        Date = date,
+                        Date = date.ToString("yyyy-MM-dd"),
                         UnProcessed = groupedVocList.ContainsKey(0)
                             ? groupedVocList[0].Count(v => v.UpdateDt.Date == date)
                             : 0,
@@ -104,7 +105,10 @@ namespace FamTec.Server.Repository.Voc
                             : 0,
                         Completed = groupedVocList.ContainsKey(2)
                             ? groupedVocList[2].Count(v => v.UpdateDt.Date == date)
-                            : 0
+                            : 0,
+                        Total = (groupedVocList.ContainsKey(0) ? groupedVocList[0].Count(v => v.UpdateDt.Date == date) : 0)
+                          + (groupedVocList.ContainsKey(1) ? groupedVocList[1].Count(v => v.UpdateDt.Date == date) : 0)
+                          + (groupedVocList.ContainsKey(2) ? groupedVocList[2].Count(v => v.UpdateDt.Date == date) : 0)
                     })
                     .ToList();
 
@@ -241,7 +245,7 @@ namespace FamTec.Server.Repository.Voc
                 List<VocWeekCountDTO> model = allDates
                     .Select(date => new VocWeekCountDTO
                     {
-                        Date = date,
+                        Date = date.ToString("MM.dd"),
                         DefaultType = groupedReceipts
                             .Where(g => g.Key.Date == date && g.Key.Type == 0)
                             .SelectMany(g => g)

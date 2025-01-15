@@ -1,4 +1,6 @@
 ﻿using ClosedXML.Excel;
+using FamTec.Client.Pages.Admin.Place.PlaceAdd;
+using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Floor;
 using FamTec.Server.Repository.Inventory;
@@ -8,6 +10,7 @@ using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Material;
+using Microsoft.AspNetCore.SignalR;
 
 namespace FamTec.Server.Services.Material
 {
@@ -23,6 +26,8 @@ namespace FamTec.Server.Services.Material
         private readonly ILogService LogService;
         private readonly ConsoleLogService<MaterialService> CreateBuilderLogger;
 
+        private readonly IHubContext<BroadcastHub> HubContext;
+
         private DirectoryInfo? di;
         private string? MaterialFileFolderPath;
 
@@ -33,6 +38,7 @@ namespace FamTec.Server.Services.Material
             IFloorInfoRepository _floorinforepository,
             IFileService _fileservice,
             ILogService _logservice,
+            IHubContext<BroadcastHub> _hubcontext,
             ConsoleLogService<MaterialService> _createbuilderlogger)
         {
             this.MaterialInfoRepository = _materialinforepository;
@@ -41,6 +47,7 @@ namespace FamTec.Server.Services.Material
             this.BuildingInfoRepository = _buildinginforepository;
             this.FloorInfoRepository = _floorinforepository;
 
+            this.HubContext = _hubcontext;
             this.FileService = _fileservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
@@ -391,12 +398,20 @@ namespace FamTec.Server.Services.Material
                         }).ToList();
 
                         bool? AddResult = await MaterialInfoRepository.AddMaterialList(model).ConfigureAwait(false);
-                        return AddResult switch
+                        if(AddResult == true)
                         {
-                            true => new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                            false => new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                            _ => new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 }
-                        };
+                            // 자재 상태알림
+                            await HubContext.Clients.Group($"{placeidx}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
+                            return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                        }
+                        else if(AddResult == false)
+                        {
+                            return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                        }
+                        else
+                        {
+                            return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                        }
                     }
                 }
             }
@@ -477,6 +492,8 @@ namespace FamTec.Server.Services.Material
                     await FileService.AddResizeImageFile(NewFileName, MaterialFileFolderPath, files).ConfigureAwait(false);
                 }
 
+                // 자재 상태 알림
+                await HubContext.Clients.Group($"{placeidx}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
                 return new ResponseUnit<AddMaterialDTO>() { message = "요청이 정상 처리되었습니다.", data = new AddMaterialDTO()
                 {
                     Code = model.Code, // 품목코드
@@ -1033,6 +1050,8 @@ namespace FamTec.Server.Services.Material
                 bool? updateMaterial = await MaterialInfoRepository.UpdateMaterialInfo(model).ConfigureAwait(false);
                 if(updateMaterial == true)
                 {
+                    // 자재 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
                     // 성공했으면 그걸로 끝
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
@@ -1126,12 +1145,20 @@ namespace FamTec.Server.Services.Material
 
                 //  품목삭제 하면됨
                 bool? DeleteResult = await MaterialInfoRepository.DeleteMaterialInfo(delIdx, creater).ConfigureAwait(false);
-                return DeleteResult switch
+                if(DeleteResult == true)
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
-                };
+                    // 자재 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                }
+                else if(DeleteResult == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
             }
             catch(Exception ex)
             {

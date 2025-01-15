@@ -80,7 +80,6 @@ namespace FamTec.Server.Services.UseMaintenence
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         public async Task<ResponseUnit<bool?>> UpdateDetailUseMaterialService(HttpContext context, UpdateMaintenanceMaterialDTO dto)
         {
             try
@@ -118,9 +117,11 @@ namespace FamTec.Server.Services.UseMaintenence
                         int? UpdateResult = await UseMaintenenceInfoRepository.UseMaintanceOutput(Int32.Parse(placeid), updater, dto).ConfigureAwait(false);
                         if (UpdateResult > 0)
                         {
-                            // signalR 플래그
-                            await HubContext.Clients.Groups($"{placeid}_SafeNum").SendAsync("ReceiveSafeNum", $"GetSafeNumCount").ConfigureAwait(false);
-                            await HubContext.Clients.Groups($"{placeid}_ToDayInOut").SendAsync("ReceiveToDayInOut", $"GetToDayInOutCount").ConfigureAwait(false);
+                            // 자재 상태 알림
+                            await HubContext.Clients.Group($"{placeid}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
+                            
+                            // 유지보수 상태 알림
+                            await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
 
                             return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                         }
@@ -149,9 +150,12 @@ namespace FamTec.Server.Services.UseMaintenence
                     int? UpdateResult = await UseMaintenenceInfoRepository.UseMatintanceInput(Int32.Parse(placeid), updater, dto).ConfigureAwait(false);
                     if (UpdateResult > 0)
                     {
-                        // signalR 플래그
-                        await HubContext.Clients.Groups($"{placeid}_SafeNum").SendAsync("ReceiveSafeNum", $"GetSafeNumCount").ConfigureAwait(false);
-                        await HubContext.Clients.Groups($"{placeid}_ToDayInOut").SendAsync("ReceiveToDayInOut", $"GetToDayInOutCount").ConfigureAwait(false);
+                        // 자재 상태 알림
+                        await HubContext.Clients.Group($"{placeid}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
+                        
+                        // 유지보수 상태 알림
+                        await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
+
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                     }
                     else if (UpdateResult == -1)
@@ -198,9 +202,12 @@ namespace FamTec.Server.Services.UseMaintenence
                 int result = await UseMaintenenceInfoRepository.UpdateUseMaintance(dto, Convert.ToInt32(placeid), updater).ConfigureAwait(false);
                 if (result == 1)
                 {
-                    // signalR 플래그
-                    await HubContext.Clients.Groups($"{placeid}_SafeNum").SendAsync("ReceiveSafeNum", $"GetSafeNumCount").ConfigureAwait(false);
-                    await HubContext.Clients.Groups($"{placeid}_ToDayInOut").SendAsync("ReceiveToDayInOut", $"GetToDayInOutCount").ConfigureAwait(false);
+                    // 자재 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
+
+                    // 유지보수 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
+
                     return new ResponseUnit<bool?>() { message = "요청이 정상처리되었습니다.", data = true, code = 200 };
                 }
                 else if (result == -1)

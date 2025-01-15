@@ -3,7 +3,6 @@ using FamTec.Server.Services;
 using FamTec.Server.Services.Store;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.DashBoard;
-using FamTec.Shared.Server.DTO.Material;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +29,8 @@ namespace FamTec.Server.Controllers.Store
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+// ############################### 대쉬보드
+
         /// <summary>
         /// 대쉬보드용 금일 입출고내역 반환
         /// </summary>
@@ -49,12 +50,54 @@ namespace FamTec.Server.Controllers.Store
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
                     return BadRequest();
             }
             catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 대쉬보드용 품목별 재고 현황
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/v2/GetInventoryAmount")]
+        public async Task<IActionResult> GetInventoryAmount()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<InventoryAmountDTO>? model = await InStoreService.GetDashBoardInvenAmountData(HttpContext);
+
+                if (model is null)
+                    return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
@@ -106,6 +149,9 @@ namespace FamTec.Server.Controllers.Store
         */
 
         #endregion
+
+        // ############################### 대쉬보드
+
 
         /// <summary>
         /// 입고 등록 - 수정완료

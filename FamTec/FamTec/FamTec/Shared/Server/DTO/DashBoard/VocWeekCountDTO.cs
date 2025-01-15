@@ -5,7 +5,7 @@
         /// <summary>
         /// 날짜
         /// </summary>
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         /// <summary>
         /// 미분류 카운트

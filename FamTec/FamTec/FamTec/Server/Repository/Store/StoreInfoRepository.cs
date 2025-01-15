@@ -43,6 +43,7 @@ namespace FamTec.Server.Repository.Store
                     .Where(m => m.DelYn != true &&
                                 m.PlaceTbId == placeid &&
                                 m.CreateDt.Date == ThisDate)
+                    .Take(10)
                     .ToListAsync()
                     .ConfigureAwait(false);
 

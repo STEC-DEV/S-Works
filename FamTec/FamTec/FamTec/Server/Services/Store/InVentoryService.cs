@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Hubs;
+﻿using FamTec.Client.Pages.Admin.Place.PlaceAdd;
+using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Inventory;
 using FamTec.Server.Repository.Material;
 using FamTec.Server.Repository.Store;
@@ -101,9 +102,8 @@ namespace FamTec.Server.Services.Store
 
                 if (AddInStore == 1)
                 {
-                    // signalR 플래그
-                    await HubContext.Clients.Groups($"{placeid}_SafeNum").SendAsync("ReceiveSafeNum", $"GetSafeNumCount").ConfigureAwait(false);
-                    await HubContext.Clients.Groups($"{placeid}_ToDayInOut").SendAsync("ReceiveToDayInOut", $"GetToDayInOutCount").ConfigureAwait(false);
+                    // 자재 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
 
                     return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = 1, code = 200 };
                 }
@@ -156,8 +156,9 @@ namespace FamTec.Server.Services.Store
                  */
                 if(OutResult!.ReturnResult == 1)
                 {
-                    await HubContext.Clients.Groups($"{placeid}_SafeNum").SendAsync("ReceiveSafeNum", $"GetSafeNumCount").ConfigureAwait(false);
-                    await HubContext.Clients.Groups($"{placeid}_ToDayInOut").SendAsync("ReceiveToDayInOut", $"GetToDayInOutCount").ConfigureAwait(false);
+                    // 자재 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
+
                     return new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = OutResult, code = 200 };
                 }
                 else if(OutResult!.ReturnResult == 0)
@@ -345,7 +346,6 @@ namespace FamTec.Server.Services.Store
                         //    .Sum(m => m.InOutUnitPrice ?? 0);
                         dto.TotalOutputUnitPrice = dto.TotalOutputNum > 0 ? (float)Math.Round((decimal)dto.TotalOutputPrice / dto.TotalOutputNum, 2) : 0f;
 
-
                         // 총 재고수량
                         //dto.TotalStockNum = dto.InventoryList.Sum(m => m.CurrentNum ?? 0);
                         // 마지막 재고수량으로 변경됨
@@ -495,6 +495,7 @@ namespace FamTec.Server.Services.Store
                     return new ResponseUnit<InOutInventoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<InOutInventoryDTO>? model = await InventoryInfoRepository.AddOutStoreList(Int32.Parse(placeid), roomid, materialid, outcount).ConfigureAwait(false);
+
                 if (model is not null && model.Any())
                     return new ResponseUnit<InOutInventoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model[0], code = 200 };
                 else
@@ -568,6 +569,36 @@ namespace FamTec.Server.Services.Store
             }
         }
 
-  
+        /// <summary>
+        /// 대쉬보드용 품목별 재고 현황
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<ResponseList<InventoryAmountDTO>?> GetDashBoardInvenAmountData(HttpContext context)
+        {
+            try
+            {
+                if(context is null)
+                    return new ResponseList<InventoryAmountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseList<InventoryAmountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<InventoryAmountDTO>? model = await InventoryInfoRepository.GetInventoryAmountList(Convert.ToInt32(placeid)).ConfigureAwait(false);
+                if (model is [_, ..])
+                    return new ResponseList<InventoryAmountDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<InventoryAmountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<InventoryAmountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
     }
 }

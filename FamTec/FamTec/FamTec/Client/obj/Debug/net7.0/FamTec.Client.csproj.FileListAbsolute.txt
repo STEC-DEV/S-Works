@@ -1570,11 +1570,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\comp
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\u7rrvoavnc-tptq2av103.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\qol3osisp2-lfu7j35m59.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\94ux1qv49h-7cxe8oq9xu.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\hdcz3xcx9t-bs148mpxa1.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\ao3m03jn2x-il7ex3aa79.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\gw3driixm1-v6lye5zrjq.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\fdaugk9c5z-04rbmxbawf.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\58zld0z5vl-keylmzgqop.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\staticwebassets.build.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\staticwebassets.development.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\staticwebassets.build.endpoints.json
@@ -1590,3 +1585,8 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\FamT
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\refint\FamTec.Client.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\FamTec.Client.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\ref\FamTec.Client.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\hdcz3xcx9t-71cr68rd7n.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\ao3m03jn2x-ql4l2lfjy3.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\gw3driixm1-ajmgoufkwg.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\fdaugk9c5z-fpak5husrz.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\58zld0z5vl-v6fa9ciphh.gz

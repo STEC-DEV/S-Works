@@ -122,7 +122,7 @@
             }
             Voc.Division = 1;
 
-            ResponseUnit<AddVocReturnDTO> resAdd = await apiManager.PostWithFilesAsync<AddVocReturnDTO>("Hub/AddVoc", Voc);
+            ResponseUnit<AddVocReturnDTO> resAdd = await apiManager.PostWithFilesAsync<AddVocReturnDTO>("VocHub/AddVoc", Voc);
             if (resAdd.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resAdd.message);

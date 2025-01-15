@@ -5,7 +5,7 @@
         /// <summary>
         /// 월
         /// </summary>
-        public int Month { get; set; }
+        public string? Month { get; set; }
 
         /// <summary>
         /// 기계

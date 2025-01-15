@@ -188,11 +188,22 @@ namespace FamTec.Server.Repository.Facility
         {
             try
             {
+                // 쿼리만들고
+                IQueryable<FacilityTb> query = context.FacilityTbs
+                    .Where(m => m.RoomTbId == roomid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt);
+
+                // 실행
+                List<FacilityTb>? model = await query.ToListAsync().ConfigureAwait(false);
+
+
+                /*
                 List<FacilityTb>? model = await context.FacilityTbs
                     .Where(m => m.RoomTbId == roomid && m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync()
                     .ConfigureAwait(false);
+                */
 
                 if (model is not null && model.Any())
                     return model;

@@ -240,9 +240,9 @@ namespace FamTec.Server.Services.Voc
                         }
                     }
 
-                    await HubContext.Clients.Group($"{placeId}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
-                    await HubContext.Clients.Group($"{placeId}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
-                    await HubContext.Clients.Group($"{placeId}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
+                    // 민원 상태변경 알림 - 대쉬보드
+                    await HubContext.Clients.Group($"{placeId}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
+
                     return new ResponseUnit<AddVocCommentDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto , code = 200 };
                 }
                 else
@@ -781,9 +781,8 @@ namespace FamTec.Server.Services.Voc
                 bool? UpdateResult = await VocCommentRepository.UpdateCommentInfo(model).ConfigureAwait(false);
                 if (UpdateResult == true)
                 {
-                    await HubContext.Clients.Group($"{placeId}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
-                    await HubContext.Clients.Group($"{placeId}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
-                    await HubContext.Clients.Group($"{placeId}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
+                    // 민원 상태변경 알림 - 대쉬보드
+                    await HubContext.Clients.Group($"{placeId}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else

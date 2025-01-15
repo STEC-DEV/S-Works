@@ -7,6 +7,8 @@ using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Floor;
 using ClosedXML.Excel;
 using FamTec.Shared.Server.DTO.Excel;
+using Microsoft.AspNetCore.SignalR;
+using FamTec.Server.Hubs;
 
 namespace FamTec.Server.Services.Facility.Type.Beauty
 {
@@ -19,6 +21,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         
         private readonly IFileService FileService;
         private readonly ILogService LogService;
+
         private readonly ConsoleLogService<BeautyFacilityService> CreateBuilderLogger;
 
         private DirectoryInfo? di;
@@ -371,11 +374,15 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                         }).ToList();
 
                         bool AddResult = await FacilityInfoRepository.AddFacilityList(model).ConfigureAwait(false);
-                        return AddResult switch
+                        if(AddResult)
                         {
-                            true => new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                            false => new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 }
-                        };
+                            return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                        }
+                        else
+                        {
+                            return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                        }
+                        
                     }
                 }
             }

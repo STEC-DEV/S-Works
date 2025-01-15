@@ -51,6 +51,10 @@ namespace FamTec.Server.Controllers.Voc
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -86,6 +90,10 @@ namespace FamTec.Server.Controllers.Voc
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -120,6 +128,10 @@ namespace FamTec.Server.Controllers.Voc
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -135,9 +147,6 @@ namespace FamTec.Server.Controllers.Voc
             }
         }
  
-       
-
-
         /// <summary>
         /// DashBoad 일주일간의 유형별 발생건수
         /// </summary>
@@ -175,8 +184,6 @@ namespace FamTec.Server.Controllers.Voc
             }
             
         }
-
-
 
         /* ##################  */
 

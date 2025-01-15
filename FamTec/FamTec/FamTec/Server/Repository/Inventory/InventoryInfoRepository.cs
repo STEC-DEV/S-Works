@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -26,6 +27,146 @@ namespace FamTec.Server.Repository.Inventory
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
+
+        /// <summary>
+        /// 대쉬보드용 품목별 재고현황
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async Task<List<InventoryAmountDTO>?> GetInventoryAmountList(int placeid)
+        {
+            try
+            {
+                List<MaterialTb> MaterialList = await context.MaterialTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid).ToListAsync().ConfigureAwait(false);
+                if (MaterialList is null || !MaterialList.Any())
+                    return null;
+
+                List<int> MaterialIdx = MaterialList.Select(m => m.Id).Take(4).ToList();
+
+                var model = await (from room in context.RoomTbs
+                                                        join material in context.MaterialTbs on 1 equals 1 // Cross Join을 위해 무조건 TRUE로 만든다.
+                                                        where room.DelYn != true && material.DelYn != true
+                                                       && material.PlaceTbId == placeid && context.FloorTbs
+                                                            .Where(f => context.BuildingTbs
+                                                                              .Where(b => b.PlaceTbId == placeid)
+                                                                              .Select(b => b.Id)
+                                                                              .Contains(f.BuildingTbId))
+                                                            .Select(f => f.Id)
+                                                            .Contains(room.FloorTbId)
+                                                        select new
+                                                        {
+                                                            R_ID = room.Id,
+                                                            R_NM = room.Name,
+                                                            M_ID = material.Id,
+                                                            M_CODE = material.Code,
+                                                            M_NM = material.Name
+                                                        } into subQueryA // Subquery 'A'
+                                                        join inventoryGroup in (from i in context.InventoryTbs
+                                                                                where i.DelYn != true
+                                                                                group i by new { i.MaterialTbId, i.RoomTbId } into g
+                                                                                select new
+                                                                                {
+                                                                                    MATERIAL_TB_ID = g.Key.MaterialTbId,
+                                                                                    ROOM_TB_ID = g.Key.RoomTbId,
+                                                                                    TOTAL = g.Sum(x => (int?)x.Num)
+                                                                                })
+                                                        on new
+                                                        {
+                                                            R_ID = subQueryA.R_ID,
+                                                            M_ID = subQueryA.M_ID
+                                                        }
+                                                        equals new
+                                                        {
+                                                            R_ID = inventoryGroup.ROOM_TB_ID,
+                                                            M_ID = inventoryGroup.MATERIAL_TB_ID
+                                                        } into joined
+                                                        from inventory in joined.DefaultIfEmpty() // LEFT JOIN using DefaultIfEmpty
+                                                        where MaterialIdx.Contains(subQueryA.M_ID)
+                                                        orderby subQueryA.M_ID, subQueryA.R_ID
+                                                        select new MaterialInventory
+                                                        {
+                                                            R_ID = subQueryA.R_ID,
+                                                            R_NM = subQueryA.R_NM,
+                                                            M_ID = subQueryA.M_ID,
+                                                            M_CODE = subQueryA.M_CODE,
+                                                            M_NM = subQueryA.M_NM,
+                                                            TOTAL = inventory.TOTAL ?? 0
+                                                        }).ToListAsync()
+                                          .ConfigureAwait(false); // 비동기 ToListAsync() 사용
+
+                if (model is null)
+                    return null;
+
+                // 반복문 돌리 조건 [1]
+                List<RoomTb>? roomlist = await (from building in context.BuildingTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid)
+                                                join floor in context.FloorTbs.Where(m => m.DelYn != true)
+                                                on building.Id equals floor.BuildingTbId
+                                                join room in context.RoomTbs.Where(m => m.DelYn != true)
+                                                on floor.Id equals room.FloorTbId
+                                                select new RoomTb
+                                                {
+                                                    Id = room.Id,
+                                                    Name = room.Name,
+                                                    CreateDt = room.CreateDt,
+                                                    CreateUser = room.CreateUser,
+                                                    UpdateDt = room.UpdateDt,
+                                                    UpdateUser = room.UpdateUser,
+                                                    DelYn = room.DelYn,
+                                                    DelDt = room.DelDt,
+                                                    DelUser = room.DelUser,
+                                                    FloorTbId = room.FloorTbId
+                                                }).OrderBy(m => m.CreateDt)
+                            .ToListAsync()
+                            .ConfigureAwait(false); // 비동기 ToListAsync() 사용
+
+                if (roomlist is null)
+                    return null;
+
+                // 반복문 돌리기 조건 [2]
+                int materiallist = model.GroupBy(m => m.M_ID).Count();
+
+                List<InventoryAmountDTO> InventoryModel = new List<InventoryAmountDTO>();
+                int resultCount = 0;
+                for (int i = 0; i < materiallist; i++)
+                {
+                    int total = 0; // 총합을 계산할 변수
+
+                    InventoryAmountDTO material = new InventoryAmountDTO();
+                    material.Name = model[resultCount].M_NM;
+
+                    for (int j = 0; j < roomlist.Count(); j++)
+                    {
+                        InventoryRoomDTO dto = new InventoryRoomDTO
+                        {
+                            Name = model[resultCount + j].R_NM,
+                            Num = model[resultCount + j].TOTAL!.Value
+                        };
+                        total += dto.Num; // 총합 누적
+                        material.RoomInvenList!.Add(dto);
+                    }
+                    material.Total = total; // 자재별 총합 설정
+                    resultCount += roomlist.Count();
+                    InventoryModel.Add(material);
+                }
+                if (model.Count == resultCount)
+                {
+                    return InventoryModel;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
 
         /// <summary>
         /// 입고로직
@@ -1375,5 +1516,7 @@ namespace FamTec.Server.Repository.Inventory
         }
 
        
+
     }
+
 }

@@ -107,7 +107,7 @@ namespace FamTec.Server.Controllers.Hubs
         
 
         /// <summary>
-        /// 민원접수 [일반사용자]
+        /// 민원접수 [일반사용자] / 직원용이랑 같이쓰는듯
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="files"></param>

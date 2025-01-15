@@ -1,4 +1,5 @@
 ﻿using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Store;
 
 namespace FamTec.Server.Repository.Inventory
@@ -90,5 +91,13 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="outcount"></param>
         /// <returns></returns>
         Task<List<InOutInventoryDTO>?> AddOutStoreList(int placeid, int roomid, int materialid, int outcount);
+
+        /// <summary>
+        /// 대쉬보드용 품목별 재고현황
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        Task<List<InventoryAmountDTO>?> GetInventoryAmountList(int placeid);
+
     }
 }

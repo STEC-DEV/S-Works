@@ -73,31 +73,54 @@ namespace FamTec.Server.Repository.Material
                 
                 if (MaterialCheck is [_, ..])
                 {
-
                     List<MaterialCountDTO> model = await (
-                     from mat in context.MaterialTbs
-                     join inv in context.InventoryTbs
-                         on mat.Id equals inv.MaterialTbId into invGroup // LEFT JOIN
-                     where mat.DelYn != true
-                           && mat.PlaceTbId == placeid // MaterialTbs의 조건
-                           && mat.SafeNum != null      // SafeNum이 null이 아닌 항목
-                           && mat.SafeNum > 0          // SafeNum이 0보다 큰 항목
-                     let filteredInvGroup = invGroup.Where(inv => inv.DelYn != true) // InventoryTbs의 조건
-                     let totalNum = filteredInvGroup.Sum(inv => (int?)inv.Num) ?? 0 // InventoryTb의 Num 합계, 없으면 0
-                     let safeNum = mat.SafeNum ?? 0 // SafeNum null이면 0
-                     let distance = Math.Abs(safeNum - totalNum) // SafeNum과 totalNum 차이 계산
-                     orderby distance // Distance 기준으로 정렬
-                     select new MaterialCountDTO
-                     {
-                         MaterialId = mat.Id,       // MaterialTb의 Id
-                         MaterialName = mat.Name,   // MaterialTb의 Name
-                         TotalNum = totalNum,       // InventoryTb의 Num 합계
-                         SafeNum = safeNum,         // MaterialTb의 SafeNum
-                         Distance = distance        // SafeNum과 합계 차이의 절대값
-                     })
-                     .Where(m => m.TotalNum <= m.SafeNum)
-                     .Take(10) // 상위 10개 결과 가져오기
-                     .ToListAsync();
+                        from mat in context.MaterialTbs
+                        join inv in context.InventoryTbs
+                            on mat.Id equals inv.MaterialTbId into invGroup // LEFT JOIN
+                        where mat.DelYn != true
+                              && mat.PlaceTbId == placeid // MaterialTbs의 조건
+                              && mat.SafeNum != null      // SafeNum이 null이 아닌 항목
+                              && mat.SafeNum > 0          // SafeNum이 0보다 큰 항목
+                        let filteredInvGroup = invGroup.Where(inv => inv.DelYn != true) // InventoryTbs의 조건
+                        let totalNum = filteredInvGroup.Sum(inv => (int?)inv.Num) ?? 0 // InventoryTb의 Num 합계, 없으면 0
+                        let safeNum = mat.SafeNum ?? 0 // SafeNum null이면 0
+                        let distance = (totalNum < safeNum) ? totalNum - safeNum : totalNum - safeNum // 조건에 따라 Distance 계산
+                        orderby distance // Distance 기준으로 정렬
+                        select new MaterialCountDTO
+                        {
+                            MaterialId = mat.Id,       // MaterialTb의 Id
+                            MaterialName = mat.Name,   // MaterialTb의 Name
+                            TotalNum = totalNum,       // InventoryTb의 Num 합계
+                            SafeNum = safeNum,         // MaterialTb의 SafeNum
+                            Distance = distance        // SafeNum과 합계 차이의 절대값
+                        })
+                        .Take(10) // 상위 10개 결과 가져오기
+                        .ToListAsync();
+
+                    //List<MaterialCountDTO> model = await (
+                    // from mat in context.MaterialTbs
+                    // join inv in context.InventoryTbs
+                    //     on mat.Id equals inv.MaterialTbId into invGroup // LEFT JOIN
+                    // where mat.DelYn != true
+                    //       && mat.PlaceTbId == placeid // MaterialTbs의 조건
+                    //       && mat.SafeNum != null      // SafeNum이 null이 아닌 항목
+                    //       && mat.SafeNum > 0          // SafeNum이 0보다 큰 항목
+                    // let filteredInvGroup = invGroup.Where(inv => inv.DelYn != true) // InventoryTbs의 조건
+                    // let totalNum = filteredInvGroup.Sum(inv => (int?)inv.Num) ?? 0 // InventoryTb의 Num 합계, 없으면 0
+                    // let safeNum = mat.SafeNum ?? 0 // SafeNum null이면 0
+                    // let distance = Math.Abs(safeNum - totalNum) // SafeNum과 totalNum 차이 계산
+                    // orderby distance // Distance 기준으로 정렬
+                    // select new MaterialCountDTO
+                    // {
+                    //     MaterialId = mat.Id,       // MaterialTb의 Id
+                    //     MaterialName = mat.Name,   // MaterialTb의 Name
+                    //     TotalNum = totalNum,       // InventoryTb의 Num 합계
+                    //     SafeNum = safeNum,         // MaterialTb의 SafeNum
+                    //     Distance = distance        // SafeNum과 합계 차이의 절대값
+                    // })
+                    // //.Where(m => m.TotalNum <= m.SafeNum)
+                    // .Take(10) // 상위 10개 결과 가져오기
+                    // .ToListAsync();
 
                     return model;
                 }

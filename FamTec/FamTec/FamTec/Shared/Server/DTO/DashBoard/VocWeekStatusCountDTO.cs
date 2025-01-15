@@ -5,7 +5,7 @@
         /// <summary>
         /// 날짜 구분
         /// </summary>
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         /// <summary>
         /// 미처리
@@ -22,5 +22,10 @@
         /// 처리완료
         /// </summary>
         public int Completed { get; set; }
+
+        /// <summary>
+        /// 발생 수
+        /// </summary>
+        public int Total { get; set; }
     }
 }

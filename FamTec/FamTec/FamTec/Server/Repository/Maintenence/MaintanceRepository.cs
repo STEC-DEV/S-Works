@@ -50,6 +50,10 @@ namespace FamTec.Server.Repository.Maintenence
         {
             try
             {
+                // Temp
+                //StartDate = new DateTime(DateTime.Now.Year-1, 1, 1, 0, 0, 0);
+                //LastDate = new DateTime(DateTime.Now.Year-1, 12, DateTime.DaysInMonth(DateTime.Now.Year-1, 12), 23, 59, 59); ;
+
                 // Step 1: StartDate와 LastDate로부터 해당 연도의 월 리스트 생성
                 var months = Enumerable.Range(1, 12)
                     .Select(month => new DateTime(StartDate.Year, month, 1))
@@ -91,23 +95,90 @@ namespace FamTec.Server.Repository.Maintenence
                 List<int> FacilityIdx = FacilityList.Select(m => m.Id).ToList();
 
                 // 6. 월간 유지보수 이력 조회
-                var MaintanceDays = await context.MaintenenceHistoryTbs
+                //var MaintanceDays = await context.MaintenenceHistoryTbs
+                //    .Where(m => m.DelYn != true &&
+                //                FacilityIdx.Contains(m.FacilityTbId) &&
+                //    m.CreateDt >= StartDate &&
+                //                m.CreateDt <= LastDate)
+                //    .Select(m => new
+                //    {
+                //        m.FacilityTbId,
+                //        m.CreateDt.Month, // 월만 추출
+                //        m.TotalPrice, // 금액도 추출
+                //    })
+                //    .ToListAsync();
+                //var MaintanceDays = await context.MaintenenceHistoryTbs
+                //        .Where(m => m.DelYn != true &&
+                //                    FacilityIdx.Contains(m.FacilityTbId) &&
+                //                    m.CreateDt >= StartDate &&
+                //                    m.CreateDt <= LastDate)
+                //        .GroupBy(m => new { m.FacilityTbId, Month = m.CreateDt.Month })
+                //        .Select(g => new
+                //        {
+                //            g.Key.FacilityTbId,
+                //            g.Key.Month,
+                //            TotalPrice = g.Sum(x => x.TotalPrice)
+                //        })
+                //        .ToListAsync();
+
+                // 유지보수 이력과 설비 테이블 Join
+                // 유지보수 이력 조회 (먼저 DB에서 가져오기)
+                var maintenenceHistoryList = await context.MaintenenceHistoryTbs
                     .Where(m => m.DelYn != true &&
                                 FacilityIdx.Contains(m.FacilityTbId) &&
-                    m.CreateDt >= StartDate &&
+                                m.CreateDt >= StartDate &&
                                 m.CreateDt <= LastDate)
-                    .Select(m => new
-                    {
-                        m.FacilityTbId,
-                        m.CreateDt.Month // 월만 추출
-                    })
                     .ToListAsync();
 
+                // 설비 리스트 조회 (이미 FacilityList에 있음)
+                var facilityList = FacilityList.ToList();
 
-               
-                Console.WriteLine("asa");
+                // 클라이언트 측에서 Join
+                var MaintanceDays = maintenenceHistoryList
+                    .Join(facilityList,
+                        history => history.FacilityTbId,
+                        facility => facility.Id,
+                        (history, facility) => new
+                        {
+                            history.FacilityTbId,
+                            Month = history.CreateDt.Month,
+                            TotalPrice = history.TotalPrice,
+                            Category = facility.Category
+                        })
+                    .ToList();
 
-                return null;
+                // 설비 타입별 유지보수 금액 누적
+                // 월별 유지보수 금액 누적
+                List<MaintanceYearPriceDTO> result = months.Select(month => new MaintanceYearPriceDTO
+                {
+                    Month = $"{month.Month}월",
+                    MachineType = MaintanceDays
+                        .Where(m => m.Category == "기계" && m.Month == month.Month)
+                        .Sum(m => m.TotalPrice),
+                    ElecType = MaintanceDays
+                        .Where(m => m.Category == "전기" && m.Month == month.Month)
+                        .Sum(m => m.TotalPrice),
+                    liftType = MaintanceDays
+                        .Where(m => m.Category == "승강" && m.Month == month.Month)
+                        .Sum(m => m.TotalPrice),
+                    FireType = MaintanceDays
+                        .Where(m => m.Category == "소방" && m.Month == month.Month)
+                        .Sum(m => m.TotalPrice),
+                    BeautyType = MaintanceDays
+                        .Where(m => m.Category == "미화" && m.Month == month.Month)
+                        .Sum(m => m.TotalPrice),
+                    ConstructType = MaintanceDays
+                        .Where(m => m.Category == "건축" && m.Month == month.Month)
+                        .Sum(m => m.TotalPrice),
+                    NetWorkType = MaintanceDays
+                        .Where(m => m.Category == "통신" && m.Month == month.Month)
+                        .Sum(m => m.TotalPrice),
+                    SecurityType = MaintanceDays
+                        .Where(m => m.Category == "보안" && m.Month == month.Month)
+                        .Sum(m => m.TotalPrice)
+                }).ToList();
+
+                return result;
             }
             catch(Exception ex)
             {
@@ -409,7 +480,7 @@ namespace FamTec.Server.Repository.Maintenence
                 var result = allDates
                  .Select(date => new MaintanceWeekCount
                  {
-                     Date = date,
+                     Date = $"{date.Day}일",
                      MachineType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "기계"),
                      ElecType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "전기"),
                      liftType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "승강"),

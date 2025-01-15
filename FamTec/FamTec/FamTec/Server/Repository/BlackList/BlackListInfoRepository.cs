@@ -15,7 +15,6 @@ namespace FamTec.Server.Repository.BlackList
         private readonly ILogService LogService;
         private readonly ConsoleLogService<BlackListInfoRepository> CreateBuilderLogger;
 
-
         public BlackListInfoRepository(WorksContext _context,
             ILogService _logservice,
             ConsoleLogService<BlackListInfoRepository> _createbuilderlogger)

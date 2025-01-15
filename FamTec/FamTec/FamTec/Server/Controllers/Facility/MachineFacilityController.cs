@@ -1,7 +1,6 @@
 ﻿using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Facility.Type.Machine;
-using FamTec.Server.Services.User;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility;
 using Microsoft.AspNetCore.Authorization;

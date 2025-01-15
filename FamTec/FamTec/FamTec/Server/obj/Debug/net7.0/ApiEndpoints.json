@@ -5480,6 +5480,16 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "GetInventoryAmount",
+    "RelativePath": "api/Store/sign/v2/GetInventoryAmount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
     "Method": "GetToDayInOutCount",
     "RelativePath": "api/Store/sign/v2/GetToDayInOutCount",
     "HttpMethod": "GET",

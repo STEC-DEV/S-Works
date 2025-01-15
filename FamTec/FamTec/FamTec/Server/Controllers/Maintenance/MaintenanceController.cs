@@ -40,6 +40,8 @@ namespace FamTec.Server.Controllers.Maintenance
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+// ################ DashBoard
+
         /// <summary>
         /// 금일 유지보수 이력
         /// </summary>
@@ -58,6 +60,10 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 if (model is null)
                     return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -92,6 +98,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (model == null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -125,6 +135,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (model == null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)
@@ -141,7 +155,8 @@ namespace FamTec.Server.Controllers.Maintenance
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
-            
+
+// ######################################
 
         [AllowAnonymous]
         [HttpPost]

@@ -445,11 +445,8 @@ namespace FamTec.Server.Services.Voc
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 0).ConfigureAwait(false);
 
                             // 소켓전송
-
-                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
                         }
 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -473,12 +470,9 @@ namespace FamTec.Server.Services.Voc
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 1).ConfigureAwait(false);
 
-
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_MCRoom").SendAsync("ReceiveVoc", "[기계] 민원 등록되었습니다").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
                         }
                                 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -504,10 +498,8 @@ namespace FamTec.Server.Services.Voc
 
 
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_ELECRoom").SendAsync("ReceiveVoc", "[전기] 민원 등록되었습니다").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
                         }
 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -529,12 +521,9 @@ namespace FamTec.Server.Services.Voc
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 3).ConfigureAwait(false);
 
-
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_LFRoom").SendAsync("ReceiveVoc", "[승강] 민원 등록되었습니다").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
                         }
 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -559,10 +548,8 @@ namespace FamTec.Server.Services.Voc
 
 
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_FRRoom").SendAsync("ReceiveVoc", "[소방] 민원 등록되었습니다").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
                         }
 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -585,12 +572,9 @@ namespace FamTec.Server.Services.Voc
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 5).ConfigureAwait(false);
 
-
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_CSTRoom").SendAsync("ReceiveVoc", "[건축] 민원 등록되었습니다").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
                         }
                                 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -614,12 +598,9 @@ namespace FamTec.Server.Services.Voc
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 6).ConfigureAwait(false);
 
-
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_NTRoom").SendAsync("ReceiveVoc", "[통신] 민원 등록되었습니다").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
                         }
 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -644,10 +625,8 @@ namespace FamTec.Server.Services.Voc
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 7).ConfigureAwait(false);
 
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_BEAUTYRoom").SendAsync("ReceiveVoc", "[미화] 민원 등록되었습니다").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
                         }
                                 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -672,10 +651,8 @@ namespace FamTec.Server.Services.Voc
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 8).ConfigureAwait(false);
 
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
-                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_SECURoom").SendAsync("ReceiveVoc", "[보안] 민원 등록되었습니다").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
                         }
 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -915,6 +892,28 @@ namespace FamTec.Server.Services.Voc
                 DateTime EndOfWeek = ToDays.AddDays(1).AddTicks(-1);
 
                 List<VocWeekStatusCountDTO>? model = await VocInfoRepository.GetDashBoardWeeksStatusData(StartDate, EndOfWeek);
+
+                /*
+                var result = model?
+                .SelectMany(v => new[]
+                {
+                    new { Date = v.Date, Count = v.UnProcessed, Status = "미처리" },
+                    new { Date = v.Date, Count = v.Processing, Status = "처리중" },
+                    new { Date = v.Date, Count = v.Completed, Status = "처리완료" }
+                })
+                .GroupBy(x => new { x.Date, x.Status })
+                .Select(g => new
+                {
+                    Date = g.Key.Date,
+                    Count = g.Sum(x => x.Count),
+                    Status = g.Key.Status
+                })
+                .ToList();
+
+                var result2 = result.GroupBy(m => m.Status);
+                */
+
+                
 
                 if (model is not null)
                 {

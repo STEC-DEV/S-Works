@@ -2,9 +2,7 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
-using Newtonsoft.Json.Linq;
 
 namespace FamTec.Server.Repository.KakaoLog
 {

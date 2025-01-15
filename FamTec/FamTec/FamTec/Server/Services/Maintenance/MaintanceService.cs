@@ -103,9 +103,10 @@ namespace FamTec.Server.Services.Maintenance
 
                 List<MaintanceYearPriceDTO>? model = await MaintanceRepository.GetMaintenanceYearData(firstDayOfYear, lastDayOfDecember, Convert.ToInt32(placeid));
 
-                
-
-                return null;
+                if (model is [_, ..])
+                    return new ResponseList<MaintanceYearPriceDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<MaintanceYearPriceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
             catch(Exception ex)
             {
@@ -250,24 +251,25 @@ namespace FamTec.Server.Services.Maintenance
                 if (dto.Type is 0) // 자체작업
                 {
                     FailResult? MaintanceId = await MaintanceRepository.AddSelfMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid)).ConfigureAwait(false);
-                    
-                    if(MaintanceId!.ReturnResult > 0)
+
+                    if (MaintanceId!.ReturnResult > 0)
                     {
-                        // signalR 플래그
-                        await HubContext.Clients.Group($"{placeid}_Maintenance").SendAsync("ReceiveMaintenanceCount", $"유지보수 내역조회").ConfigureAwait(false);
-                        await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("ReceiveInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                        // 자재 상태 알림
+                        await HubContext.Clients.Group($"{placeid}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
+                        // 유지보수 상태 알림
+                        await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
 
                         return new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
                     }
-                    else if(MaintanceId!.ReturnResult == 0)
+                    else if (MaintanceId!.ReturnResult == 0)
                     {
                         return new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = MaintanceId, code = 422 };
                     }
-                    else if(MaintanceId!.ReturnResult == -1)
+                    else if (MaintanceId!.ReturnResult == -1)
                     {
                         return new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = MaintanceId, code = 409 };
                     }
-                    else if(MaintanceId!.ReturnResult == - 2)
+                    else if (MaintanceId!.ReturnResult == -2)
                     {
                         return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 };
                     }
@@ -283,12 +285,21 @@ namespace FamTec.Server.Services.Maintenance
 
                     FailResult? MaintanceId = await MaintanceRepository.AddOutSourcingMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid)).ConfigureAwait(false);
 
-                    return MaintanceId!.ReturnResult switch
+                    if (MaintanceId!.ReturnResult > 0)
                     {
-                        > 0 => new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 },
-                        -2 => new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 },
-                        _ => new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 }
-                    };
+                        // 유지보수 상태 알림 - 외주작업은 자재를 안쓰기때문에 소켓 1개
+                        await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
+
+                        return new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
+                    }
+                    else if(MaintanceId!.ReturnResult == -2)
+                    {
+                        return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 };
+                    }
+                    else
+                    {
+                        return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 };
+                    }
                 }
                 else
                 {
@@ -328,8 +339,11 @@ namespace FamTec.Server.Services.Maintenance
                 FailResult? MaintanceId = await MaintanceRepository.AddMaintanceMaterialAsync(dto, creater, Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if(MaintanceId!.ReturnResult > 0)
                 {
-                    // signalR 플래그
-                    await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                    // 자재 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
+                    // 유지보수 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
+
                     return new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
                 }
                 else if(MaintanceId!.ReturnResult == 0)
@@ -380,8 +394,12 @@ namespace FamTec.Server.Services.Maintenance
                 bool? DeleteResult = await MaintanceRepository.deleteMaintenanceStoreRecord(dto, Int32.Parse(placeid), deleter).ConfigureAwait(false);
                 if(DeleteResult == true)
                 {
-                    // signalR 플래그
-                    await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                    // 자재 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
+                    
+                    // 유지보수 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
+
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else if(DeleteResult == false)
@@ -418,6 +436,7 @@ namespace FamTec.Server.Services.Maintenance
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? deleter = Convert.ToString(context.Items["Name"]);
+
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(deleter))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
@@ -425,8 +444,12 @@ namespace FamTec.Server.Services.Maintenance
 
                 if(DeleteResult == true)
                 {
-                    // signalR 플래그
-                    await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                    // 자재 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaterialStatus").SendAsync("ReceiveMaterialStatus", "자재의 상태가 변경되었습니다.").ConfigureAwait(false);
+                    
+                    // 유지보수 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
+
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else if(DeleteResult == false)
@@ -545,7 +568,6 @@ namespace FamTec.Server.Services.Maintenance
                     return new ResponseList<MaintanceHistoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
                     return new ResponseList<MaintanceHistoryDTO>() { message = "데이터가 존재하지 않습니다.", data = model, code = 200 };
-
             }
             catch(Exception ex)
             {
@@ -850,6 +872,9 @@ namespace FamTec.Server.Services.Maintenance
                 bool? updateMaintance = await MaintanceRepository.UpdateMaintenanceInfo(model).ConfigureAwait(false);
                 if(updateMaintance == true)
                 {
+                    // 유지보수 상태 알림
+                    await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
+
                     // 성공하면 그걸로 끝
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }

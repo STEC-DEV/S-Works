@@ -34,6 +34,8 @@ namespace FamTec.Server.Controllers.Material
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+// ########################## DashBoard
+
         /// <summary>
         /// 대쉬보드용 안전재고 TOP 10
         /// </summary>
@@ -49,11 +51,18 @@ namespace FamTec.Server.Controllers.Material
                     return BadRequest();
 
                 ResponseList<MaterialCountDTO>? model = await MaterialService.GetMaterialCountService(HttpContext).ConfigureAwait(false);
-                
+
                 if (model is null)
                     return BadRequest();
-                else
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
                     return Ok(model);
+                else
+                    return BadRequest();
             }
             catch(Exception ex)
             {
@@ -64,6 +73,8 @@ namespace FamTec.Server.Controllers.Material
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
+
+// ###############################
 
         [HttpGet]
         [Route("sign/DownloadMaterialForm")]

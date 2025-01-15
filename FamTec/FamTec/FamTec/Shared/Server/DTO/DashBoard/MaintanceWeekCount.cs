@@ -5,7 +5,7 @@
         /// <summary>
         /// 날짜구분
         /// </summary>
-        public DateTime Date { get; set; }
+        public string? Date { get; set; }
 
         /// <summary>
         /// 기계설비 카운트

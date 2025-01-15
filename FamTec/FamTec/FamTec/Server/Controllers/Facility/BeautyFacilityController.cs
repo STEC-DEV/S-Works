@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
 using FamTec.Server.Middleware;
+using Microsoft.AspNetCore.SignalR;
+using FamTec.Server.Hubs;
 
 namespace FamTec.Server.Controllers.Facility
 {
@@ -27,7 +29,7 @@ namespace FamTec.Server.Controllers.Facility
             ConsoleLogService<BeautyFacilityController> _createbuilderlogger)
         {
             this.BeautyFacilityService = _beautyfacilityservice;
-            
+
             this.FileService = _fileservice;
             this.LogService = _logservice;
             this.CommService = _commservice;
