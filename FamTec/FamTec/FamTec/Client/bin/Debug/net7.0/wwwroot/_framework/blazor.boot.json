@@ -1,7 +1,11 @@
 {
   "entryAssembly": "FamTec.Client",
   "resources": {
+<<<<<<< HEAD
     "hash": "sha256-IzRXZtPahAeSvntQv2l+1VBy6w0yePqqHjtoXuLYwb0=",
+=======
+    "hash": "sha256-ASqoZl96nlGpTV8cmt68/DRNP6i/oCmsBFtB+fYC1z8=",
+>>>>>>> origin/Front
     "runtime": {
       "dotnet.js": "sha256-eaJTmow4t8eE7FZMZR5Ja41JMOefGCbIYDTdpclGsac=",
       "dotnet.timezones.blat": "sha256-gbATD5HDsHYtW8vdPYh9iSBY4O5CjvMeCSF5xXWF1xo=",
@@ -80,6 +84,8 @@
       "Microsoft.Extensions.FileProviders.Physical.dll": "sha256-9xkIbIienaRj9Td2MyWYzL9JmVx6CKbGCPrvJ1Pxfn8=",
       "Microsoft.Extensions.FileSystemGlobbing.dll": "sha256-Gm0yiS5fySh2nZXdCRKZIbASK8sSukwjogLc+a9EBZY=",
       "Microsoft.Extensions.Hosting.Abstractions.dll": "sha256-AlfzDnOeitozTi5vdJjoDjqwYbx7f0d3dc0zfxAod1o=",
+      "Microsoft.Extensions.Localization.dll": "sha256-qc/LSJ6pJmKeas7hgPFBpERsOdzTSQmBAH8y6y2NS/s=",
+      "Microsoft.Extensions.Localization.Abstractions.dll": "sha256-GznwZQ2HXZfvWmqI1oK54yJhGyMdIWwTzxp2U2oQJQQ=",
       "Microsoft.Extensions.Logging.dll": "sha256-WMsuY8rhtg+vvssGFSR7ZLKhqYPAzOi538IXMoiJ6bI=",
       "Microsoft.Extensions.Logging.Abstractions.dll": "sha256-7mzUlhcvGxpAVO4h/Tka7P/8IXF9ZsHkGt0fp5aufkU=",
       "Microsoft.Extensions.Logging.Configuration.dll": "sha256-SLTPNUVKZ3WUF6whxwgjtaOs2SrrofQXR04a08ZjeTo=",
@@ -102,10 +108,12 @@
       "Microsoft.SqlServer.Server.dll": "sha256-qdyhtCvIdflmt4ssCIDmK4OPDtZWcWbX8fB65LduxL8=",
       "Microsoft.Win32.SystemEvents.dll": "sha256-yklb9shrfwktYkkoEBmFqUFTLRSdzYrP6hcPilO+iFA=",
       "Mono.TextTemplating.dll": "sha256-57img5VLX+wAnl9OVpb+sxtMXVadVaRjPPWtsObQbOw=",
+      "MudBlazor.dll": "sha256-u2j0pOhgepJyffJ+Qp13yhRRKH1o4jKrp98xNmclanY=",
       "MySqlConnector.dll": "sha256-SvUnC2U+xrLDeKZ+ZR1DOaZcC0qNNzA4ncgVlM6LtOI=",
       "Newtonsoft.Json.dll": "sha256-IsZJ91/OW+fHzNqIgEc7Y072ns8z9dGritiSyvR9Wgc=",
       "Pomelo.EntityFrameworkCore.MySql.dll": "sha256-syJhjtABMnhsBya48+Hse+WM7BMonlaQBL303Bl5sYQ=",
       "QRCoder.dll": "sha256-PFZ09nqX/Z7TjdU32JLunv0yivrU1sHWf5n94sEI3Vc=",
+      "Radzen.Blazor.dll": "sha256-rZu/E6mDWzEdR12Lg+5SYjQXQEp/MU3KwUsPtrcI084=",
       "SixLabors.Fonts.dll": "sha256-4eLxB+fHj7hZ8bIzgxB6ElrNizp0cBQIUNqm9vbEXZ8=",
       "System.CodeDom.dll": "sha256-Wux4xpM0/BzRySb0qchXJg3S4D/xc56W3vHWgpa4a4s=",
       "System.Configuration.ConfigurationManager.dll": "sha256-0nS91x919QBfyuwCiSH3HYnLbWIgItdNLgeJejodFBo=",
@@ -113,6 +121,7 @@
       "System.IdentityModel.Tokens.Jwt.dll": "sha256-F31MLSpYke+DTEaZCqdrge16GY9w14Ip9zdMBwa6AWY=",
       "System.IO.Packaging.dll": "sha256-SKBu31n/+uieGIdNJXWPSD00yg25rQ3PdPhjkaqJdWw=",
       "System.IO.Pipelines.dll": "sha256-P/MqD0fCBd5bgTM16JC1QC/Zz7s+CwViyzmDFkBG4/c=",
+      "System.Linq.Dynamic.Core.dll": "sha256-KsA1AmkQWza4o3AJK/0Vuz7nJGCUGjiYUf7b+8QwKsA=",
       "System.Memory.Data.dll": "sha256-KTyl2GNY+yzgDaAsY+78s0Ron8DGNrYcl8PxsVqAqlE=",
       "System.Reactive.dll": "sha256-K2wx37H8YBmkKgB+0OXgBXTebqDEf+0MooK/O7J3Gww=",
       "System.Runtime.Caching.dll": "sha256-d8d847H8fQmHZa8x8ZGVUi4sZ19jJItpn2REHSmfPq0=",
@@ -293,12 +302,21 @@
       "mscorlib.dll": "sha256-HYyp9hO+GKFyupcEiY1PxtBBXbHzefsO3Q8RiQTaNCA=",
       "netstandard.dll": "sha256-N5CcC3sLzGBesbmeJAp5bwxABN9u7SwkIO5qfFjzoik=",
       "System.Private.CoreLib.dll": "sha256-bJS1DJmhjP7PvegYG+Z8O9EDtRY78HKinA3LUMVLlSQ=",
+<<<<<<< HEAD
       "FamTec.Shared.dll": "sha256-q0sVMyMFiWRdZgPve3niE7FvSwUZ5ZeG0bJbqAXkE04=",
       "FamTec.Client.dll": "sha256-6un+T08s5urFUpnc5OcxgWLA9+o6x6XGd4N5JM61izM="
     },
     "pdb": {
       "FamTec.Shared.pdb": "sha256-jnDwpZJsLjV25yq29Wtlbv/C/qWSlzInlUkLsYMRh5E=",
       "FamTec.Client.pdb": "sha256-M1wNPxDDgnJ5cK1thf60MGED6Q8sSY9cNPlQ8t/biNk="
+=======
+      "FamTec.Shared.dll": "sha256-9IqF/FhBEZS+V94k94axS8/el/2Rm4BCsRyJJEPD0fg=",
+      "FamTec.Client.dll": "sha256-1rDk0VY/Ir69qEP16LxBvIDzlmjmGFQJl1RoFiDP8Oc="
+    },
+    "pdb": {
+      "FamTec.Shared.pdb": "sha256-Jr+Y+VwUJyQsqHEHZSmuITMVE1WkRgnMi4GsGjzjXX4=",
+      "FamTec.Client.pdb": "sha256-6FzXa36ZUC82Tb1QLH7poWnNRZBuo/v/PjarcKt7Ck4="
+>>>>>>> origin/Front
     },
     "satelliteResources": {
       "cs": {

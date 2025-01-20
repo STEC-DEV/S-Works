@@ -1,0 +1,77 @@
+﻿@typeparam T
+
+
+<RadzenCard Style="grid-column:span 4;  min-height: 300px; height100%;">
+    <RadzenColumn style="height:100%;">
+        <RadzenChart Style="height: calc(100% - 32px)">
+            <h4>@Title</h4>
+            @* <RadzenLegend Position="LegendPosition.Bottom" /> *@
+            <RadzenDonutSeries Data="@data" CategoryProperty="Quarter" ValueProperty="Revenue" Title="" TotalAngle="360" StartAngle="360">
+                <TooltipTemplate Context="data">
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-weight:bold; font-size:14px">
+                            @($"{data.Quarter}")
+                        </span>
+                        <span style="font-weight:bold; font-size:14px;">
+                            @($"{data.Revenue}")
+                        </span>
+                    </div>
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </ChildContent>
+                <TitleTemplate>
+                    <div style="height:100%; display:flex; align-items:center;justify-content:center">
+                        <h2 style="margin:0">@total</h2>
+                    </div>
+                </TitleTemplate>
+            </RadzenDonutSeries>
+        </RadzenChart>
+    </RadzenColumn>
+</RadzenCard>
+
+
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public T Data { get; set; }
+    [Parameter] public List<string> PropertyName { get; set; }
+
+    bool showDataLabels = false;
+    double total = 0;
+    class DataItem
+    {
+        public string Quarter { get; set; }
+        public double Revenue { get; set; }
+    }
+
+    DataItem[] data;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Data != null){
+            data = new DataItem[] {
+                new DataItem
+                {
+                Quarter = "미처리",
+                Revenue = Convert.ToDouble(Data.GetType().GetProperty(PropertyName[1]).GetValue(Data)),
+                },
+                new DataItem
+                {
+                Quarter = "처리중",
+                Revenue = Convert.ToDouble(Data.GetType().GetProperty(PropertyName[2]).GetValue(Data)),
+                },
+                new DataItem
+                {
+                Quarter = "처리완료",
+                Revenue = Convert.ToDouble(Data.GetType().GetProperty(PropertyName[3]).GetValue(Data)),
+                },
+            };
+            total = Convert.ToDouble(Data.GetType().GetProperty(PropertyName[0]).GetValue(Data));
+        }
+
+        StateHasChanged();
+
+    }
+}

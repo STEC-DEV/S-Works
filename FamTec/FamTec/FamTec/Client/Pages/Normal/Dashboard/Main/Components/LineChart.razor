@@ -1,0 +1,46 @@
+﻿@typeparam T
+@using System.Globalization
+
+
+<RadzenCard Style="grid-column:span 6">
+    <RadzenColumn Style="height:100%;">
+        <h4>@Title</h4>
+        <RadzenChart Style="height: calc(100% - 32px)">
+            <RadzenChartTooltipOptions Shared="@sharedTooltip" />
+            <RadzenValueAxis FormatString="{0:0.0}" />
+            <RadzenLegend Position="LegendPosition.Right"/>
+            @foreach (KeyValuePair<string, string> i in PropertyTrans)
+            {
+                <RadzenLineSeries Smooth="@smooth" Data="@Data" CategoryProperty="Date" Title="@i.Value" ValueProperty="@i.Key">
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Circle" />
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenLineSeries>
+            }
+         @*    @foreach (string i in PropertyName)
+            {
+                <RadzenLineSeries Smooth="@smooth" Data="@Data" CategoryProperty="Date" Title="@i" ValueProperty="@i.">
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Circle" />
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenLineSeries>
+            } *@
+
+
+            <RadzenCategoryAxis Padding="20" />
+        </RadzenChart>
+    </RadzenColumn>
+</RadzenCard>
+
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public List<T> Data { get; set; }
+    [Parameter] public List<string> PropertyName { get; set; }
+    [Parameter] public Dictionary<string, string> PropertyTrans { get; set; }
+
+
+    bool smooth = true;
+    bool sharedTooltip = true;
+    bool showDataLabels = false;
+    bool showMarkers = true;
+
+}

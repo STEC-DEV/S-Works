@@ -193,7 +193,7 @@ namespace FamTec.Client.Shared.Provider
             return false; // 권한이 없거나 파싱할 수 없는 경우 0 반환
         }
 
-        //token UserPerms 내부 권한 확인
+        //token PlacePerms 내부 권한 확인
         public async Task<bool> GetPlacePermission(string permName)
         {
             //Console.WriteLine(permName);

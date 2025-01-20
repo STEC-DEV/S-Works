@@ -1,0 +1,32 @@
+﻿@typeparam T
+ @* Style="grid-column:span 6; min-height: 300px; height100%;" *@
+<RadzenCard Style="grid-column:span 6; min-height: 300px; height100%;">
+    <RadzenRow Style="height: 100%">
+        <RadzenColumn Style="height: 100%">
+            <h4>@Title</h4>
+            <RadzenChart Style="height: calc(100% - 32px)">
+                <RadzenLegend Position="LegendPosition.Bottom" />
+                @foreach (KeyValuePair<string,string> i in PropertyTrans)
+                {
+                    <RadzenColumnSeries Data="@Data" CategoryProperty="Date" Title="@i.Value" LineType="LineType.Dashed" ValueProperty="@i.Key">
+                        <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                    </RadzenColumnSeries>
+                }
+                <RadzenColumnOptions Radius="3" Width="8" />
+                <RadzenCategoryAxis Padding="20" />
+
+            </RadzenChart>
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenCard>
+
+
+
+@code {
+    [Parameter] public string Title {get;set;}
+    [Parameter] public List<T> Data { get; set; }
+    [Parameter] public List<string> PropertyName { get; set; }
+    [Parameter] public Dictionary<string,string> PropertyTrans { get; set; }
+
+    bool showDataLabels = false;
+}

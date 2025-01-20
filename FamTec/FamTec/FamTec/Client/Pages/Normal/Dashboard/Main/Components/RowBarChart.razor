@@ -1,0 +1,78 @@
+﻿@typeparam T
+@using System.Globalization
+
+<RadzenCard Style="height:100%; grid-column:span 3; min-height:300px;">
+    <RadzenColumn Style="height:100%;">
+        <h4>@Title</h4>
+        @if (chartData != null && chartData.Any())
+        {
+            <RadzenChart style="height:calc(100% - 32px);min-height:268px;  margin-left: 1rem;">
+                <RadzenValueAxis FormatString="{0:0.0}"/>
+                <RadzenLegend Visible="false" />
+                <RadzenBarSeries Data="@chartData"
+                                 CategoryProperty="Quarter"
+                                 ValueProperty="Revenue">
+                    <RadzenSeriesDataLabels Visible="false" />
+                </RadzenBarSeries>
+                <RadzenBarOptions Radius="5" Height="10" />
+            </RadzenChart>
+        }
+    </RadzenColumn>
+</RadzenCard>
+
+
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public T Data { get; set; }
+    [Parameter] public List<string> PropertyName { get; set; }
+
+    bool showDataLabels = false;
+
+    class DataItem
+    {
+        public string Quarter { get; set; }
+        public double Revenue { get; set; }
+    }
+
+    private DataItem[] chartData;
+    private Dictionary<string, string> typeNameMap = new Dictionary<string, string>
+    {
+        {"DefaultType", "미분류"},
+        {"MachineType", "기계"},
+        {"ElecType", "전기"},
+        {"liftType", "승강"},
+        {"FireType", "소방"},
+        {"ConstructType", "건축"},
+        {"NetWorkType", "통신"},
+        {"BeautyType", "미화"},
+        {"SecurityType", "보안"}
+    };
+
+    protected override void OnParametersSet()
+    {
+        try
+        {
+            if (Data != null && PropertyName != null && PropertyName.Any())
+            {
+                chartData = PropertyName
+                    .Where(prop => Data.GetType().GetProperty(prop) != null)
+                    .Select(prop =>
+                    {
+                        var propertyValue = Data.GetType().GetProperty(prop)?.GetValue(Data);
+                        return new DataItem
+                            {
+                                Quarter = typeNameMap.ContainsKey(prop) ? typeNameMap[prop] : prop,
+                                Revenue = propertyValue != null ? Convert.ToDouble(propertyValue) : 0
+                            };
+                    })
+                    .ToArray();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"차트 데이터 변환 중 오류 발생: {ex.Message}");
+            chartData = Array.Empty<DataItem>();
+        }
+    }
+}
