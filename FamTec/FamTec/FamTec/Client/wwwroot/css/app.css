@@ -102,6 +102,13 @@
     애니메이션 끝
 */
 
+/**
+    Radzen Css
+*/
+text.rz-tick-text {
+    font-size: 12px !important; /* 원하는 크기로 변경 */
+}
+
 * {
     font-variant-numeric: tabular-nums;
     margin: 0;

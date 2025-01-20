@@ -1,239 +1,416 @@
 ﻿@page "/dashboard"
+@using System.Globalization
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Dashboard.Main.Components
+@using FamTec.Client.Shared.Provider
+@using FamTec.Shared.Client.DTO.Normal.Dashboard
+@using FamTec.Shared.Server.DTO
+@inherits PermissionComponentBase
 
-<div>
-    <DxChart T="VocChartDate" Data="voc" BarGroupWidth="50">
-        <DxChartBarSeries name="발생"
-            T="VocChartDate"
-            TArgument="string"
-            TValue="int"
-            argumentfield="pasi => pasi.Date.ToString()"
-            valuefield="pasi => pasi.Value"
-            summarymethod="Enumerable.Sum"
-            color="System.Drawing.Color.Gray"
-            filter='pasi => pasi.typeName == "발생"' />
-        <DxChartBarSeries Name="미처리"
-            T="VocChartDate"
-            TArgument="string"
-            TValue="int"
-            ArgumentField="pasi => pasi.Date.ToString()"
-            ValueField="pasi => pasi.Value"
-            SummaryMethod="Enumerable.Sum"
-            Filter='pasi => pasi.typeName == "미처리"' />
-        <DxChartBarSeries Name="처리중"
-            T="VocChartDate"
-            TArgument="string"
-            TValue="int"
-            ArgumentField="pasi => pasi.Date.ToString()"
-            ValueField="pasi => pasi.Value"
-            SummaryMethod="Enumerable.Sum"
-            Filter='pasi => pasi.typeName == "처리완료"' />
-        <DxChartBarSeries Name="처리완료"
-            T="VocChartDate"
-            TArgument="string"
-            TValue="int"
-            ArgumentField="pasi => pasi.Date.ToString()"
-            ValueField="pasi => pasi.Value"
-            SummaryMethod="Enumerable.Sum"
-            Filter='pasi => pasi.typeName == "처리완료"' />
-        <DxChartTooltip Enabled="true"
-        Position="RelativePosition.Outside">
-            <div style="margin: 0.75rem">
-                <div class="fw-bold">@context.Point.Argument</div>
-                <div>Age Group: @context.Point.SeriesName</div>
-                <div>Population: @($"{context.Point.Value:N0}")</div>
-            </div>
-        </DxChartTooltip>
-    </DxChart>
-
+<div class="grid padding">
+    @if(placeVocPerm){
+        
+        <ColumnBarChart Title="민원처리현황(최근 7일)" Data="vocWeekData" PropertyName="vocWeekPropery" PropertyTrans="vocWeekProperyDic" />        
+        <DonutChart Title="민원발생현황" Data="vocCurrentData" PropertyName="vocWeekPropery" />
+        <RowBarChart Title="유형별 민원발생현황" Data="vocByTypeDayData" PropertyName="vocTypeProperty" />
+        <LineChart Title="유형별 민원발생추이(최근 7일)" Data="vocByTypeWeekData" PropertyName="vocTypeProperty" PropertyTrans="vocTypePropertyDic" />
+    }
+    @if(placeMaterialPerm){
+        <ListDonutChart Title="품목별 재고" Data="inventoryAmount" />
+    }
+    @if (placeMachinePerm || placeElecPerm || placeLiftPerm || placeFirePerm ||
+    placeConstructPerm || placeNetworkPerm || placeBeautyPerm || placeSecurityPerm)
+    {
+        <LineChart Title="유지보수건수(최근 7일)" Data="maintenanceWeekData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
+        <StackBarChart Title="유지보수비용추이(1년)" Data="maintenanceYearPriceData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
+    }
 
 </div>
 
+
 @code {
-    public class VocChartDate{
-        public DateTime Date { get; set; }
-        public int Value{ get; set; }
-        public string typeName { get; set; }
-    }
+    //민원처리현황 -바
+    List<VocWeekStatusCountDTO> vocWeekData;
+    //민원발생현황 -도넛
+    VocDaysStatusCountDTO vocCurrentData;
+    //유형별 민원발생추이
+    List<VocWeekCountDTO> vocByTypeWeekData;
+    //유형별 민원발생현황
+    VocDaysCountDTO vocByTypeDayData;
 
-    List<VocChartDate> voc = new List<VocChartDate>() {
-       // 7일 전
-    new VocChartDate
-    {
-        Date = DateTime.Now.AddDays(-6),
-        Value = 35,
-        typeName = "발생"
-    },
-    new VocChartDate
-    {
-        Date = DateTime.Now.AddDays(-6),
-        Value = 42,
-        typeName = "미처리"
-    },
-    // 6일 전
-    new VocChartDate
-    {
-        Date = DateTime.Now.AddDays(-5),
-        Value = 28,
-        typeName = "처리중"
-    },
-    new VocChartDate
-    {
-        Date = DateTime.Now.AddDays(-5),
-        Value = 55,
-        typeName = "미처리"
-    },
-    // 5일 전
-    new VocChartDate
-    {
-        Date = DateTime.Now.AddDays(-4),
-        Value = 63,
-        typeName = "처리완료"
-    },
-    new VocChartDate
-    {
-        Date = DateTime.Now.AddDays(-4),
-        Value = 47,
-        typeName = "발생"
-    },
-    // 4일 전
-    new VocChartDate
-    {
-        Date = DateTime.Now.AddDays(-3),
-        Value = 51,
-        typeName = "처리중"
-    },
-    new VocChartDate
-    {
-        Date = DateTime.Now.AddDays(-3),
-        Value = 38,
-        typeName = "미처리"
-    },
-    // 3일 전
-    new VocChartDate
-    {
-        Date = DateTime.Now.AddDays(-2),
-        Value = 72,
-        typeName = "처리완료"
-    },
-    new VocChartDate
-    {
-        Date = DateTime.Now.AddDays(-2),
-        Value = 45,
-        typeName = "발생"
-    },
-    // 2일 전
-    new VocChartDate
-    {
-        Date = DateTime.Now.AddDays(-1),
-        Value = 59,
-        typeName = "처리중"
-    },
-    new VocChartDate
-    {
-        Date = DateTime.Now.AddDays(-1),
-        Value = 44,
-        typeName = "미처리"
-    },
-    // 오늘
-    new VocChartDate
-    {
-        Date = DateTime.Now,
-        Value = 67,
-        typeName = "발생"
-    },
-    new VocChartDate
-    {
-        Date = DateTime.Now,
-        Value = 53,
-        typeName = "미처리"
-    }
 
+    //품목별 재고
+    List<InventoryAmountDTO> inventoryAmount;
+
+    //유지보수건수
+    List<MaintenanceWeekCountDTO> maintenanceWeekData;
+    //유지보수비용(1년)
+    List<MaintenanceYearPriceDTO> maintenanceYearPriceData;
+
+    List<string> vocWeekPropery = new List<string>{
+        "Total",
+        "UnProcessed",
+        "Processing",
+        "Completed"
     };
-
-    public class VocWeekStatusCountDTO
+    Dictionary<string, string> vocWeekProperyDic = new Dictionary<string, string>()
     {
-        /// <summary>
-        /// 날짜 구분
-        /// </summary>
-        public DateTime Date { get; set; }
+        {"Total","전체"},
+        {"UnProcessed","미처리"},
+        { "Processing","처리중"},
+        {"Completed","처리완료"},
+    };
+    List<string> vocTypeProperty = new List<string>{
+        "DefaultType",
+        "MachineType",
+        "ElecType",
+        "liftType",
+        "FireType",
+        "ConstructType",
+        "NetWorkType",
+        "BeautyType",
+        "SecurityType",
+    };
+    Dictionary<string, string> vocTypePropertyDic = new Dictionary<string, string>()
+    {
+        {"DefaultType","미분류"},
+        {"MachineType","기계"},
+        { "ElecType","전기"},
+        {"liftType","승강"},
+        {"FireType","소방"},
+        {"ConstructType","건축"},
+        {"NetWorkType","통신"},
+        {"BeautyType","미화"},
+        {"SecurityType","보안"},
+    };
+    List<string> maintenaceTypeProperty = new List<string>{
+        "MachineType",
+        "ElecType",
+        "liftType",
+        "FireType",
+        "ConstructType",
+        "NetWorkType",
+        "BeautyType",
+        "SecurityType",
+    };
+    Dictionary<string, string> maintenaceTypePropertyDic = new Dictionary<string, string>();
 
-        /// <summary>
-        /// 미처리
-        /// </summary>
-        public int UnProcessed { get; set; }
 
-        /// <summary>
-        /// 처리중
-        /// </summary>
+    bool showDataLabels = false;
 
-        public int Processing { get; set; }
+    bool placeVocPerm = false;
+    bool placeMaterialPerm = false;
+    bool placeMachinePerm = false;
+    bool placeElecPerm = false;
+    bool placeLiftPerm = false;
+    bool placeFirePerm = false;
+    bool placeConstructPerm = false;
+    bool placeNetworkPerm = false;
+    bool placeBeautyPerm = false;
+    bool placeSecurityPerm = false;
 
-        /// <summary>
-        /// 처리완료
-        /// </summary>
-        public int Completed { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        placeVocPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Voc");
+        placeMaterialPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Material");
+        placeMachinePerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Machine");
+        placeElecPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Elec");
+        placeLiftPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Lift");
+        placeFirePerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Fire");
+        placeConstructPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Construct");
+        placeNetworkPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Network");
+        placeBeautyPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Beauty");
+        placeSecurityPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Security");
+
+        await OnPropertyFacility();
+        // await OnLoadVocWeekData();
+        // await OnLoadCurrentVoc();
+        OnMockupVocDay();
+        OnMockupVocWeek();
+        await OnLoadVocByType();
+        await OnLoadVocByTypeDay();
+        await OnLoadInventorybyMaterial();
+        await OnLoadMaintenaceCountWeek();
+        await OnLoadMaintenaceYaerPrice();
+
+
+    }
+
+    //권한에 따라 property 설정(설비)
+    private async Task OnPropertyFacility(){
+        // 권한에 따라 동적으로 항목을 추가할 Dictionary
+
+        // 권한이 true일 경우 Dictionary에 Key/Value를 추가
+        if (placeMachinePerm)
+            maintenaceTypePropertyDic.Add("MachineType", "기계");
+
+        if (placeElecPerm)
+            maintenaceTypePropertyDic.Add("ElecType", "전기");
+
+        if (placeLiftPerm)
+            maintenaceTypePropertyDic.Add("liftType", "승강");
+
+        if (placeFirePerm)
+            maintenaceTypePropertyDic.Add("FireType", "소방");
+
+        if (placeConstructPerm)
+            maintenaceTypePropertyDic.Add("ConstructType", "건축");
+
+        if (placeNetworkPerm)
+            maintenaceTypePropertyDic.Add("NetWorkType", "통신");
+
+        if (placeBeautyPerm)
+            maintenaceTypePropertyDic.Add("BeautyType", "미화");
+
+        if (placeSecurityPerm)
+            maintenaceTypePropertyDic.Add("SecurityType", "보안");
     }
 
 
-    List<VocWeekStatusCountDTO> vocWeekStatus = new List<VocWeekStatusCountDTO>()
-{
-    new VocWeekStatusCountDTO
-    {
-        Date = DateTime.Now.AddDays(-6),
-        UnProcessed = 15,
-        Processing = 8,
-        Completed = 12
-    },
-    new VocWeekStatusCountDTO
-    {
-        Date = DateTime.Now.AddDays(-5),
-        UnProcessed = 18,
-        Processing = 10,
-        Completed = 9
-    },
-    new VocWeekStatusCountDTO
-    {
-        Date = DateTime.Now.AddDays(-4),
-        UnProcessed = 12,
-        Processing = 15,
-        Completed = 14
-    },
-    new VocWeekStatusCountDTO
-    {
-        Date = DateTime.Now.AddDays(-3),
-        UnProcessed = 20,
-        Processing = 12,
-        Completed = 10
-    },
-    new VocWeekStatusCountDTO
-    {
-        Date = DateTime.Now.AddDays(-2),
-        UnProcessed = 16,
-        Processing = 14,
-        Completed = 15
-    },
-    new VocWeekStatusCountDTO
-    {
-        Date = DateTime.Now.AddDays(-1),
-        UnProcessed = 14,
-        Processing = 18,
-        Completed = 13
-    },
-    new VocWeekStatusCountDTO
-    {
-        Date = DateTime.Now,
-        UnProcessed = 22,
-        Processing = 11,
-        Completed = 8
-    }
-};
+    //민원처리현황 데이터 조회
+    private async Task OnLoadVocWeekData(){
+        try{
+            ResponseList<VocWeekStatusCountDTO> resGet = await apiManager.GetListAsync<VocWeekStatusCountDTO>("Voc/sign/v2/GetVocWeeksStatusCount");
+            if(resGet.code != 200){
+                await JS.InvokeVoidAsync("alert", "민원 1주일 데이터 조회 실패");
+                return;
+            }
+            if(resGet.data == null) {
+                vocWeekData = new List<VocWeekStatusCountDTO>();
+                return;
+            }
+            vocWeekData = resGet.data;
 
 
-
-    protected override Task OnInitializedAsync()
-    {
-     
-        return base.OnInitializedAsync();
+        }catch(Exception ex){
+            Console.WriteLine("민원처리현황 : "+ex);
+        }
     }
 
+    //민원발생현황 데이터
+    private async Task OnLoadCurrentVoc(){
+        try{
+            ResponseUnit<VocDaysStatusCountDTO> resGet = await apiManager.GetUnitAsync<VocDaysStatusCountDTO>("Voc/sign/v2/GetVocDaysStatusCount");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "민원발생현황 조회 실패");
+                return;
+            }
+            if (resGet.data == null)
+            {
+                vocCurrentData = new VocDaysStatusCountDTO();
+                return;
+            }
+            vocCurrentData = resGet.data;
+        }catch(Exception ex){
+            Console.WriteLine("민원발생현황 : " + ex);
+        }
+    }
+
+    //유형별 민원발생현황(최근7일)
+    private async Task OnLoadVocByType(){
+        try
+        {
+            ResponseList<VocWeekCountDTO> resGet = await apiManager.GetListAsync<VocWeekCountDTO>("Voc/sign/v2/GetVocWeekCount");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "민원발생현황 조회 실패");
+                return;
+            }
+            if (resGet.data == null)
+            {
+                vocByTypeWeekData = new List<VocWeekCountDTO>();
+                return;
+            }
+            vocByTypeWeekData = resGet.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("유형별 민원발생현황(7) : " + ex);
+        }
+    }
+
+    //유형별 민원발생현황
+    private async Task OnLoadVocByTypeDay()
+    {
+        try
+        {
+            ResponseUnit<VocDaysCountDTO> resGet = await apiManager.GetUnitAsync<VocDaysCountDTO>("Voc/sign/v2/GetVocDaysCount");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "민원발생현황 조회 실패");
+                return;
+            }
+            if (resGet.data == null)
+            {
+                vocByTypeDayData = new VocDaysCountDTO();
+                return;
+            }
+            vocByTypeDayData = resGet.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("유형별 민원발생현황 : " + ex);
+        }
+    }
+
+
+    //==============================================
+    // 자재
+
+    //품목별 재고
+    private async Task OnLoadInventorybyMaterial(){
+        try
+        {
+            ResponseList<InventoryAmountDTO> resGet = await apiManager.GetListAsync<InventoryAmountDTO>("Store/sign/v2/GetInventoryAmount");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "품목별 재고 조회 실패");
+                return;
+            }
+            if (resGet.data == null)
+            {
+                inventoryAmount = new List<InventoryAmountDTO>();
+                return;
+            }
+            inventoryAmount = resGet.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("품목별 재고 실패: " + ex);
+        }
+    }
+
+    //================================================
+    //유지보수
+    
+    //유지보수 건수
+    private async Task OnLoadMaintenaceCountWeek()
+    {
+        try
+        {
+            ResponseList<MaintenanceWeekCountDTO> resGet = await apiManager.GetListAsync<MaintenanceWeekCountDTO>("Maintenance/sign/v2/GetMaintenanceCount");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "유지보수건수 조회 실패");
+                return;
+            }
+            if (resGet.data == null)
+            {
+                maintenanceWeekData = new List<MaintenanceWeekCountDTO>();
+                return;
+            }
+            maintenanceWeekData = resGet.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("유지보수건수 조회 실패: " + ex);
+        }
+    }
+    //유지보수 비용 (1년)
+    private async Task OnLoadMaintenaceYaerPrice()
+    {
+        try
+        {
+            ResponseList<MaintenanceYearPriceDTO> resGet = await apiManager.GetListAsync<MaintenanceYearPriceDTO>("Maintenance/sign/v2/GetMaintenanceYearPrice");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "유지보수비용추이 조회 실패");
+                return;
+            }
+            if (resGet.data == null)
+            {
+                maintenanceYearPriceData = new List<MaintenanceYearPriceDTO>();
+                return;
+            }
+            maintenanceYearPriceData = resGet.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("유지보수비용추이 조회 실패: " + ex);
+        }
+    }
+
+
+
+    private void OnMockupVocDay(){
+        vocCurrentData = new VocDaysStatusCountDTO
+            {
+                Total = 16,
+                UnProcessed = 5,
+                Processing = 3,
+                Completed = 8,
+            };
+    }
+
+    private void OnMockupVocWeek()
+    {
+        vocWeekData = new List<VocWeekStatusCountDTO>
+   {
+       new VocWeekStatusCountDTO
+       {
+           Date = new DateTime(2025, 1, 7).ToString("MM.dd"),
+           Total = 16,
+           UnProcessed = 5,
+           Processing = 3,
+           Completed = 8,
+       },
+       new VocWeekStatusCountDTO
+       {
+           Date = new DateTime(2025, 1, 8).ToString("MM.dd"),
+           Total = 23,
+           UnProcessed = 7,
+           Processing = 4,
+           Completed = 12,
+       },
+       new VocWeekStatusCountDTO
+       {
+           Date = new DateTime(2025, 1, 9).ToString("MM.dd"),
+           Total = 25,
+           UnProcessed = 4,
+           Processing = 6,
+           Completed = 15,
+       },
+       new VocWeekStatusCountDTO
+       {
+           Date = new DateTime(2025, 1, 10).ToString("MM.dd"),
+           Total = 23,
+           UnProcessed = 8,
+           Processing = 5,
+           Completed = 10,
+       },
+       new VocWeekStatusCountDTO
+       {
+           Date = new DateTime(2025, 1, 11).ToString("MM.dd"),
+           Total = 27,
+           UnProcessed = 6,
+           Processing = 8,
+           Completed = 13,
+       },
+       new VocWeekStatusCountDTO
+       {
+           Date = new DateTime(2025, 1, 12).ToString("MM.dd"),
+           UnProcessed = 3,
+           Processing = 7,
+           Completed = 18,
+           Total = 28
+       },
+       new VocWeekStatusCountDTO
+       {
+           Date = new DateTime(2025, 1, 13).ToString("MM.dd"),
+           Total = 29,
+           UnProcessed = 5,
+           Processing = 4,
+           Completed = 20,
+       }
+   };
+    }
 }
+
+
+
+

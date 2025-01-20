@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using FamTec.Client.Shared.Provider;
 using DevExpress.Blazor;
+using MudBlazor.Services;
+using Radzen;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -44,7 +46,16 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
 builder.Services.AddScoped<PermissionService>();
+//devexpress
 builder.Services.AddDevExpressBlazor(configure => configure.BootstrapVersion = BootstrapVersion.v5);
+//mudblazor
+builder.Services.AddMudServices();
+//RadzenBlazor
+builder.Services.AddRadzenComponents();
+builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<TooltipService>();
+builder.Services.AddScoped<ContextMenuService>();
 
 
 

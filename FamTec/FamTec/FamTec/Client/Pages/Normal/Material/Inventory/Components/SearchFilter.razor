@@ -71,9 +71,16 @@
     protected override async Task OnInitializedAsync()
     {
         await OnLoadMaterial();
-        _selectedMaterialList = _defaultselectedMaterialList;
-        UpdateTitles();
-        await OnSelect();
+        // _selectedMaterialList = _defaultselectedMaterialList;
+        if (_selectedMaterialList.Count == 0)
+        {
+            SelectedMaterialList = _defaultselectedMaterialList;
+            UpdateTitles();
+            await OnSelect();
+        }
+        // SelectedMaterialList = _defaultselectedMaterialList;
+        // UpdateTitles();
+        // await OnSelect();
     }
 
     //전제 자제 조회
@@ -112,10 +119,13 @@
                 await JS.InvokeVoidAsync("alert", "조회 품목이 존재하지 않습니다.");
                 return;
             }
-            foreach (var i in SelectedMaterialList)
-            {
-                _selectMaterial.Add(i.Id);
-            }
+            // foreach (var i in SelectedMaterialList)
+            // {
+            //     Console.WriteLine(i.Name);
+            //     _selectMaterial.Add(i.Id);
+            // }
+            _selectMaterial = SelectedMaterialList.Select(i => i.Id).ToList();
+
             string materialIdQueryString = string.Join("&materialid=", _selectMaterial);
 
 
