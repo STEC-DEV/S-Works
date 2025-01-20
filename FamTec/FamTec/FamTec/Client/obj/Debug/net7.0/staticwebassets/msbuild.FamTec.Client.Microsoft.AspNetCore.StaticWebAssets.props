@@ -588,13 +588,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-<<<<<<< HEAD
-      <Fingerprint>ng80fs4asw</Fingerprint>
-      <Integrity>10kBvtjhUed7Fjn6j1klDFE6FGBJEnLYHhLh4FzdW1M=</Integrity>
-=======
-      <Fingerprint>skyh7wptrh</Fingerprint>
-      <Integrity>TICJnn0pYu4d9lprGaMHbehinAw0gXd8Xt6pVYoKOiQ=</Integrity>
->>>>>>> origin/Front
+      <Fingerprint>ibjhau1drk</Fingerprint>
+      <Integrity>8rFAWl7JxlPi39SNW/e39+rB84iIzAD4bKPowqATnqI=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</OriginalItemSpec>
@@ -791,8 +786,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>hjj0b2llu1</Fingerprint>
-      <Integrity>7SX5hcTLIHM2OQsevz49Gm+Dq3fWNJIGraYuvaWA+QQ=</Integrity>
+      <Fingerprint>tlyt07seuc</Fingerprint>
+      <Integrity>cRDLjrec378mzCcC1cFHBN/Mp21HYGEpWja3jv8sDpk=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\viewerOutsideClickListener.js'))</OriginalItemSpec>

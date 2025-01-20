@@ -66,6 +66,8 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Micr
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Microsoft.Extensions.Configuration.Binder.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Microsoft.Extensions.DependencyModel.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Microsoft.Extensions.Features.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Microsoft.Extensions.Localization.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Microsoft.Extensions.Localization.Abstractions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Microsoft.Identity.Client.dll
@@ -82,10 +84,12 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Micr
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Microsoft.SqlServer.Server.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Mono.TextTemplating.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\MudBlazor.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\MySqlConnector.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Newtonsoft.Json.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Pomelo.EntityFrameworkCore.MySql.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\QRCoder.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Radzen.Blazor.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\SixLabors.Fonts.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\SkiaSharp.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
@@ -96,6 +100,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Syst
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\System.Drawing.Common.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\System.IO.Packaging.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\System.Linq.Dynamic.Core.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\System.Memory.Data.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\System.Reactive.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\System.Runtime.Caching.dll

@@ -1,6 +1,0 @@
-[2025-01-13 오후 4:59:36]	Microsoft.IdentityModel.Tokens.SecurityTokenMalformedException: IDX12709: CanReadToken() returned false. JWT is not well formed.
-The token needs to be in JWS or JWE Compact Serialization Format. (JWS): 'EncodedHeader.EncodedPayload.EncodedSignature'. (JWE): 'EncodedProtectedHeader.EncodedEncryptedKey.EncodedInitializationVector.EncodedCiphertext.EncodedAuthenticationTag'.
-   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ReadJwtToken(String token)
-   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
-   at FamTec.Server.Middleware.UserMiddleware.InvokeAsync(HttpContext context) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Middleware\UserMiddleware.cs:line 48
-   at FamTec.Server.Middleware.DuplicateRequestMiddleware.InvokeAsync(HttpContext context) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Middleware\DuplicateRequestMiddleware.cs:line 72

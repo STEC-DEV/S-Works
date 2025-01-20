@@ -9,7 +9,7 @@
 
 <div class="grid padding">
     @if(placeVocPerm){
-        
+
         <ColumnBarChart Title="민원처리현황(최근 7일)" Data="vocWeekData" PropertyName="vocWeekPropery" PropertyTrans="vocWeekProperyDic" />        
         <DonutChart Title="민원발생현황" Data="vocCurrentData" PropertyName="vocWeekPropery" />
         <RowBarChart Title="유형별 민원발생현황" Data="vocByTypeDayData" PropertyName="vocTypeProperty" />
@@ -136,14 +136,69 @@
         await OnLoadInventorybyMaterial();
         await OnLoadMaintenaceCountWeek();
         await OnLoadMaintenaceYaerPrice();
+        /**/
 
+        /* 병렬작업 [선택]
+        await base.OnInitializedAsync();
 
+        var permissionTasks = new[]
+        {
+            (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Voc"),
+            (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Material"),
+            (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Machine"),
+            (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Elec"),
+            (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Lift"),
+            (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Fire"),
+            (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Construct"),
+            (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Network"),
+            (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Beauty"),
+            (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Security")
+        };
+
+        OnMockupVocDay();
+        OnMockupVocWeek();
+
+        var remainingTasks = permissionTasks.ToList();
+        while (remainingTasks.Any())
+        {
+            var completedTask = await Task.WhenAny(remainingTasks);
+            remainingTasks.Remove(completedTask);
+
+            var result = await completedTask;
+            if (completedTask == permissionTasks[0]) placeVocPerm = result;
+            else if (completedTask == permissionTasks[1]) placeMaterialPerm = result;
+            else if (completedTask == permissionTasks[2]) placeMachinePerm = result;
+            else if (completedTask == permissionTasks[3]) placeElecPerm = result;
+            else if (completedTask == permissionTasks[4]) placeLiftPerm = result;
+            else if (completedTask == permissionTasks[5]) placeFirePerm = result;
+            else if (completedTask == permissionTasks[6]) placeConstructPerm = result;
+            else if (completedTask == permissionTasks[7]) placeNetworkPerm = result;
+            else if (completedTask == permissionTasks[8]) placeBeautyPerm = result;
+            else if (completedTask == permissionTasks[9]) placeSecurityPerm = result;
+        }
+
+        var otherTasks = new[]
+        {
+            OnPropertyFacility(),
+            OnLoadVocByType(),
+            OnLoadVocByTypeDay(),
+            OnLoadInventorybyMaterial(),
+            OnLoadMaintenaceCountWeek(),
+            OnLoadMaintenaceYaerPrice()
+        };
+
+        foreach (var task in otherTasks)
+        {
+            await task;
+            StateHasChanged();
+        }
+        */
     }
 
     //권한에 따라 property 설정(설비)
-    private async Task OnPropertyFacility(){
+    private async Task OnPropertyFacility()
+    {
         // 권한에 따라 동적으로 항목을 추가할 Dictionary
-
         // 권한이 true일 경우 Dictionary에 Key/Value를 추가
         if (placeMachinePerm)
             maintenaceTypePropertyDic.Add("MachineType", "기계");

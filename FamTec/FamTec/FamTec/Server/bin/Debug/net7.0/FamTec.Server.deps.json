@@ -111,6 +111,7 @@
           }
         }
       },
+      "DartSassBuilder/1.0.0": {},
       "DevExpress.Blazor/24.1.7": {
         "dependencies": {
           "DevExpress.Blazor.Themes": "24.1.7",
@@ -801,6 +802,28 @@
           "Microsoft.Extensions.Logging.Abstractions": "7.0.1"
         }
       },
+      "Microsoft.Extensions.Localization/7.0.20": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
+          "Microsoft.Extensions.Localization.Abstractions": "7.0.20",
+          "Microsoft.Extensions.Logging.Abstractions": "7.0.1",
+          "Microsoft.Extensions.Options": "7.0.1"
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.Extensions.Localization.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.2024.26907"
+          }
+        }
+      },
+      "Microsoft.Extensions.Localization.Abstractions/7.0.20": {
+        "runtime": {
+          "lib/net7.0/Microsoft.Extensions.Localization.Abstractions.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.2024.26907"
+          }
+        }
+      },
       "Microsoft.Extensions.Logging/7.0.0": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "7.0.0",
@@ -1028,6 +1051,19 @@
           }
         }
       },
+      "MudBlazor/7.15.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components": "7.0.20",
+          "Microsoft.AspNetCore.Components.Web": "7.0.20",
+          "Microsoft.Extensions.Localization": "7.0.20"
+        },
+        "runtime": {
+          "lib/net7.0/MudBlazor.dll": {
+            "assemblyVersion": "7.15.0.0",
+            "fileVersion": "7.15.0.0"
+          }
+        }
+      },
       "MySqlConnector/2.2.5": {
         "runtime": {
           "lib/net7.0/MySqlConnector.dll": {
@@ -1109,6 +1145,20 @@
           "lib/net6.0/QRCoder.dll": {
             "assemblyVersion": "1.6.0.0",
             "fileVersion": "1.6.0.0"
+          }
+        }
+      },
+      "Radzen.Blazor/5.7.4": {
+        "dependencies": {
+          "DartSassBuilder": "1.0.0",
+          "Microsoft.AspNetCore.Components": "7.0.20",
+          "Microsoft.AspNetCore.Components.Web": "7.0.20",
+          "System.Linq.Dynamic.Core": "1.3.7"
+        },
+        "runtime": {
+          "lib/net7.0/Radzen.Blazor.dll": {
+            "assemblyVersion": "5.7.4.0",
+            "fileVersion": "5.7.4.0"
           }
         }
       },
@@ -1498,6 +1548,14 @@
           "System.Resources.ResourceManager": "4.3.0",
           "System.Runtime": "4.3.1",
           "System.Runtime.Extensions": "4.3.0"
+        }
+      },
+      "System.Linq.Dynamic.Core/1.3.7": {
+        "runtime": {
+          "lib/net7.0/System.Linq.Dynamic.Core.dll": {
+            "assemblyVersion": "1.3.7.0",
+            "fileVersion": "1.3.7.0"
+          }
         }
       },
       "System.Linq.Expressions/4.3.0": {
@@ -2136,9 +2194,11 @@
           "Microsoft.EntityFrameworkCore": "7.0.18",
           "Microsoft.Extensions.DependencyModel": "7.0.0",
           "Microsoft.Extensions.Logging.Console": "7.0.0",
+          "MudBlazor": "7.15.0",
           "Newtonsoft.Json": "13.0.3",
           "Pomelo.EntityFrameworkCore.MySql": "7.0.0",
           "QRCoder": "1.6.0",
+          "Radzen.Blazor": "5.7.4",
           "System.Text.Json": "7.0.0",
           "Tewr.Blazor.FileReader": "3.3.2.23201"
         },
@@ -2215,6 +2275,13 @@
       "sha512": "sha512-YKRwjVfrG7GYOovlGyQoMvr1/IJdn+7QzNXJxyMh0YfFF5yvDmTYaJOVYWsckreNjGsGSEtrMTpnzxTUq/tZQw==",
       "path": "dapper/2.1.35",
       "hashPath": "dapper.2.1.35.nupkg.sha512"
+    },
+    "DartSassBuilder/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bcM9YuWmNUuneEIp5rSFeHNQaZFqC0zKdK8JQvCFGzjX3pLyyQ0ReHPbawqOkTtfubQz4JPkzFzgJAo9Aixiew==",
+      "path": "dartsassbuilder/1.0.0",
+      "hashPath": "dartsassbuilder.1.0.0.nupkg.sha512"
     },
     "DevExpress.Blazor/24.1.7": {
       "type": "package",
@@ -2713,6 +2780,20 @@
       "path": "microsoft.extensions.hosting.abstractions/2.1.1",
       "hashPath": "microsoft.extensions.hosting.abstractions.2.1.1.nupkg.sha512"
     },
+    "Microsoft.Extensions.Localization/7.0.20": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-i9sZZUXKeSj0BG9PDpxcrqpY4Zm8Fpk6Hed6nLltVeOGfluNAON3IXOvsl37mrTydKmBLFcLucrRF3J3GIMU2A==",
+      "path": "microsoft.extensions.localization/7.0.20",
+      "hashPath": "microsoft.extensions.localization.7.0.20.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Localization.Abstractions/7.0.20": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kXxF0jflcQJnwmWIjB48PEkerG2QH1WrXEgEUdxtSLgL7IqI+VhbKrE7sUg0iRU5fbm8UyEuPQzvBn45zBQ8rQ==",
+      "path": "microsoft.extensions.localization.abstractions/7.0.20",
+      "hashPath": "microsoft.extensions.localization.abstractions.7.0.20.nupkg.sha512"
+    },
     "Microsoft.Extensions.Logging/7.0.0": {
       "type": "package",
       "serviceable": true,
@@ -2895,6 +2976,13 @@
       "path": "mono.texttemplating/2.2.1",
       "hashPath": "mono.texttemplating.2.2.1.nupkg.sha512"
     },
+    "MudBlazor/7.15.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-b2+hO7ZTGwsGhu9SoowuNe2ETeF1GzExpg/hIYR++rSh+vy4v/QD0iOsrATWv3LdFJXSgk3d1+XIr5srW3jBiA==",
+      "path": "mudblazor/7.15.0",
+      "hashPath": "mudblazor.7.15.0.nupkg.sha512"
+    },
     "MySqlConnector/2.2.5": {
       "type": "package",
       "serviceable": true,
@@ -2929,6 +3017,13 @@
       "sha512": "sha512-XmPA81eo+oRxBuyVdswsSkTGTE1d3thfF11Z1PdD7oB56A6HU4G4AAOdySmGRMb/cljwlFTMWUtosGEnwpS6GA==",
       "path": "qrcoder/1.6.0",
       "hashPath": "qrcoder.1.6.0.nupkg.sha512"
+    },
+    "Radzen.Blazor/5.7.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jKy1zZUp+K0T0YT9eg4kekq9WQNWPezB/CYA9s+VULzphg5zG9Opqa7ARy9bgKBH4GszizrAN+InxPyiGH7grQ==",
+      "path": "radzen.blazor/5.7.4",
+      "hashPath": "radzen.blazor.5.7.4.nupkg.sha512"
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
       "type": "package",
@@ -3286,6 +3381,13 @@
       "sha512": "sha512-5DbqIUpsDp0dFftytzuMmc0oeMdQwjcP/EWxsksIz/w1TcFRkZ3yKKz0PqiYFMmEwPSWw+qNVqD7PJ889JzHbw==",
       "path": "system.linq/4.3.0",
       "hashPath": "system.linq.4.3.0.nupkg.sha512"
+    },
+    "System.Linq.Dynamic.Core/1.3.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7J9oS95JCcyOtnKCr0tYUOMAj67Ee3WKal6li20vEeuQFdD7C4XuAABysp3H5dx+wmHkXuUNoxW3+U+OEsx+JQ==",
+      "path": "system.linq.dynamic.core/1.3.7",
+      "hashPath": "system.linq.dynamic.core.1.3.7.nupkg.sha512"
     },
     "System.Linq.Expressions/4.3.0": {
       "type": "package",
