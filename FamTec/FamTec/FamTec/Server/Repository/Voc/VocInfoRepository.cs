@@ -96,7 +96,7 @@ namespace FamTec.Server.Repository.Voc
                 var model = allDates
                     .Select(date => new VocWeekStatusCountDTO
                     {
-                        Date = date.ToString("yyyy-MM-dd"),
+                        Date = date.ToString("MM.dd"),
                         UnProcessed = groupedVocList.ContainsKey(0)
                             ? groupedVocList[0].Count(v => v.UpdateDt.Date == date)
                             : 0,

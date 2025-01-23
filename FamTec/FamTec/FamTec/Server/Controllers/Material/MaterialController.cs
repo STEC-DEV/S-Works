@@ -34,7 +34,30 @@ namespace FamTec.Server.Controllers.Material
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-// ########################## DashBoard
+        // ########################## DashBoard
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/v2/GetDashBoardMaterialIdx")]
+        public async Task<IActionResult> GetDashBoardMaterialIdx()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                return Ok();
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
 
         /// <summary>
         /// 대쉬보드용 안전재고 TOP 10

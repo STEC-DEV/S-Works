@@ -8,27 +8,35 @@
 @inherits PermissionComponentBase
 
 <div class="grid padding">
-    @if(placeVocPerm){
-
-        <ColumnBarChart Title="민원처리현황(최근 7일)" Data="vocWeekData" PropertyName="vocWeekPropery" PropertyTrans="vocWeekProperyDic" />        
-        <DonutChart Title="민원발생현황" Data="vocCurrentData" PropertyName="vocWeekPropery" />
-        <RowBarChart Title="유형별 민원발생현황" Data="vocByTypeDayData" PropertyName="vocTypeProperty" />
-        <LineChart Title="유형별 민원발생추이(최근 7일)" Data="vocByTypeWeekData" PropertyName="vocTypeProperty" PropertyTrans="vocTypePropertyDic" />
-    }
-    @if(placeMaterialPerm){
-        <ListDonutChart Title="품목별 재고" Data="inventoryAmount" />
-    }
-    @if (placeMachinePerm || placeElecPerm || placeLiftPerm || placeFirePerm ||
-    placeConstructPerm || placeNetworkPerm || placeBeautyPerm || placeSecurityPerm)
+    @if (!isBool)
     {
-        <LineChart Title="유지보수건수(최근 7일)" Data="maintenanceWeekData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
-        <StackBarChart Title="유지보수비용추이(1년)" Data="maintenanceYearPriceData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
+        @if (placeVocPerm)
+        {
+            <ColumnBarChart Title="민원처리현황(최근 7일)" Data="vocWeekData" PropertyName="vocWeekPropery" PropertyTrans="vocWeekProperyDic" />        
+            <DonutChart Title="민원발생현황" Data="vocCurrentData" PropertyName="vocWeekPropery" />
+            <RowBarChart Title="유형별 민원발생현황" Data="vocByTypeDayData" PropertyName="vocTypeProperty" />
+            <LineChart Title="유형별 민원발생추이(최근 7일)" Data="vocByTypeWeekData" PropertyName="vocTypeProperty" PropertyTrans="vocTypePropertyDic" />
+        }
+        @if (placeMaterialPerm)
+        {
+            <ListDonutChart Title="품목별 재고" Data="inventoryAmount" />
+        }
+        @if (placeMachinePerm || placeElecPerm || placeLiftPerm || placeFirePerm ||
+                    placeConstructPerm || placeNetworkPerm || placeBeautyPerm || placeSecurityPerm)
+        {
+            <LineChart Title="유지보수건수(최근 7일)" Data="maintenanceWeekData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
+            <StackBarChart Title="유지보수비용추이(1년)" Data="maintenanceYearPriceData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
+        }
     }
-
+    else{
+        <div>Loading</div>
+    }
 </div>
 
 
 @code {
+    private bool isBool = true;
+
     //민원처리현황 -바
     List<VocWeekStatusCountDTO> vocWeekData;
     //민원발생현황 -도넛
@@ -111,9 +119,10 @@
 
 
 
-
     protected override async Task OnInitializedAsync()
     {
+        isBool = true;
+        /*
         await base.OnInitializedAsync();
         placeVocPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Voc");
         placeMaterialPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Material");
@@ -136,11 +145,9 @@
         await OnLoadInventorybyMaterial();
         await OnLoadMaintenaceCountWeek();
         await OnLoadMaintenaceYaerPrice();
-        /**/
+        */
 
-        /* 병렬작업 [선택]
-        await base.OnInitializedAsync();
-
+       /**/
         var permissionTasks = new[]
         {
             (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Voc"),
@@ -157,14 +164,17 @@
 
         OnMockupVocDay();
         OnMockupVocWeek();
-
         var remainingTasks = permissionTasks.ToList();
         while (remainingTasks.Any())
         {
+            // 가장 먼저 끝나는 Task가 반환될 때까지 기다림 (UI 스레드를 블록하지 않고 양보)
             var completedTask = await Task.WhenAny(remainingTasks);
             remainingTasks.Remove(completedTask);
 
+            // 실제 결과를 또 await 해야 “정상적인 예외 처리” 및 “결과값”을 획득
             var result = await completedTask;
+
+            // 어떤 Task가 끝났는지 식별
             if (completedTask == permissionTasks[0]) placeVocPerm = result;
             else if (completedTask == permissionTasks[1]) placeMaterialPerm = result;
             else if (completedTask == permissionTasks[2]) placeMachinePerm = result;
@@ -175,7 +185,17 @@
             else if (completedTask == permissionTasks[7]) placeNetworkPerm = result;
             else if (completedTask == permissionTasks[8]) placeBeautyPerm = result;
             else if (completedTask == permissionTasks[9]) placeSecurityPerm = result;
+
+            // **여기서 StateHasChanged() 호출** -> 부분 렌더링 트리거
+            StateHasChanged();
+
+            // **UI에게 렌더링할 기회를 조금 더 주고 싶다면** (옵션)
+            await Task.Yield();
+            await Task.Delay(1);
+            // 또는 await Task.Delay(1); 을 넣으면, 긴 루프 내에서 CPU를 잠깐 양보
+
         }
+
 
         var otherTasks = new[]
         {
@@ -192,7 +212,8 @@
             await task;
             StateHasChanged();
         }
-        */
+        
+        isBool = false;
     }
 
     //권한에 따라 property 설정(설비)

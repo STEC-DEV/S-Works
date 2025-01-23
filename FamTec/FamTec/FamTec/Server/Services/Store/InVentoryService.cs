@@ -586,8 +586,72 @@ namespace FamTec.Server.Services.Store
                     return new ResponseList<InventoryAmountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<InventoryAmountDTO>? model = await InventoryInfoRepository.GetInventoryAmountList(Convert.ToInt32(placeid)).ConfigureAwait(false);
+
+               
+
                 if (model is [_, ..])
+                {
+                    // RoomInvenList 처리 로직 추가 - 필요없다 하면 여기를 날려버리면 됨
+                
+                    foreach (var inventory in model)
+                    {
+                        // 0인항목 제외 추가 + 기타 추가
+                        if(inventory.RoomInvenList != null)
+                        {
+                            // (2-2) num == 0인 항목을 제외 (단, 이 작업은 DB 수정이 아니라 최종 응답에서 제외)
+                            var filteredList = inventory.RoomInvenList
+                                .Where(x => x.Num != 0)
+                                .ToList();
+
+                            // (2-3) filteredList가 5개 초과 시 -> 앞 4개 + '기타'
+                            if (filteredList.Count > 4)
+                            {
+                                var trimmedList = filteredList.Take(4).ToList();
+                                var otherSum = filteredList.Skip(4).Sum(x => x.Num);
+
+                                trimmedList.Add(new InventoryRoomDTO
+                                {
+                                    Name = "기타",
+                                    Num = otherSum
+                                });
+
+                                inventory.RoomInvenList = trimmedList;
+                            }
+                            else
+                            {
+                                // 5개 이하이면 그대로
+                                inventory.RoomInvenList = filteredList;
+                            }
+                        }
+
+                        // 기타만 추가
+                         /*
+                        if (inventory.RoomInvenList != null && inventory.RoomInvenList.Count > 4)
+                        {
+                            var originalList = inventory.RoomInvenList;
+
+                            // 앞 4개 항목 유지
+                            var trimmedList = originalList.Take(4).ToList();
+
+                            // 나머지 항목 합산
+                            var otherSum = originalList.Skip(4).Sum(x => x.Num);
+
+                            // "기타" 항목 추가
+                            trimmedList.Add(new InventoryRoomDTO
+                            {
+                                Name = "기타",
+                                Num = otherSum
+                            });
+
+                            // 업데이트된 리스트를 적용
+                            inventory.RoomInvenList = trimmedList;
+                        }
+                         */
+                    }
+                    
+
                     return new ResponseList<InventoryAmountDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                }
                 else
                     return new ResponseList<InventoryAmountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
