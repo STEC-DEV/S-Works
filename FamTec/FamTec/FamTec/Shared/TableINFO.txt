@@ -528,6 +528,9 @@ https://stackoverflow.com/questions/39176018/cannot-update-identity-column-in-en
 Scaffold-DbContext "Server=123.2.156.122,3306;Database=Works;User Id=root;Password=stecdev1234!;" Pomelo.EntityFrameworkCore.MySql -outputDir Model -DataAnnotations
 "DefaultConnection": "Server=123.2.159.98;Port=3306;Database=works;User Id=root;Password=stecdev1234!;Connect Timeout=30;SslMode=None;"
 
+얘임
+Scaffold-DbContext "Server=123.2.159.98,3306;Database=works;User Id=root;Password=stecdev1234!;" Pomelo.EntityFrameworkCore.MySql -outputDir Model -DataAnnotations -force
+
 --appsetting.json
 
 {

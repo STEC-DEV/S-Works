@@ -96,6 +96,12 @@ public partial class MaterialTb
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
     public int PlaceTbId { get; set; }
 
+    /// <summary>
+    /// 대쉬보드 표시여부
+    /// </summary>
+    [Column("DASHBOARDYN")]
+    public bool? Dashboardyn { get; set; }
+
     [InverseProperty("MaterialTb")]
     public virtual ICollection<InventoryTb> InventoryTbs { get; set; } = new List<InventoryTb>();
 

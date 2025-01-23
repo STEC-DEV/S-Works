@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FamTec.Shared.Model;
+﻿using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Server.Databases;
@@ -78,8 +76,6 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<VocTb> VocTbs { get; set; }
 
-    public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -111,7 +107,6 @@ public partial class WorksContext : DbContext
         //        mySqlOption.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
         //    });
     }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -667,6 +662,9 @@ public partial class WorksContext : DbContext
 
             entity.Property(e => e.Code).HasComment("품목코드");
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
+            entity.Property(e => e.Dashboardyn)
+                .HasDefaultValueSql("'0'")
+                .HasComment("대쉬보드 표시여부");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.ManufacturingComp).HasComment("제조사");
             entity.Property(e => e.Name).HasComment("자재명");

@@ -4586,6 +4586,16 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
+    "Method": "GetDashBoardMaterialIdx",
+    "RelativePath": "api/Material/sign/v2/GetDashBoardMaterialIdx",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
     "Method": "GetSafeNumCount",
     "RelativePath": "api/Material/sign/v2/GetSafeNumCount",
     "HttpMethod": "GET",
