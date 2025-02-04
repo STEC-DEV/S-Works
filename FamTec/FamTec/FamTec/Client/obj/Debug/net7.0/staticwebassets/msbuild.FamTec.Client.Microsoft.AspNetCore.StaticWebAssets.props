@@ -786,8 +786,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>hjj0b2llu1</Fingerprint>
-      <Integrity>7SX5hcTLIHM2OQsevz49Gm+Dq3fWNJIGraYuvaWA+QQ=</Integrity>
+      <Fingerprint>tlyt07seuc</Fingerprint>
+      <Integrity>cRDLjrec378mzCcC1cFHBN/Mp21HYGEpWja3jv8sDpk=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\viewerOutsideClickListener.js'))</OriginalItemSpec>

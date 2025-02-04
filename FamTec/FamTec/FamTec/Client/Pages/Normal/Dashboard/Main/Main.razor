@@ -7,31 +7,14 @@
 @using FamTec.Shared.Server.DTO
 @inherits PermissionComponentBase
 
-<<<<<<< HEAD
-<div class="grid padding">
-    @if (!isBool)
-    {
-        @if (placeVocPerm)
-        {
-            <ColumnBarChart Title="민원처리현황(최근 7일)" Data="vocWeekData" PropertyName="vocWeekPropery" PropertyTrans="vocWeekProperyDic" />        
-            <DonutChart Title="민원발생현황" Data="vocCurrentData" PropertyName="vocWeekPropery" />
-            <RowBarChart Title="유형별 민원발생현황" Data="vocByTypeDayData" PropertyName="vocTypeProperty" />
-            <LineChart Title="유형별 민원발생추이(최근 7일)" Data="vocByTypeWeekData" PropertyName="vocTypeProperty" PropertyTrans="vocTypePropertyDic" />
-        }
-        @if (placeMaterialPerm)
-        {
-            <ListDonutChart Title="품목별 재고" Data="inventoryAmount" />
-        }
-        @if (placeMachinePerm || placeElecPerm || placeLiftPerm || placeFirePerm ||
-                    placeConstructPerm || placeNetworkPerm || placeBeautyPerm || placeSecurityPerm)
-=======
-@if (dashboardLoading) 
-{ 
+@if (dashboardLoading)
+{
 
     <Loading />
 
-} 
-else{
+}
+else
+{
     <div class="grid padding">
 
         @if (placeVocPerm)
@@ -51,23 +34,11 @@ else{
             //<LineChart title="유형별 민원발생추이(최근 7일)" Data="vocByTypeWeekData" propertytrans="vocTypePropertyDic" />
         }
         @if (placeMachinePerm || placeElecPerm || placeLiftPerm || placeFirePerm ||
-    placeConstructPerm || placeNetworkPerm || placeBeautyPerm || placeSecurityPerm)
->>>>>>> origin/Front
+       placeConstructPerm || placeNetworkPerm || placeBeautyPerm || placeSecurityPerm)
         {
             <LineChart Title="유지보수건수(최근 7일)" Data="maintenanceWeekData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
             <StackBarChart Title="유지보수비용추이(1년)" Data="maintenanceYearPriceData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
         }
-<<<<<<< HEAD
-    }
-    else{
-        <div>Loading</div>
-    }
-</div>
-
-
-@code {
-    private bool isBool = true;
-=======
 
     </div>
 
@@ -76,7 +47,6 @@ else{
 
 @code {
     private bool dashboardLoading = true;
->>>>>>> origin/Front
 
     //민원처리현황 -바
     List<VocWeekStatusCountDTO> vocWeekData;
@@ -168,42 +138,14 @@ else{
 
 
 
+
     protected override async Task OnInitializedAsync()
     {
-<<<<<<< HEAD
-        isBool = true;
-        /*
-        await base.OnInitializedAsync();
-        placeVocPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Voc");
-        placeMaterialPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Material");
-        placeMachinePerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Machine");
-        placeElecPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Elec");
-        placeLiftPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Lift");
-        placeFirePerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Fire");
-        placeConstructPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Construct");
-        placeNetworkPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Network");
-        placeBeautyPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Beauty");
-        placeSecurityPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Security");
-
-        await OnPropertyFacility();
-        // await OnLoadVocWeekData();
-        // await OnLoadCurrentVoc();
-        OnMockupVocDay();
-        OnMockupVocWeek();
-        await OnLoadVocByType();
-        await OnLoadVocByTypeDay();
-        await OnLoadInventorybyMaterial();
-        await OnLoadMaintenaceCountWeek();
-        await OnLoadMaintenaceYaerPrice();
-        */
-=======
         /**/
 
         /* 병렬작업 [선택]*/
         await base.OnInitializedAsync();
->>>>>>> origin/Front
 
-       /**/
         var permissionTasks = new[]
         {
             (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Voc"),
@@ -227,8 +169,8 @@ else{
         placeMachinePerm = results[2];
         placeElecPerm = results[3];
         placeLiftPerm = results[4];
-        placeFirePerm= results[5];
-        placeConstructPerm= results[6];
+        placeFirePerm = results[5];
+        placeConstructPerm = results[6];
         placeNetworkPerm = results[7];
         placeBeautyPerm = results[8];
         placeSecurityPerm = results[9];
@@ -251,42 +193,6 @@ else{
         // 5-1. 모의 데이터는 즉시 설정
         OnMockupVocDay();
         OnMockupVocWeek();
-<<<<<<< HEAD
-        var remainingTasks = permissionTasks.ToList();
-        while (remainingTasks.Any())
-        {
-            // 가장 먼저 끝나는 Task가 반환될 때까지 기다림 (UI 스레드를 블록하지 않고 양보)
-            var completedTask = await Task.WhenAny(remainingTasks);
-            remainingTasks.Remove(completedTask);
-
-            // 실제 결과를 또 await 해야 “정상적인 예외 처리” 및 “결과값”을 획득
-            var result = await completedTask;
-
-            // 어떤 Task가 끝났는지 식별
-            if (completedTask == permissionTasks[0]) placeVocPerm = result;
-            else if (completedTask == permissionTasks[1]) placeMaterialPerm = result;
-            else if (completedTask == permissionTasks[2]) placeMachinePerm = result;
-            else if (completedTask == permissionTasks[3]) placeElecPerm = result;
-            else if (completedTask == permissionTasks[4]) placeLiftPerm = result;
-            else if (completedTask == permissionTasks[5]) placeFirePerm = result;
-            else if (completedTask == permissionTasks[6]) placeConstructPerm = result;
-            else if (completedTask == permissionTasks[7]) placeNetworkPerm = result;
-            else if (completedTask == permissionTasks[8]) placeBeautyPerm = result;
-            else if (completedTask == permissionTasks[9]) placeSecurityPerm = result;
-
-            // **여기서 StateHasChanged() 호출** -> 부분 렌더링 트리거
-            StateHasChanged();
-
-            // **UI에게 렌더링할 기회를 조금 더 주고 싶다면** (옵션)
-            await Task.Yield();
-            await Task.Delay(1);
-            // 또는 await Task.Delay(1); 을 넣으면, 긴 루프 내에서 CPU를 잠깐 양보
-
-        }
-
-
-        var otherTasks = new[]
-=======
         await GetAllMaterialList();
         if (placeMaterialPerm)
         {
@@ -295,7 +201,6 @@ else{
 
         // 6. 데이터 로딩을 배치로 처리
         while (dataTasks.Any())
->>>>>>> origin/Front
         {
             var batch = dataTasks.Take(3).ToList(); // 한 번에 3개씩 처리
             dataTasks.RemoveRange(0, Math.Min(3, dataTasks.Count));
@@ -303,14 +208,9 @@ else{
             await Task.WhenAll(batch);
             await Task.Delay(10); // UI 업데이트를 위한 짧은 지연
         }
-<<<<<<< HEAD
-        
-        isBool = false;
-=======
 
         dashboardLoading = false;
 
->>>>>>> origin/Front
     }
 
     //권한에 따라 property 설정(설비)
@@ -350,28 +250,36 @@ else{
 
 
     //민원처리현황 데이터 조회
-    private async Task OnLoadVocWeekData(){
-        try{
+    private async Task OnLoadVocWeekData()
+    {
+        try
+        {
             ResponseList<VocWeekStatusCountDTO> resGet = await apiManager.GetListAsync<VocWeekStatusCountDTO>("Voc/sign/v2/GetVocWeeksStatusCount");
-            if(resGet.code != 200){
+            if (resGet.code != 200)
+            {
                 await JS.InvokeVoidAsync("alert", "민원 1주일 데이터 조회 실패");
                 return;
             }
-            if(resGet.data == null) {
+            if (resGet.data == null)
+            {
                 vocWeekData = new List<VocWeekStatusCountDTO>();
                 return;
             }
             vocWeekData = resGet.data;
 
 
-        }catch(Exception ex){
-            Console.WriteLine("민원처리현황 : "+ex);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("민원처리현황 : " + ex);
         }
     }
 
     //민원발생현황 데이터
-    private async Task OnLoadCurrentVoc(){
-        try{
+    private async Task OnLoadCurrentVoc()
+    {
+        try
+        {
             ResponseUnit<VocDaysStatusCountDTO> resGet = await apiManager.GetUnitAsync<VocDaysStatusCountDTO>("Voc/sign/v2/GetVocDaysStatusCount");
             if (resGet.code != 200)
             {
@@ -384,13 +292,16 @@ else{
                 return;
             }
             vocCurrentData = resGet.data;
-        }catch(Exception ex){
+        }
+        catch (Exception ex)
+        {
             Console.WriteLine("민원발생현황 : " + ex);
         }
     }
 
     //유형별 민원발생현황(최근7일)
-    private async Task OnLoadVocByType(){
+    private async Task OnLoadVocByType()
+    {
         try
         {
             ResponseList<VocWeekCountDTO> resGet = await apiManager.GetListAsync<VocWeekCountDTO>("Voc/sign/v2/GetVocWeekCount");
@@ -441,13 +352,15 @@ else{
     // 자재
 
     //품목별 재고
-    private async Task OnLoadInventorybyMaterial(){
+    private async Task OnLoadInventorybyMaterial()
+    {
         try
         {
 
             List<int> selected = new List<int>();
-            if(selectedInventory != null){
-                selected = selectedInventory.Where(m => m.DashBoardYN == true ).Select(m => m.Id).ToList();
+            if (selectedInventory != null)
+            {
+                selected = selectedInventory.Where(m => m.DashBoardYN == true).Select(m => m.Id).ToList();
                 string ids = string.Join("&MaterialIdx=", selected);
 
                 ResponseList<InventoryAmountDTO> resGet = await apiManager.GetListAsync<InventoryAmountDTO>($"Store/sign/v2/GetInventoryAmount?MaterialIdx={ids}");
@@ -463,7 +376,8 @@ else{
                 }
                 inventoryAmount = resGet.data;
             }
-            else{
+            else
+            {
                 inventoryAmount = new List<InventoryAmountDTO>();
             }
 
@@ -502,13 +416,16 @@ else{
     }
 
     //대시보드 품목 변경
-    private async Task PostChangeMaterial(){
-        try{
-            Console.WriteLine("수 :"+selectedInventory.Count());
+    private async Task PostChangeMaterial()
+    {
+        try
+        {
+            Console.WriteLine("수 :" + selectedInventory.Count());
             List<int> selected = new List<int>();
             selected = selectedInventory.Select(m => m.Id).ToList();
             ResponseUnit<bool> resPost = await apiManager.PostAsync<bool>("Material/sign/v2/SetDashBoardMaterial", selected);
-            if(resPost.code != 200){
+            if (resPost.code != 200)
+            {
                 await JS.InvokeVoidAsync("alert", "품목 변경 실패");
                 return;
             }
@@ -516,8 +433,10 @@ else{
             await GetAllMaterialList();
             await OnLoadInventorybyMaterial();
 
-        }catch(Exception ex){
-           
+        }
+        catch (Exception ex)
+        {
+
         }
     }
 
@@ -561,7 +480,7 @@ else{
             if (resGet.data == null)
             {
                 maintenanceYearPriceData = new List<MaintenanceYearPriceDTO>();
-                
+
                 return;
             }
             maintenanceYearPriceData = resGet.data;
@@ -574,7 +493,8 @@ else{
 
 
 
-    private void OnMockupVocDay(){
+    private void OnMockupVocDay()
+    {
         vocCurrentData = new VocDaysStatusCountDTO
             {
                 Total = 16,
@@ -647,7 +567,3 @@ else{
    };
     }
 }
-
-
-
-
