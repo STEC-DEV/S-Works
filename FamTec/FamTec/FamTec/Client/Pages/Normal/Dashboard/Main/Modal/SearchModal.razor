@@ -1,0 +1,128 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+
+@using FamTec.Client.Pages.Normal.Dashboard.Main.Components
+@using FamTec.Client.Pages.Voc.Main.Components
+@using FamTec.Shared.Client.DTO.Normal.Dashboard
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
+
+
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            품목 검색
+        </span>
+    </div>
+    <InputCol 
+    T="string"
+    Placeholder="품목코드, 품목명, 제조사"
+    ValueChanged="@((e)=>OnSearch(e))"
+    />
+    <div class="content yappear">
+        <div class="modal-table">
+            <SearchTable 
+            OnCheck="OnCheck" 
+            ListData="@FilterData" 
+            CheckedItem="@checkItem" />
+        </div>
+    </div>
+
+    <div class="btns">
+        <Button Name="확인" Type="0" OnClick="OnAdd" />
+        <Button Name="취소" Type="1" OnClick="OnClicked" />
+    </div>
+
+</div>
+
+@code {
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public List<ShowMaterialIdxDTO> ListData { get; set; }
+    [Parameter] public List<ShowMaterialIdxDTO> SelectData { get; set; }
+    [Parameter] public EventCallback OnChangeMaterial { get; set; }
+    [Parameter] public EventCallback<List<ShowMaterialIdxDTO>> SelectDataChanged { get; set; }
+
+
+    List<ShowMaterialIdxDTO> FilterData = new List<ShowMaterialIdxDTO>();
+
+    string _searchText ="";
+    List<int> checkItem = new List<int>();
+    private List<ShowMaterialIdxDTO> _selectData = new List<ShowMaterialIdxDTO>();
+
+    //확정전 선택데이터
+    private List<ShowMaterialIdxDTO> _tempSelectData = new List<ShowMaterialIdxDTO>();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ListData != null)
+        {
+            FilterData = ListData;
+            OnAsync();
+            await OnSearch(_searchText);
+        }
+    }
+
+    private void OnAsync()
+    {
+        checkItem = SelectData.Select(s => s.Id).ToList();
+        _tempSelectData = new List<ShowMaterialIdxDTO>(SelectData);
+        // _selectData = SelectData;
+    }
+
+    private void OnCheck(ShowMaterialIdxDTO material)
+    {
+
+        if (checkItem.Contains(material.Id))
+        {
+            // 존재하면 삭제
+            checkItem.Remove(material.Id);
+            _tempSelectData.RemoveAll(m => m.Id == material.Id); // 같은 Id를 가진 항목을 삭제
+        }
+        else
+        {
+            // 존재하지 않으면 추가
+            checkItem.Add(material.Id);
+            _tempSelectData.Add(material);
+        }
+
+
+    }
+
+
+    private async Task OnSearch(string text)
+    {
+        _searchText = text;
+        FilterData = String.IsNullOrEmpty(_searchText)
+                                ? ListData
+                                : ListData.Where(m => (m.MaterialName?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                                        (m.Code?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                                        (m.ManufacturingComp?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
+                                                        ).ToList();
+
+        StateHasChanged();
+    }
+
+    //등록
+    private async Task OnAdd()
+    {
+        if(_tempSelectData.Count < 1)
+        {
+            await JS.InvokeVoidAsync("alert", "1개 이상 선택해주세요.");
+            await OnClose.InvokeAsync();
+            return;
+        }
+
+        // SelectData를 직접 업데이트
+        SelectData = new List<ShowMaterialIdxDTO>(_tempSelectData);
+        await SelectDataChanged.InvokeAsync(SelectData);
+        await OnChangeMaterial.InvokeAsync();
+        await OnClose.InvokeAsync();
+    }
+
+    private async Task OnClicked()
+    {
+        checkItem = SelectData.Select(s => s.Id).ToList();
+        _tempSelectData = new List<ShowMaterialIdxDTO>(SelectData);
+        await OnClose.InvokeAsync();
+    }
+}

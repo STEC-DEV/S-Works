@@ -1,0 +1,177 @@
+﻿@typeparam TColumn
+@typeparam TLine
+@using FamTec.Client.Pages.CommonComponents.IconButton
+@using FamTec.Shared.Client.DTO.Normal.Dashboard
+
+
+<RadzenCard Style="grid-column: 1 / 8;  height: 100%;">
+    <h3>
+        민원처리현황
+    </h3>
+    <div class="item-row">
+        <div class="item-col">
+            <div class="item-title-group">
+                <TotalListIcon Width="20" />
+                <span class="item-title">
+                    전체
+                </span>
+            </div>
+            <span class="item-value">
+                @Data.Total
+            </span>
+        </div>
+        <div class="item-col">
+            <div class="item-title-group">
+                <UnprocessedIcon Color="gray" Width="20" />
+                <span class="item-title status0">
+                    미처리
+                </span>
+            </div>
+            <span class="item-value status0">
+                @Data.UnProcessed
+            </span>
+        </div>
+        <div class="item-col">
+            <div class="item-title-group">
+                <ProcessIcon Color="#1dab2f" Width="22" />
+                <span class="item-title status1">
+                    처리중
+                </span>
+            </div>
+            
+            <span class="item-value status1">
+                @Data.Processing
+            </span>
+        </div>
+        <div class="item-col">
+            <div class="item-title-group">
+                <Complete Color="#1b40d5" Width="22"/>
+                <span class="item-title status2">
+                    처리완료
+                </span>
+            </div>
+            
+            <span class="item-value status2">
+                @Data.Completed
+            </span>
+        </div>
+
+    </div>
+    <div class="section2">
+        <div class="grid">
+            <div class="sub-item">
+                <div class="icon-area icon-gray">
+                    <GearIcon Color="white" Width="22" />
+                </div>
+                <div class="col">
+                    <span class="subitem-title">미분류</span>
+                    <span class="subitem-value">@SubData.DefaultType</span>
+                </div>
+            </div>
+            <div class="sub-item">
+                <div class="icon-area icon-blue">
+                    <MachineIcon Color="white" Width="22" />
+                </div>
+                
+                <div class="col">
+                    <span class="subitem-title">기계</span>
+                    <span class="subitem-value">@SubData.MachineType</span>
+                </div>
+                
+            </div>
+            <div class="sub-item">
+                <div class="icon-area icon-yellow">
+                    <LightningIcon Color="white" Width="22" />
+                </div>
+                
+                <div class="col">
+                    <span class="subitem-title">전기</span>
+                    <span class="subitem-value">@SubData.ElecType</span>
+                </div>
+                
+            </div>
+            <div class="sub-item">
+                <div class="icon-area icon-purple">
+                    <LiftIcon Color="white" Width="22" />
+                </div>
+                
+                <div class="col">
+                    <span class="subitem-title">승강</span>
+                    <span class="subitem-value">@SubData.liftType</span>
+                </div>
+                
+            </div>
+            <div class="sub-item">
+                <div class="icon-area icon-red">
+                    <FireIcon Color="white" Width="22" />
+                </div>
+                
+                <div class="col">
+                    <span class="subitem-title">소방</span>
+                    <span class="subitem-value">@SubData.FireType</span>
+                </div>
+                
+            </div>
+            <div class="sub-item">
+                <div class="icon-area icon-green">
+                    <ConstructIcon Color="white" Width="22" />
+                </div>
+                
+                <div class="col">
+                    <span class="subitem-title">건축</span>
+                    <span class="subitem-value">@SubData.ConstructType</span>
+                </div>
+                
+            </div>
+            <div class="sub-item">
+                <div class="icon-area icon-indigo">
+                    <NetworkIcon Color="white" Width="22" />
+                </div>
+                
+                <div class="col">
+                    <span class="subitem-title">통신</span>
+                    <span class="subitem-value">@SubData.NetWorkType</span>
+                </div>
+            </div>
+            <div class="sub-item">
+                <div class="icon-area icon-pink">
+                    <BeautyIcon Color="white" Width="22" />
+                </div>
+                
+                <div class="col">
+                    <span class="subitem-title">미화</span>
+                    <span class="subitem-value">@SubData.BeautyType</span>
+                </div>
+                
+            </div>
+            <div class="sub-item">
+                <div class="icon-area icon-orange">
+                    <SecurityIcon Color="white" Width="22"/>
+                </div>
+                <div class="col">
+                    <span class="subitem-title">보안</span>
+                    <span class="subitem-value">@SubData.BeautyType</span>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+    @* <span class="chart-title">
+        최근 7일
+    </span>
+    <div class="row">
+        <ColumnBarOnlyChart Title="최근7일" Data="ColumnBarData" PropertyTrans="ColPropertyTrans" />
+        <LineOnlyChart Data="LineBarData" PropertyTrans="LinePropertyTrans" />
+    </div> *@
+
+</RadzenCard>
+
+@code {
+    [Parameter] public VocDaysStatusCountDTO Data { get; set; }
+    [Parameter] public VocDaysCountDTO SubData{ get; set; }
+    [Parameter] public List<TColumn> ColumnBarData { get; set; }
+    [Parameter] public List<TLine> LineBarData { get; set; }
+    [Parameter] public Dictionary<string, string> ColPropertyTrans { get; set; }
+    [Parameter] public Dictionary<string, string> LinePropertyTrans { get; set; }
+}

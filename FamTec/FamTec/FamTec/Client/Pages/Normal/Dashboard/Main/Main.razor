@@ -7,28 +7,46 @@
 @using FamTec.Shared.Server.DTO
 @inherits PermissionComponentBase
 
-<div class="grid padding">
-    @if(placeVocPerm){
+@if (dashboardLoading) 
+{ 
 
-        <ColumnBarChart Title="민원처리현황(최근 7일)" Data="vocWeekData" PropertyName="vocWeekPropery" PropertyTrans="vocWeekProperyDic" />        
-        <DonutChart Title="민원발생현황" Data="vocCurrentData" PropertyName="vocWeekPropery" />
-        <RowBarChart Title="유형별 민원발생현황" Data="vocByTypeDayData" PropertyName="vocTypeProperty" />
-        <LineChart Title="유형별 민원발생추이(최근 7일)" Data="vocByTypeWeekData" PropertyName="vocTypeProperty" PropertyTrans="vocTypePropertyDic" />
-    }
-    @if(placeMaterialPerm){
-        <ListDonutChart Title="품목별 재고" Data="inventoryAmount" />
-    }
-    @if (placeMachinePerm || placeElecPerm || placeLiftPerm || placeFirePerm ||
+    <Loading />
+
+} 
+else{
+    <div class="grid padding">
+
+        @if (placeVocPerm)
+        {
+            <VocStatusBoard Data="vocCurrentData" SubData="vocByTypeDayData" ColumnBarData="vocWeekData" ColPropertyTrans="vocWeekProperyDic" LineBarData="vocByTypeWeekData" LinePropertyTrans="vocTypePropertyDic" />
+            <ColumnBarChart title="민원처리현황(최근 7일)" Data="vocWeekData" PropertyTrans="vocWeekProperyDic" />
+            @* <donutchart title="민원발생현황" data="voccurrentdata" propertyname="vocweekpropery" /> *@
+            //<RowBarChart title="유형별 민원발생현황" Data="vocByTypeDayData" PropertyName="vocTypeProperty" />
+            <LineChart title="유형별 민원발생추이(최근 7일)" Data="vocByTypeWeekData" propertytrans="vocTypePropertyDic" />
+        }
+        @if (placeMaterialPerm)
+        {
+            <ListDonutChart Title="품목별 재고" Data="inventoryAmount" AllMaterialData="materialList" @bind-SelectedData="selectedInventory" OnChangeMaterial="PostChangeMaterial" />
+        }
+        @if (placeVocPerm)
+        {
+            //<LineChart title="유형별 민원발생추이(최근 7일)" Data="vocByTypeWeekData" propertytrans="vocTypePropertyDic" />
+        }
+        @if (placeMachinePerm || placeElecPerm || placeLiftPerm || placeFirePerm ||
     placeConstructPerm || placeNetworkPerm || placeBeautyPerm || placeSecurityPerm)
-    {
-        <LineChart Title="유지보수건수(최근 7일)" Data="maintenanceWeekData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
-        <StackBarChart Title="유지보수비용추이(1년)" Data="maintenanceYearPriceData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
-    }
+        {
+            <LineChart Title="유지보수건수(최근 7일)" Data="maintenanceWeekData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
+            <StackBarChart Title="유지보수비용추이(1년)" Data="maintenanceYearPriceData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
+        }
 
-</div>
+    </div>
+
+}
 
 
 @code {
+    private bool dashboardLoading = true;
+
     //민원처리현황 -바
     List<VocWeekStatusCountDTO> vocWeekData;
     //민원발생현황 -도넛
@@ -41,11 +59,19 @@
 
     //품목별 재고
     List<InventoryAmountDTO> inventoryAmount;
+    //전체 품목
+    List<ShowMaterialIdxDTO> materialList;
+    //품목별 재고 선택 항목
+    List<ShowMaterialIdxDTO> selectedInventory = new List<ShowMaterialIdxDTO>();
 
     //유지보수건수
     List<MaintenanceWeekCountDTO> maintenanceWeekData;
     //유지보수비용(1년)
     List<MaintenanceYearPriceDTO> maintenanceYearPriceData;
+
+
+
+    bool maintenanceYearPriceDataIsLoading = true;
 
     List<string> vocWeekPropery = new List<string>{
         "Total",
@@ -114,31 +140,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
-        placeVocPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Voc");
-        placeMaterialPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Material");
-        placeMachinePerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Machine");
-        placeElecPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Elec");
-        placeLiftPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Lift");
-        placeFirePerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Fire");
-        placeConstructPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Construct");
-        placeNetworkPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Network");
-        placeBeautyPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Beauty");
-        placeSecurityPerm = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Security");
-
-        await OnPropertyFacility();
-        // await OnLoadVocWeekData();
-        // await OnLoadCurrentVoc();
-        OnMockupVocDay();
-        OnMockupVocWeek();
-        await OnLoadVocByType();
-        await OnLoadVocByTypeDay();
-        await OnLoadInventorybyMaterial();
-        await OnLoadMaintenaceCountWeek();
-        await OnLoadMaintenaceYaerPrice();
         /**/
 
-        /* 병렬작업 [선택]
+        /* 병렬작업 [선택]*/
         await base.OnInitializedAsync();
 
         var permissionTasks = new[]
@@ -152,47 +156,60 @@
             (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Construct"),
             (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Network"),
             (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Beauty"),
-            (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Security")
+        (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Security")
         };
 
+
+
+        var results = await Task.WhenAll(permissionTasks);
+
+        placeVocPerm = results[0];
+        placeMaterialPerm = results[1];
+        placeMachinePerm = results[2];
+        placeElecPerm = results[3];
+        placeLiftPerm = results[4];
+        placeFirePerm= results[5];
+        placeConstructPerm= results[6];
+        placeNetworkPerm = results[7];
+        placeBeautyPerm = results[8];
+        placeSecurityPerm = results[9];
+
+        //4.설비 권한설정
+        await OnPropertyFacility();
+
+        // 5. 실제 데이터 로딩은 병렬로 처리하되 배치 처리
+        var dataTasks = new List<Task>();
+
+        if (placeVocPerm)
+        {
+            dataTasks.AddRange(new[] {
+            // OnLoadVocWeekData(),
+            // OnLoadCurrentVoc(),
+            OnLoadVocByType(),
+            OnLoadVocByTypeDay()
+        });
+        }
+        // 5-1. 모의 데이터는 즉시 설정
         OnMockupVocDay();
         OnMockupVocWeek();
-
-        var remainingTasks = permissionTasks.ToList();
-        while (remainingTasks.Any())
+        await GetAllMaterialList();
+        if (placeMaterialPerm)
         {
-            var completedTask = await Task.WhenAny(remainingTasks);
-            remainingTasks.Remove(completedTask);
-
-            var result = await completedTask;
-            if (completedTask == permissionTasks[0]) placeVocPerm = result;
-            else if (completedTask == permissionTasks[1]) placeMaterialPerm = result;
-            else if (completedTask == permissionTasks[2]) placeMachinePerm = result;
-            else if (completedTask == permissionTasks[3]) placeElecPerm = result;
-            else if (completedTask == permissionTasks[4]) placeLiftPerm = result;
-            else if (completedTask == permissionTasks[5]) placeFirePerm = result;
-            else if (completedTask == permissionTasks[6]) placeConstructPerm = result;
-            else if (completedTask == permissionTasks[7]) placeNetworkPerm = result;
-            else if (completedTask == permissionTasks[8]) placeBeautyPerm = result;
-            else if (completedTask == permissionTasks[9]) placeSecurityPerm = result;
+            dataTasks.Add(OnLoadInventorybyMaterial());
         }
 
-        var otherTasks = new[]
+        // 6. 데이터 로딩을 배치로 처리
+        while (dataTasks.Any())
         {
-            OnPropertyFacility(),
-            OnLoadVocByType(),
-            OnLoadVocByTypeDay(),
-            OnLoadInventorybyMaterial(),
-            OnLoadMaintenaceCountWeek(),
-            OnLoadMaintenaceYaerPrice()
-        };
+            var batch = dataTasks.Take(3).ToList(); // 한 번에 3개씩 처리
+            dataTasks.RemoveRange(0, Math.Min(3, dataTasks.Count));
 
-        foreach (var task in otherTasks)
-        {
-            await task;
-            StateHasChanged();
+            await Task.WhenAll(batch);
+            await Task.Delay(10); // UI 업데이트를 위한 짧은 지연
         }
-        */
+
+        dashboardLoading = false;
+
     }
 
     //권한에 따라 property 설정(설비)
@@ -223,6 +240,11 @@
 
         if (placeSecurityPerm)
             maintenaceTypePropertyDic.Add("SecurityType", "보안");
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await OnLoadInventorybyMaterial();
     }
 
 
@@ -321,18 +343,29 @@
     private async Task OnLoadInventorybyMaterial(){
         try
         {
-            ResponseList<InventoryAmountDTO> resGet = await apiManager.GetListAsync<InventoryAmountDTO>("Store/sign/v2/GetInventoryAmount");
-            if (resGet.code != 200)
-            {
-                await JS.InvokeVoidAsync("alert", "품목별 재고 조회 실패");
-                return;
+
+            List<int> selected = new List<int>();
+            if(selectedInventory != null){
+                selected = selectedInventory.Where(m => m.DashBoardYN == true ).Select(m => m.Id).ToList();
+                string ids = string.Join("&MaterialIdx=", selected);
+
+                ResponseList<InventoryAmountDTO> resGet = await apiManager.GetListAsync<InventoryAmountDTO>($"Store/sign/v2/GetInventoryAmount?MaterialIdx={ids}");
+                if (resGet.code != 200)
+                {
+                    await JS.InvokeVoidAsync("alert", "품목별 재고 조회 실패");
+                    return;
+                }
+                if (resGet.data == null)
+                {
+                    inventoryAmount = new List<InventoryAmountDTO>();
+                    return;
+                }
+                inventoryAmount = resGet.data;
             }
-            if (resGet.data == null)
-            {
+            else{
                 inventoryAmount = new List<InventoryAmountDTO>();
-                return;
             }
-            inventoryAmount = resGet.data;
+
         }
         catch (Exception ex)
         {
@@ -340,9 +373,56 @@
         }
     }
 
+
+    //사업장 품목인덱스 리턴
+    private async Task GetAllMaterialList()
+    {
+        try
+        {
+            ResponseList<ShowMaterialIdxDTO> resGet = await apiManager.GetListAsync<ShowMaterialIdxDTO>("Material/sign/v2/GetDashBoardMaterialIdx");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "품목 조회 실패");
+                return;
+            }
+            if (resGet.data == null)
+            {
+                selectedInventory = new List<ShowMaterialIdxDTO>();
+                return;
+            }
+            materialList = resGet.data;
+
+            selectedInventory = materialList.Where(m => m.DashBoardYN == true).ToList();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("품목 조회 실패 : " + ex);
+        }
+    }
+
+    //대시보드 품목 변경
+    private async Task PostChangeMaterial(){
+        try{
+            Console.WriteLine("수 :"+selectedInventory.Count());
+            List<int> selected = new List<int>();
+            selected = selectedInventory.Select(m => m.Id).ToList();
+            ResponseUnit<bool> resPost = await apiManager.PostAsync<bool>("Material/sign/v2/SetDashBoardMaterial", selected);
+            if(resPost.code != 200){
+                await JS.InvokeVoidAsync("alert", "품목 변경 실패");
+                return;
+            }
+
+            await GetAllMaterialList();
+            await OnLoadInventorybyMaterial();
+
+        }catch(Exception ex){
+           
+        }
+    }
+
     //================================================
     //유지보수
-    
+
     //유지보수 건수
     private async Task OnLoadMaintenaceCountWeek()
     {
@@ -380,6 +460,7 @@
             if (resGet.data == null)
             {
                 maintenanceYearPriceData = new List<MaintenanceYearPriceDTO>();
+                
                 return;
             }
             maintenanceYearPriceData = resGet.data;

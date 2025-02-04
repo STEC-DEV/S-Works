@@ -51,4 +51,10 @@
 		<Folder Include="wwwroot\css\open-iconic\NewFolder\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Content Update="Pages\CommonComponents\IconButton\Complete.razor">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	  </Content>
+	</ItemGroup>
+
 </Project>
