@@ -4221,6 +4221,15 @@ svg[b-9g9liu9s5w] {
         box-shadow: 0em -2.6em 0em 0em rgba(34,51,119, 0.2), 1.8em -1.8em 0 0em rgba(34,51,119, 0.2), 2.5em 0em 0 0em rgba(34,51,119, 0.2), 1.75em 1.75em 0 0em rgba(34,51,119, 0.2), 0em 2.5em 0 0em rgba(34,51,119, 0.2), -1.8em 1.8em 0 0em rgba(34,51,119, 0.5), -2.6em 0em 0 0em rgba(34,51,119, 0.7), -1.8em -1.8em 0 0em #223377;
     }
 }
+/* /Pages/CommonComponents/LoadingBackground.razor.rz.scp.css */
+.background[b-cyovdzzasr] {
+    
+    width:100%;
+    height:100vh;
+    background: #aeaeae7d;
+    /*width: 100vw;
+    height: 100vh;*/
+}
 /* /Pages/CommonComponents/ModalBackground.razor.rz.scp.css */
 .modal-background[b-ctitcvxjcv] {
     z-index: 100;
@@ -6785,21 +6794,309 @@ svg:hover[b-5q32ql2i5a] {
         grid-column: 1 / -1;
     }
 }
+/* /Pages/Normal/Dashboard/Main/Components/ListDonutChart.razor.rz.scp.css */
+.row[b-j8r1sgu0qh]{
+    display:flex;
+    justify-content:space-between;
+}
+/* /Pages/Normal/Dashboard/Main/Components/SearchTable.razor.rz.scp.css */
+.table[b-od1ctiu5t4] {
+    border-collapse: separate;
+    width: 100%;
+    /*table-layout: fixed;*/
+    /*height: 100%;*/
+}
+
+.table .thead[b-od1ctiu5t4]{
+    background-color : var(--main-color);
+    position:sticky;
+    top:0;
+    box-shadow: 0 8px 12px -2px #a1a1a1;
+}
+
+.table .th-tr[b-od1ctiu5t4]{
+    background-color:var(--main-color);
+    border-radius: var(--default-rd);
+}
+
+/*
+    테이블 헤더 둥글게
+*/
+.table .th:first-child[b-od1ctiu5t4] {
+    border-radius: 4px 0 0 4px;
+}
+
+.table .th:last-child[b-od1ctiu5t4] {
+    border-radius: 0 4px 4px 0;
+}
+/* 둥글게 끝*/
+
+.table .th[b-od1ctiu5t4]{
+    padding:var(--three-q-pd);
+    font-size:var(--normal-size);
+    font-weight:var(--bold-wt);
+   
+}
+
+.table .text-center[b-od1ctiu5t4]{
+    text-align : center;
+}
+
+.table th>span[b-od1ctiu5t4]{
+    color:var(--default-color);
+     white-space : nowrap;
+}
+
+.table .tbody[b-od1ctiu5t4]{
+    overflow:auto;
+}
+
+.table .tr[b-od1ctiu5t4]{
+    border-bottom : var(--layout-bd);
+}
+
+
+.table .tr:hover td[b-od1ctiu5t4]{
+    cursor:pointer;
+    background-color:var(--main-light);
+    
+}
+
+.table .td[b-od1ctiu5t4]{
+    text-overflow: ellipsis;
+    /*overflow:hidden;*/
+    white-space: nowrap;
+    word-break:break-all;
+
+    padding:0.8rem;
+
+    
+    text-align: center;
+    font-size:0.8rem;
+    font-weight:var(--bold-wt);
+    color : var(--main-color);
+    border-bottom : var(--layout-bd);
+}
+.table .tbody-tr:hover td[b-od1ctiu5t4]{
+    background-color:var(--main-light);
+    
+}
+
+.table[b-od1ctiu5t4]  .table-td-link {
+    color : var(--main-color);
+}
+.table .td[b-od1ctiu5t4], .table .th[b-od1ctiu5t4] {
+    text-overflow: ellipsis; /* 긴 내용 ... 처리 */
+    overflow: hidden; /* 내용 숨김 */
+    white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+.table .td[b-od1ctiu5t4]{
+    overflow: auto; /* 스크롤 활성화 */
+    white-space: normal; /* 줄바꿈 허용 */
+    max-height: 3rem; /* 스크롤 영역 높이 제한 */
+    max-width: 150px; /* 스크롤 영역 너비 제한 */
+}
+/* /Pages/Normal/Dashboard/Main/Components/VocStatusBoard.razor.rz.scp.css */
+
+.item-col[b-c42g4wyet7] {
+    /*flex: 1;*/ /* 각 요소가 동일한 비율로 공간을 차지 */
+    /*min-width: 0;*/ /* flex-basis 오버플로우 방지 */
+    /*max-width: 15%;*/ /* 최대 너비를 전체의 1/4로 제한 */
+
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: 1rem;
+    border: 2px solid #e1e1e1;
+    border-radius: var(--default-rd);
+
+    /* Grid 아이템에 대응하는 스타일 추가 */
+    width: 100%; /* 전체 너비 차지 */
+    justify-content: center; /* 내용 중앙 정렬 */
+}
+.chart-title[b-c42g4wyet7]{
+    font-size:var(--normal-size);
+    font-weight:bold;
+    color:#6f6f6f;
+}
+
+.item-title[b-c42g4wyet7] {
+    font-size: 1rem;
+    font-weight:bold;
+}
+
+.item-value[b-c42g4wyet7] {
+    font-size:2rem;
+    font-weight:bold;
+}
+
+.item-row[b-c42g4wyet7] {
+    width: 100%;
+    /*display: flex;*/
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    padding: var(--wide-pd) 0;
+    gap: var(--wide-pd);
+    justify-content: center;
+}
+
+
+.section2[b-c42g4wyet7] {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom:var(--half-pd)
+}
+
+/*.grid {
+    width: 60%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    grid-gap: var(--default-pd);
+    place-items: center;
+}*/
+
+.grid[b-c42g4wyet7] {
+    /*width: 60%;*/
+    max-width: 1200px; /* 최대 너비 제한 */
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px; /* 일정한 간격 */
+    grid
+    padding: 20px;
+
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(4, 1fr);[b-c42g4wyet7]
+    }
+
+    @media (max-width: 992px) {
+        grid-template-columns: repeat(3, 1fr);[b-c42g4wyet7]
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);[b-c42g4wyet7]
+    }
+}
+
+.sub-item[b-c42g4wyet7]{
+    display:flex;
+    align-items:center;
+    gap:var(--default-pd);
+}
+
+.subitem-title[b-c42g4wyet7] {
+    white-space:nowrap;
+    font-size: var(--normal-size);
+}
+
+.subitem-value[b-c42g4wyet7] {
+    font-size: var(--title-size);
+    font-weight: bold;
+}
+
+.row[b-c42g4wyet7]{
+    width:100%;
+    height:300px;
+
+    display:flex;
+    gap:var(--default-pd);
+    align-items:baseline;
+
+}
+
+.col[b-c42g4wyet7]{
+    display:flex;
+    flex-direction:column;
+    gap : var(--half-pd);
+}
+
+.status0[b-c42g4wyet7]{
+    color : var(--status-0);
+}
+
+.status1[b-c42g4wyet7] {
+    color: var(--status-1);
+}
+
+.status2[b-c42g4wyet7] {
+    color: var(--status-2);
+}
+
+.item-title-group[b-c42g4wyet7]{
+    display:flex;
+    gap : var(--default-pd);
+    align-content:center;
+}
+
+.icon-area[b-c42g4wyet7] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px; /* 최소 너비 설정 */
+    height: 44px;
+    /*background-color: #f8f8f8;*/
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
 /* /Pages/Normal/Dashboard/Main/Main.razor.rz.scp.css */
 
 
 .grid[b-pjhtqrdzia] {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-columns: repeat(12, 1fr);
     /*grid-template-rows: repeat(4,1fr);*/
     grid-gap: var(--default-pd);
-    width:100%;
+    width: 100%;
 }
 
 .padding[b-pjhtqrdzia]{
     padding : var(--default-pd);
 }
 
+/* /Pages/Normal/Dashboard/Main/Modal/SearchModal.razor.rz.scp.css */
+.modal[b-deolor0pp1] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    /*width: 30%;*/
+    max-width:50%;
+    max-height: 530px;
+
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+.modal .header>.title[b-deolor0pp1]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+
+.content[b-deolor0pp1] {
+    height: 100%;
+    display : flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+    overflow : auto;
+}
+
+modal-table[b-deolor0pp1]{
+    overflow : auto;
+}
+
+
+.btns[b-deolor0pp1] {
+    display: flex;
+    gap: var(--default-pd);
+}
 /* /Pages/Normal/Facility/MachineHistory/Components/HistoryTable.razor.rz.scp.css */
 .table[b-jlw2d52a8k] {
     border-collapse: separate;

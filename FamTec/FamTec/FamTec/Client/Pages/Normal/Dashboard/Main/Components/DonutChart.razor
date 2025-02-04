@@ -7,6 +7,7 @@
             <h4>@Title</h4>
             @* <RadzenLegend Position="LegendPosition.Bottom" /> *@
             <RadzenDonutSeries Data="@data" CategoryProperty="Quarter" ValueProperty="Revenue" Title="" TotalAngle="360" StartAngle="360">
+                
                 <TooltipTemplate Context="data">
                     <div style="display: flex; flex-direction: column;">
                         <span style="font-weight:bold; font-size:14px">
@@ -37,7 +38,7 @@
     [Parameter] public T Data { get; set; }
     [Parameter] public List<string> PropertyName { get; set; }
 
-    bool showDataLabels = false;
+    bool showDataLabels = true;
     double total = 0;
     class DataItem
     {

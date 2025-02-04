@@ -4,7 +4,7 @@
     <RadzenColumn >
         <h4>@Title</h4>
         <RadzenChart>
-
+            
             @foreach (KeyValuePair<string, string> i in PropertyTrans)
             {
                 <RadzenStackedColumnSeries Data="Data" CategoryProperty="Month" Title="@i.Value" LineType="LineType.Dashed" ValueProperty="@i.Key">
@@ -22,6 +22,7 @@
     [Parameter] public List<T> Data { get; set; }
     [Parameter] public List<string> PropertyName { get; set; }
     [Parameter] public Dictionary<string, string> PropertyTrans { get; set; }
+
 
     bool showDataLabels = false;
 }

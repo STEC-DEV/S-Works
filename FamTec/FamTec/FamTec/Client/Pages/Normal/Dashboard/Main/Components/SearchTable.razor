@@ -1,0 +1,118 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Dashboard
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    품목코드
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    품목명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    제조사
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    규격
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    <input type="checkbox"
+                           checked=@(ListData?.Count > 0 && CheckedItem.Count == ListData?.Count)
+                           @onclick:stopPropagation="true"
+                           @onchange="OnSelectAllChanged" />
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if (ListData == null || ListData.Count == 0)
+        {
+            <tr>
+                <td colspan="7" style="text-align:center;">
+                    @* <Empty /> *@
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var row in ListData)
+            {
+                <tr class="tr" @onclick=@(()=>OnChecked(row))>
+                    <td class="td">
+                        @row.Code
+                    </td>
+                    <td class="td">
+                        @row.MaterialName
+                    </td>
+                    <td class="td">
+                        @row.ManufacturingComp
+                    </td>
+                    <td class="td">
+                        @row.Standard
+                    </td>
+                    <td class="td">
+                        <input type="checkbox"
+                               checked=@(CheckedItem.Contains(row.Id))
+                               @onclick:stopPropagation="true"
+                               @onchange="@(e => OnCheckboxChanged(e, row))" />
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<ShowMaterialIdxDTO>? ListData { get; set; }
+    // [Parameter] public EventCallback<(MaterialSearchListDTO,bool)> OnCheck { get; set; }
+    [Parameter] public EventCallback<ShowMaterialIdxDTO> OnCheck { get; set; }
+    [Parameter] public List<int> CheckedItem { get; set; }
+
+   
+    private async Task OnSelectAllChanged(ChangeEventArgs e)
+    {
+        if (ListData == null) return;
+
+        bool isChecked = (bool)e.Value;
+        foreach (var item in ListData)
+        {
+            if (isChecked && !CheckedItem.Contains(item.Id))
+            {
+                await OnCheck.InvokeAsync(item);
+            }
+            else if (!isChecked && CheckedItem.Contains(item.Id))
+            {
+                await OnCheck.InvokeAsync(item);
+            }
+        }
+    }
+
+    private async Task OnCheckboxChanged(ChangeEventArgs e, ShowMaterialIdxDTO data)
+    {
+        await OnCheck.InvokeAsync(data);
+    }
+
+    private async void OnChecked(ShowMaterialIdxDTO data)
+    {
+        await OnCheck.InvokeAsync(data);
+    }
+
+
+    // private async void OnChecked(MaterialSearchListDTO data)
+    // {
+    //     await OnCheck.InvokeAsync(data);
+    // }
+}

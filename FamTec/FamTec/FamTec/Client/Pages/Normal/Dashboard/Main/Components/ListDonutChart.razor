@@ -1,33 +1,94 @@
-﻿@using FamTec.Shared.Client.DTO.Normal.Dashboard
+﻿@using FamTec.Client.Pages.CommonComponents
 
-<RadzenCard Style="grid-column:span 7; grid-row: span 2;">
-    <h4>@Title</h4>
-    <RadzenRow>
-        @foreach (InventoryAmountDTO item in Data)
-        {
-            <RadzenColumn Size="6">
-                <h5>@item.Name</h5>
-                <RadzenChart Style="width: 100%; height: 200px;">
-                    <RadzenDonutSeries Data="@item.RoomInvenList" CategoryProperty="Name" ValueProperty="Num" TotalAngle="360" StartAngle="360">
-                        <ChildContent>
-                            <RadzenSeriesDataLabels Visible="@showDataLabels" />
-                        </ChildContent>
-                        <TitleTemplate>
-                            <div style="height:100%; display:flex; align-items:center;justify-content:center">
-                                <h4 style="margin:0">@item.Total</h4>
-                            </div>
-                        </TitleTemplate>
-                    </RadzenDonutSeries>
-                </RadzenChart>
-            </RadzenColumn>
-        }
-    </RadzenRow>
+
+@using FamTec.Client.Pages.Normal.Dashboard.Main.Modal
+@using FamTec.Shared.Client.DTO.Normal.Dashboard
+@using FamTec.Shared.Server.DTO
+
+<RadzenCard Style="@(Data.Count() > 2
+        ? "grid-column: span 7; grid-row: span 2;"
+        : "grid-column: span 7; grid-row: span 1;"
+        )">
+    <div class="row">
+        <h4>@Title</h4>
+        <EditButton OnClick="OnEdit" />
+    </div>
+
+    @if (Data == null){
+        <sapn>없음</sapn>
+    }else{
+        <RadzenRow>
+            @foreach (InventoryAmountDTO item in Data)
+            {
+                <RadzenColumn Size="6">
+                    <h5>@item.Name</h5>
+                    <RadzenChart Style="width: 100%; height: 200px;">
+                        <RadzenDonutSeries Data="@item.RoomInvenList" CategoryProperty="Name" ValueProperty="Num" TotalAngle="360" StartAngle="360">
+                            <TooltipTemplate Context="item">
+                                <div style="display: flex; flex-direction: column; gap:0.5rem;">
+                                    <span style="font-size:14px">
+                                        @($"{item.Name}")
+                                    </span>
+                                    <span style="font-weight:bold; font-size:14px;">
+                                        @($"{item.Num}")
+                                    </span>
+                                </div>
+                            </TooltipTemplate>
+                            <ChildContent>
+                                <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                            </ChildContent>
+                            <TitleTemplate>
+                                <div style="height:100%; display:flex; align-items:center;justify-content:center">
+                                    <h4 style="margin:0">@item.Total</h4>
+                                </div>
+                            </TitleTemplate>
+
+                        </RadzenDonutSeries>
+                    </RadzenChart>
+                </RadzenColumn>
+            }
+        </RadzenRow>
+    }
+
 </RadzenCard>
+@if (showEditModal){
+    <ModalBackground>
+        <ChildComponent>
+            <SearchModal 
+                OnClose="OnEdit" 
+                ListData="AllMaterialData" 
+                SelectData="SelectedData" 
+                SelectDataChanged="OnChangeSelectData"
+                OnChangeMaterial="OnChangeMaterial" />
+        </ChildComponent>
+    </ModalBackground>
+}
 
 @code {
     [Parameter] public string Title { get; set; }
     [Parameter] public List<InventoryAmountDTO> Data { get; set; }
+    [Parameter] public List<ShowMaterialIdxDTO> AllMaterialData { get; set; }
+    [Parameter] public List<ShowMaterialIdxDTO> SelectedData { get; set; }
+    [Parameter] public EventCallback OnChangeMaterial { get; set; }
+    [Parameter] public EventCallback<List<ShowMaterialIdxDTO>> SelectedDataChanged { get; set; }
     // [Parameter] public List<string> PropertyName { get; set; }
 
     bool showDataLabels = false;
+    bool showEditModal = false;
+
+
+   
+
+    private void OnEdit(){
+        showEditModal = !showEditModal;
+    }
+
+
+    private async Task OnChangeSelectData(List<ShowMaterialIdxDTO> data){
+        SelectedData = data;
+        await SelectedDataChanged.InvokeAsync(data);
+
+    }
+
+
 }
