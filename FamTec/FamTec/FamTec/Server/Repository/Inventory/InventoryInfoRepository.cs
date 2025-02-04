@@ -33,15 +33,15 @@ namespace FamTec.Server.Repository.Inventory
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async Task<List<InventoryAmountDTO>?> GetInventoryAmountList(int placeid)
+        public async Task<List<InventoryAmountDTO>?> GetInventoryAmountList(int placeid, List<int> MaterialIdx)
         {
             try
             {
-                List<MaterialTb> MaterialList = await context.MaterialTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid).ToListAsync().ConfigureAwait(false);
+                List<MaterialTb> MaterialList = await context.MaterialTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid && MaterialIdx.Contains(m.Id)).ToListAsync().ConfigureAwait(false);
                 if (MaterialList is null || !MaterialList.Any())
                     return null;
 
-                List<int> MaterialIdx = MaterialList.Select(m => m.Id).Take(4).ToList();
+                List<int> MaterialId = MaterialList.Select(m => m.Id).Take(4).ToList();
 
                 var model = await (from room in context.RoomTbs
                                                         join material in context.MaterialTbs on 1 equals 1 // Cross Join을 위해 무조건 TRUE로 만든다.
@@ -81,7 +81,7 @@ namespace FamTec.Server.Repository.Inventory
                                                             M_ID = inventoryGroup.MATERIAL_TB_ID
                                                         } into joined
                                                         from inventory in joined.DefaultIfEmpty() // LEFT JOIN using DefaultIfEmpty
-                                                        where MaterialIdx.Contains(subQueryA.M_ID)
+                                                        where MaterialId.Contains(subQueryA.M_ID)
                                                         orderby subQueryA.M_ID, subQueryA.R_ID
                                                         select new MaterialInventory
                                                         {

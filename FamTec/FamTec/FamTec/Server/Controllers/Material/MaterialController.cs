@@ -46,8 +46,63 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
-                return Ok();
+                ResponseList<ShowMaterialIdxDTO>? model = await MaterialService.GetMaterialIndexService(HttpContext).ConfigureAwait(false);
 
+                if (model is null)
+                    return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/v2/SetDashBoardMaterial")]
+        public async Task<IActionResult> SetDashBoardMaterial([FromBody]List<int> MaterialIdx)
+        {
+            try
+            {
+                //List<int> MaterialIdx = new List<int>()
+                //{
+                //    1,
+                //    3
+                //};
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (MaterialIdx is null || MaterialIdx.Count == 0)
+                    return BadRequest();
+
+                ResponseUnit<bool>? model = await MaterialService.SetDashBoardMaterialService(HttpContext, MaterialIdx);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 409)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
             catch(Exception ex)
             {

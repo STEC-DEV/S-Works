@@ -76,14 +76,18 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/v2/GetInventoryAmount")]
-        public async Task<IActionResult> GetInventoryAmount()
+        public async Task<IActionResult> GetInventoryAmount([FromQuery]List<int> MaterialIdx)
         {
             try
             {
+
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<InventoryAmountDTO>? model = await InStoreService.GetDashBoardInvenAmountData(HttpContext);
+                if (MaterialIdx is null || MaterialIdx.Count == 0)
+                    return Ok();
+
+                ResponseList<InventoryAmountDTO>? model = await InStoreService.GetDashBoardInvenAmountData(HttpContext, MaterialIdx);
 
                 if (model is null)
                     return BadRequest();

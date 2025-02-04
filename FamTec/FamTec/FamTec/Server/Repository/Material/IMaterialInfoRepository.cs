@@ -7,6 +7,20 @@ namespace FamTec.Server.Repository.Material
     public interface IMaterialInfoRepository
     {
         /// <summary>
+        /// 대쉬보드용 사업장의 자재 인덱스와 이름 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public Task<List<ShowMaterialIdxDTO>?> GetDashBoardMaterialIdx(int placeid);
+
+        /// <summary>
+        /// 대쉬보드 YN
+        /// </summary>
+        /// <param name="MaterialIdx"></param>
+        /// <returns></returns>
+        public Task<int> SetDashBoardMaterial(int placeid, string creator, List<int> MaterialIdx);
+
+        /// <summary>
         /// 대쉬보드용 안전재고와 가까운순 TOP 10
         /// </summary>
         /// <returns></returns>

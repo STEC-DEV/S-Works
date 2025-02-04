@@ -1,0 +1,48 @@
+[2025-01-24 오전 10:03:33]	System.InvalidOperationException: The configured execution strategy 'MySqlRetryingExecutionStrategy' does not support user-initiated transactions. Use the execution strategy returned by 'DbContext.Database.CreateExecutionStrategy()' to execute all the operations in the transaction as a retriable unit.
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.OnFirstExecution()
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at FamTec.Server.Repository.Material.MaterialInfoRepository.SetDashBoardMaterial(Int32 placeid, String creator, List`1 MaterialIdx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Material\MaterialInfoRepository.cs:line 83
+[2025-01-24 오전 10:03:33]	System.InvalidOperationException: The configured execution strategy 'MySqlRetryingExecutionStrategy' does not support user-initiated transactions. Use the execution strategy returned by 'DbContext.Database.CreateExecutionStrategy()' to execute all the operations in the transaction as a retriable unit.
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.OnFirstExecution()
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at FamTec.Server.Repository.Material.MaterialInfoRepository.SetDashBoardMaterial(Int32 placeid, String creator, List`1 MaterialIdx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Material\MaterialInfoRepository.cs:line 83
+   at FamTec.Server.Repository.Material.MaterialInfoRepository.SetDashBoardMaterial(Int32 placeid, String creator, List`1 MaterialIdx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Material\MaterialInfoRepository.cs:line 144
+   at FamTec.Server.Services.Material.MaterialService.SetDashBoardMaterialService(HttpContext context, List`1 MaterialIdx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Material\MaterialService.cs:line 107
+[2025-01-24 오전 10:03:35]	System.InvalidOperationException: The configured execution strategy 'MySqlRetryingExecutionStrategy' does not support user-initiated transactions. Use the execution strategy returned by 'DbContext.Database.CreateExecutionStrategy()' to execute all the operations in the transaction as a retriable unit.
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.OnFirstExecution()
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at FamTec.Server.Repository.Material.MaterialInfoRepository.SetDashBoardMaterial(Int32 placeid, String creator, List`1 MaterialIdx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Material\MaterialInfoRepository.cs:line 83
+[2025-01-24 오전 10:03:35]	System.InvalidOperationException: The configured execution strategy 'MySqlRetryingExecutionStrategy' does not support user-initiated transactions. Use the execution strategy returned by 'DbContext.Database.CreateExecutionStrategy()' to execute all the operations in the transaction as a retriable unit.
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.OnFirstExecution()
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at FamTec.Server.Repository.Material.MaterialInfoRepository.SetDashBoardMaterial(Int32 placeid, String creator, List`1 MaterialIdx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Material\MaterialInfoRepository.cs:line 83
+   at FamTec.Server.Repository.Material.MaterialInfoRepository.SetDashBoardMaterial(Int32 placeid, String creator, List`1 MaterialIdx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Material\MaterialInfoRepository.cs:line 144
+   at FamTec.Server.Services.Material.MaterialService.SetDashBoardMaterialService(HttpContext context, List`1 MaterialIdx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Material\MaterialService.cs:line 107
+[2025-01-24 오전 10:04:13]	System.InvalidOperationException: The configured execution strategy 'MySqlRetryingExecutionStrategy' does not support user-initiated transactions. Use the execution strategy returned by 'DbContext.Database.CreateExecutionStrategy()' to execute all the operations in the transaction as a retriable unit.
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.OnFirstExecution()
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at FamTec.Server.Repository.Material.MaterialInfoRepository.SetDashBoardMaterial(Int32 placeid, String creator, List`1 MaterialIdx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Material\MaterialInfoRepository.cs:line 83
+[2025-01-24 오전 10:04:13]	System.InvalidOperationException: The configured execution strategy 'MySqlRetryingExecutionStrategy' does not support user-initiated transactions. Use the execution strategy returned by 'DbContext.Database.CreateExecutionStrategy()' to execute all the operations in the transaction as a retriable unit.
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.OnFirstExecution()
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SplitQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at FamTec.Server.Repository.Material.MaterialInfoRepository.SetDashBoardMaterial(Int32 placeid, String creator, List`1 MaterialIdx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Material\MaterialInfoRepository.cs:line 83
+   at FamTec.Server.Repository.Material.MaterialInfoRepository.SetDashBoardMaterial(Int32 placeid, String creator, List`1 MaterialIdx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Material\MaterialInfoRepository.cs:line 144
+   at FamTec.Server.Services.Material.MaterialService.SetDashBoardMaterialService(HttpContext context, List`1 MaterialIdx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Material\MaterialService.cs:line 107

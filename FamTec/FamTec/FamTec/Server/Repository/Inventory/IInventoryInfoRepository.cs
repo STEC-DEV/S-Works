@@ -97,7 +97,7 @@ namespace FamTec.Server.Repository.Inventory
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        Task<List<InventoryAmountDTO>?> GetInventoryAmountList(int placeid);
+        Task<List<InventoryAmountDTO>?> GetInventoryAmountList(int placeid, List<int> MaterialIdx);
 
     }
 }

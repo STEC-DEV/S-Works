@@ -112,6 +112,6 @@ namespace FamTec.Server.Services.Store
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<InventoryAmountDTO>?> GetDashBoardInvenAmountData(HttpContext context);
+        public Task<ResponseList<InventoryAmountDTO>?> GetDashBoardInvenAmountData(HttpContext context, List<int> MaterialIdx);
     }
 }

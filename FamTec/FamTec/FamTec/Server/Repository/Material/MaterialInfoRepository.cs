@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Databases;
+﻿using DevExpress.Utils.Filtering;
+using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.DashBoard;
@@ -25,6 +26,144 @@ namespace FamTec.Server.Repository.Material
             
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+        }
+
+        /// <summary>
+        /// 대쉬보드용 사업장의 자재 인덱스와 이름 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async Task<List<ShowMaterialIdxDTO>?> GetDashBoardMaterialIdx(int placeid)
+        {
+            try
+            {
+                var model = await context.MaterialTbs
+                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid)
+                    .Select(m => new ShowMaterialIdxDTO
+                    {
+                        Id = m.Id,                           // MaterialTbs의 Id를 DTO의 Id로 매핑
+                        MaterialName = m.Name,       // MaterialTbs의 MaterialName을 DTO로 매핑
+                        DashBoardYN = m.Dashboardyn,          // MaterialTbs의 DashBoardYN을 DTO로 매핑
+                        Code = m.Code,
+                        Standard = m.Standard,
+                        ManufacturingComp = m.ManufacturingComp
+                    })
+                    .ToListAsync();
+
+                if(model is [_, ..])
+                {
+                    return model;
+                }
+                else
+                {
+                    return new List<ShowMaterialIdxDTO>();
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 대쉬보드 YN
+        /// </summary>
+        /// <param name="MaterialIdx"></param>
+        /// <returns></returns>
+        public async Task<int> SetDashBoardMaterial(int placeid, string creator, List<int> MaterialIdx)
+        {
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            DateTime ThisDate = DateTime.Now;
+
+            return await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                // 강제로 디버깅포인트 잡읍
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
+                {
+                    try
+                    {
+                        var MaterialList = await context.MaterialTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid)
+                            .Select(m => new
+                            {
+                                Id = m.Id,
+                                DashBoardYN = m.Dashboardyn
+                            }) // 필요한 ID만 가져옴
+                            .ToListAsync();
+
+                        // 매개변수로 넘어온 MaterialIdx가 MaterialCheck에 모두 포함되어 있는지 확인
+                        bool allIncluded = MaterialIdx.All(id => MaterialList.Any(m => m.Id == id));
+                        if (!allIncluded)
+                            return -1; // 잘못된 요청입니다.
+
+                        // true면 하위 항목 탐.
+                        // 1. MaterialIdx에 포함된 ID -> DashBoardYN = true
+                        var toSetTrue = MaterialIdx.Where(id => MaterialList.Any(m => m.Id == id && m.DashBoardYN != true)).ToList();
+
+                        // 2. MaterialList에 DashBoardYN == true인데 MaterialIdx에 포함되지 않은 ID -> DashBoardYN = false
+                        var toSetFalse = MaterialList
+                            .Where(m => m.DashBoardYN == true && !MaterialIdx.Contains(m.Id))
+                            .Select(m => m.Id)
+                            .ToList();
+
+                        // 업데이트 수행
+                        var materialsToUpdate = await context.MaterialTbs
+                            .Where(m => toSetTrue.Contains(m.Id) || toSetFalse.Contains(m.Id))
+                            .ToListAsync();
+
+                        foreach (var material in materialsToUpdate)
+                        {
+                            if (toSetTrue.Contains(material.Id))
+                            {
+                                material.Dashboardyn = true; // true로 설정
+                                material.UpdateUser = creator;
+                                material.UpdateDt = ThisDate;
+                            }
+                            if (toSetFalse.Contains(material.Id))
+                            {
+                                material.Dashboardyn = false; // false로 설정
+                                material.UpdateUser = creator;
+                                material.UpdateDt = ThisDate;
+                            }
+                        }
+
+                        await context.SaveChangesAsync(); // 변경 내용 저장
+                        await transaction.CommitAsync();
+
+                        return 1; // 작업 성공
+                    }
+                    catch (DbUpdateConcurrencyException concurrencyEx)
+                    {
+                        // 동시성 예외 처리
+                        // 예: 로그 남기기, 사용자에게 '다른 사용자가 먼저 수정했다' 안내 등
+                        await transaction.RollbackAsync();
+
+                        // 로그 기록
+                        LogService.LogMessage($"동시성 충돌 발생: {concurrencyEx}");
+#if DEBUG
+                        CreateBuilderLogger.ConsoleLog(concurrencyEx);
+#endif
+
+                        return 0; // 트랜잭션 에러
+                    }
+                    catch (Exception ex)
+                    {
+                        LogService.LogMessage(ex.ToString());
+#if DEBUG
+                        CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                        throw;
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -712,6 +851,6 @@ namespace FamTec.Server.Repository.Material
             return false;
         }
 
-     
+       
     }
 }

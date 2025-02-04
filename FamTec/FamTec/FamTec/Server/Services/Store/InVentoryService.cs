@@ -574,7 +574,7 @@ namespace FamTec.Server.Services.Store
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<InventoryAmountDTO>?> GetDashBoardInvenAmountData(HttpContext context)
+        public async Task<ResponseList<InventoryAmountDTO>?> GetDashBoardInvenAmountData(HttpContext context, List<int> MaterialIdx)
         {
             try
             {
@@ -585,7 +585,7 @@ namespace FamTec.Server.Services.Store
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<InventoryAmountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<InventoryAmountDTO>? model = await InventoryInfoRepository.GetInventoryAmountList(Convert.ToInt32(placeid)).ConfigureAwait(false);
+                List<InventoryAmountDTO>? model = await InventoryInfoRepository.GetInventoryAmountList(Convert.ToInt32(placeid), MaterialIdx).ConfigureAwait(false);
 
                
 

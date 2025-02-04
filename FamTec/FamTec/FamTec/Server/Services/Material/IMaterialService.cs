@@ -7,6 +7,20 @@ namespace FamTec.Server.Services.Material
     public interface IMaterialService
     {
         /// <summary>
+        /// 대쉬보드용 사업장의 자재 LIST 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<ResponseList<ShowMaterialIdxDTO>?> GetMaterialIndexService(HttpContext context);
+
+        /// <summary>
+        /// 대쉬보드 YN 설정
+        /// </summary>
+        /// <param name="MaterialList"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> SetDashBoardMaterialService(HttpContext context, List<int>? MaterialIdx);
+
+        /// <summary>
         /// 대쉬보드용 안전재고와 가까운 TOP10
         /// </summary>
         /// <param name="context"></param>
