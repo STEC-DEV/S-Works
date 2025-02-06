@@ -476,23 +476,50 @@ namespace FamTec.Server.Repository.Maintenence
                     .Select(offset => StartDate.AddDays(offset + 1).Date)
                     .ToList();
 
-                // 9. 날짜별 데이터 그룹화 및 0으로 채우기
-                var result = allDates
-                 .Select(date => new MaintanceWeekCount
-                 {
-                     Date = $"{date.Day}일",
-                     MachineType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "기계"),
-                     ElecType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "전기"),
-                     liftType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "승강"),
-                     FireType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "소방"),
-                     BeautyType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "미화"),
-                     ConstructType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "건축"),
-                     NetWorkType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "통신"),
-                     SecurityType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "보안")
-                 })
-                 .ToList();
-
-                // 10. 결과 반환
+                // --- DTO에 담아줄 result 로직 ---
+                // 설비 ID별 Category 정보를 빠르게 조회하기 위해 Dictionary 생성
+                var facilityCategories = facilities.ToDictionary(f => f.Id, f => f.Category.Trim());
+                
+                // 각 날짜별로 MaintanceDays에서 Category별 건수를 직접 Count 하여 DTO에 담기
+                List<MaintanceWeekCount> result = allDates
+                    .Select(date => new MaintanceWeekCount
+                    {
+                        Date = $"{date.Day}일",
+                        MachineType = MaintanceDays.Count(m =>
+                            m.Date == date &&
+                            facilityCategories.TryGetValue(m.FacilityTbId, out var cat) &&
+                            cat == "기계"),
+                        ElecType = MaintanceDays.Count(m =>
+                            m.Date == date &&
+                            facilityCategories.TryGetValue(m.FacilityTbId, out var cat) &&
+                            cat == "전기"),
+                        liftType = MaintanceDays.Count(m =>
+                            m.Date == date &&
+                            facilityCategories.TryGetValue(m.FacilityTbId, out var cat) &&
+                            cat == "승강"),
+                        FireType = MaintanceDays.Count(m =>
+                            m.Date == date &&
+                            facilityCategories.TryGetValue(m.FacilityTbId, out var cat) &&
+                            cat == "소방"),
+                        BeautyType = MaintanceDays.Count(m =>
+                            m.Date == date &&
+                            facilityCategories.TryGetValue(m.FacilityTbId, out var cat) &&
+                            cat == "미화"),
+                        ConstructType = MaintanceDays.Count(m =>
+                            m.Date == date &&
+                            facilityCategories.TryGetValue(m.FacilityTbId, out var cat) &&
+                            cat == "건축"),
+                        NetWorkType = MaintanceDays.Count(m =>
+                            m.Date == date &&
+                            facilityCategories.TryGetValue(m.FacilityTbId, out var cat) &&
+                            cat == "통신"),
+                        SecurityType = MaintanceDays.Count(m =>
+                            m.Date == date &&
+                            facilityCategories.TryGetValue(m.FacilityTbId, out var cat) &&
+                            cat == "보안")
+                    })
+                    .ToList();
+              
 
                 return result;
             }

@@ -5,6 +5,7 @@
 @using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.DTO.Normal.Dashboard
 @using FamTec.Shared.Server.DTO
+@using Microsoft.AspNetCore.SignalR.Client
 @inherits PermissionComponentBase
 
 @if (dashboardLoading)
@@ -136,11 +137,19 @@ else
     bool placeBeautyPerm = false;
     bool placeSecurityPerm = false;
 
-
-
+    private HubConnection? hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
+        //  hubConnection = new HubConnectionBuilder()
+        //  .WithUrl(Navigation.ToAbsoluteUri("/VocHub"))
+        //  .Build();
+
+        // if (hubConnection.State == HubConnectionState.Disconnected)
+        // {
+        //     await hubConnection.StartAsync();
+        // }
+        // await hubConnection!.InvokeAsync("JoinRoomAsync", $"1_123123");
         /**/
 
         /* 병렬작업 [선택]*/
