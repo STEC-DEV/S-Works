@@ -5,6 +5,7 @@
 @using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.DTO.Normal.Dashboard
 @using FamTec.Shared.Server.DTO
+@using Microsoft.AspNetCore.SignalR.Client
 @inherits PermissionComponentBase
 
 @if (dashboardLoading) 
@@ -137,6 +138,11 @@ else{
 
 
 
+    protected override void OnInitialized()
+    {
+
+
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -183,20 +189,25 @@ else{
         if (placeVocPerm)
         {
             dataTasks.AddRange(new[] {
-            // OnLoadVocWeekData(),
-            // OnLoadCurrentVoc(),
+            OnLoadVocWeekData(),
+            OnLoadCurrentVoc(),
             OnLoadVocByType(),
             OnLoadVocByTypeDay()
         });
         }
+
+
         // 5-1. 모의 데이터는 즉시 설정
-        OnMockupVocDay();
-        OnMockupVocWeek();
+        // OnMockupVocDay();
+        // OnMockupVocWeek();
         await GetAllMaterialList();
         if (placeMaterialPerm)
         {
             dataTasks.Add(OnLoadInventorybyMaterial());
         }
+
+        await OnLoadMaintenaceCountWeek();
+        await OnLoadMaintenaceYaerPrice();
 
         // 6. 데이터 로딩을 배치로 처리
         while (dataTasks.Any())
@@ -210,7 +221,19 @@ else{
 
         dashboardLoading = false;
 
+        await OnConnectionSocket();
+        // await Socket();
+
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Socket(); // 첫 렌더링 후에도 Socket 메서드 호출
+        }
+    }
+
 
     //권한에 따라 property 설정(설비)
     private async Task OnPropertyFacility()
@@ -416,7 +439,7 @@ else{
             await OnLoadInventorybyMaterial();
 
         }catch(Exception ex){
-           
+
         }
     }
 
@@ -460,7 +483,7 @@ else{
             if (resGet.data == null)
             {
                 maintenanceYearPriceData = new List<MaintenanceYearPriceDTO>();
-                
+
                 return;
             }
             maintenanceYearPriceData = resGet.data;
@@ -544,6 +567,103 @@ else{
            Completed = 20,
        }
    };
+    }
+
+
+    //소켓 연결
+    private async Task OnConnectionSocket(){
+        Console.WriteLine("실행");
+        //사업장 권한 확인
+        Dictionary<String, String> socketRoomName = new Dictionary<String, String>{
+            {"voc", "_VocStatus"},
+            {"material","_MaterialStatus"},
+            {"facility","_MaintenanceStatus"},
+
+       };
+
+        if (!placeVocPerm)
+        {
+            socketRoomName.Remove("voc");
+        }
+        if (!placeMaterialPerm)
+        {
+            socketRoomName.Remove("material");
+        }
+        bool hasAnyFacilityPermission =
+            placeMachinePerm ||
+            placeElecPerm ||
+            placeLiftPerm ||
+            placeFirePerm ||
+            placeConstructPerm ||
+            placeNetworkPerm ||
+            placeBeautyPerm ||
+            placeSecurityPerm;
+
+        // 모든 권한이 없는 경우에만 제거
+        if (!hasAnyFacilityPermission)
+        {
+            socketRoomName.Remove("facility");
+        }
+       Console.WriteLine($"rotn : {socketRoomName.Count}");
+        foreach (var item in socketRoomName)
+        {
+  
+            try
+            {
+                Console.WriteLine(item.Value);
+                await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PLACEIDX}{item.Value}");
+                Console.WriteLine($"처리완료: {item.Key}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during processing {item.Key}: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
+            // Console.WriteLine($"가입할 방 {RoomName[perm.idx]}");
+            
+
+            
+        }
+   }
+
+   //소켓 리시버 설정
+    private async Task Socket()
+    {
+        bool IsConnected = HubObject.hubConnection.State == HubConnectionState.Connected;
+
+        // HubConnection이 null이 아닌지 확인
+        if (IsConnected)
+        {
+
+            // 메시지 수신 처리
+            HubObject.hubConnection.On<string>("ReceiveVocStatus", async (message) =>
+            {
+                Console.WriteLine(message);
+                await OnLoadVocWeekData();
+                await OnLoadCurrentVoc();
+                await OnLoadVocByType();
+                await OnLoadVocByTypeDay();
+
+                StateHasChanged(); // 상태 변경 알림
+            });
+            HubObject.hubConnection.On<string>("ReceiveMaterialStatus", async (message) =>
+            {
+                Console.WriteLine(message);
+                await OnLoadInventorybyMaterial();
+                await GetAllMaterialList();
+                await PostChangeMaterial();
+                StateHasChanged(); // 상태 변경 알림
+            });
+            HubObject.hubConnection.On<string>("ReceiveMaintenanceStatusStatus", async (message) =>
+            {
+                Console.WriteLine(message);
+                await OnLoadMaintenaceCountWeek();
+                await OnLoadMaintenaceYaerPrice();
+                StateHasChanged(); // 상태 변경 알림
+            });
+        }
+
+
     }
 }
 

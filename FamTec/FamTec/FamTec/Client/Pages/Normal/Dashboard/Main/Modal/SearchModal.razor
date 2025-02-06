@@ -111,6 +111,11 @@
             await OnClose.InvokeAsync();
             return;
         }
+        if(_tempSelectData.Count > 4){
+            await JS.InvokeVoidAsync("alert", "4개 이하로 선택해주세요.");
+            await OnClose.InvokeAsync();
+            return;
+        }
 
         // SelectData를 직접 업데이트
         SelectData = new List<ShowMaterialIdxDTO>(_tempSelectData);
