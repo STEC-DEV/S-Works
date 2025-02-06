@@ -137,9 +137,6 @@ else
     bool placeBeautyPerm = false;
     bool placeSecurityPerm = false;
 
-<<<<<<< HEAD
-    private HubConnection? hubConnection;
-=======
 
 
     protected override void OnInitialized()
@@ -147,19 +144,9 @@ else
 
 
     }
->>>>>>> origin/Front
 
     protected override async Task OnInitializedAsync()
     {
-        //  hubConnection = new HubConnectionBuilder()
-        //  .WithUrl(Navigation.ToAbsoluteUri("/VocHub"))
-        //  .Build();
-
-        // if (hubConnection.State == HubConnectionState.Disconnected)
-        // {
-        //     await hubConnection.StartAsync();
-        // }
-        // await hubConnection!.InvokeAsync("JoinRoomAsync", $"1_123123");
         /**/
 
         /* 병렬작업 [선택]*/
@@ -469,13 +456,9 @@ else
             await GetAllMaterialList();
             await OnLoadInventorybyMaterial();
 
-<<<<<<< HEAD
         }
         catch (Exception ex)
         {
-=======
-        }catch(Exception ex){
->>>>>>> origin/Front
 
         }
     }
@@ -606,13 +589,11 @@ else
        }
    };
     }
-<<<<<<< HEAD
-}
-=======
 
 
     //소켓 연결
-    private async Task OnConnectionSocket(){
+    private async Task OnConnectionSocket()
+    {
         Console.WriteLine("실행");
         //사업장 권한 확인
         Dictionary<String, String> socketRoomName = new Dictionary<String, String>{
@@ -645,10 +626,10 @@ else
         {
             socketRoomName.Remove("facility");
         }
-       Console.WriteLine($"rotn : {socketRoomName.Count}");
+        Console.WriteLine($"rotn : {socketRoomName.Count}");
         foreach (var item in socketRoomName)
         {
-  
+
             try
             {
                 Console.WriteLine(item.Value);
@@ -661,13 +642,13 @@ else
                 Console.WriteLine($"Stack trace: {ex.StackTrace}");
             }
             // Console.WriteLine($"가입할 방 {RoomName[perm.idx]}");
-            
 
-            
+
+
         }
-   }
+    }
 
-   //소켓 리시버 설정
+    //소켓 리시버 설정
     private async Task Socket()
     {
         bool IsConnected = HubObject.hubConnection.State == HubConnectionState.Connected;
@@ -708,7 +689,3 @@ else
     }
 }
 
-
-
-
->>>>>>> origin/Front
