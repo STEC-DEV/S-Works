@@ -191,8 +191,8 @@ else
         if (placeVocPerm)
         {
             dataTasks.AddRange(new[] {
-            OnLoadVocWeekData(),
-            OnLoadCurrentVoc(),
+            // OnLoadVocWeekData(),
+            // OnLoadCurrentVoc(),
             OnLoadVocByType(),
             OnLoadVocByTypeDay()
         });
@@ -200,8 +200,8 @@ else
 
 
         // 5-1. 모의 데이터는 즉시 설정
-        // OnMockupVocDay();
-        // OnMockupVocWeek();
+        OnMockupVocDay();
+        OnMockupVocWeek();
         await GetAllMaterialList();
         if (placeMaterialPerm)
         {
@@ -534,7 +534,7 @@ else
    {
        new VocWeekStatusCountDTO
        {
-           Date = new DateTime(2025, 1, 7).ToString("MM.dd"),
+           Date = new DateTime(2025, 2, 8).ToString("MM.dd"),
            Total = 16,
            UnProcessed = 5,
            Processing = 3,
@@ -542,7 +542,7 @@ else
        },
        new VocWeekStatusCountDTO
        {
-           Date = new DateTime(2025, 1, 8).ToString("MM.dd"),
+           Date = new DateTime(2025, 2, 9).ToString("MM.dd"),
            Total = 23,
            UnProcessed = 7,
            Processing = 4,
@@ -550,7 +550,7 @@ else
        },
        new VocWeekStatusCountDTO
        {
-           Date = new DateTime(2025, 1, 9).ToString("MM.dd"),
+           Date = new DateTime(2025, 2, 10).ToString("MM.dd"),
            Total = 25,
            UnProcessed = 4,
            Processing = 6,
@@ -558,7 +558,7 @@ else
        },
        new VocWeekStatusCountDTO
        {
-           Date = new DateTime(2025, 1, 10).ToString("MM.dd"),
+           Date = new DateTime(2025, 2, 11).ToString("MM.dd"),
            Total = 23,
            UnProcessed = 8,
            Processing = 5,
@@ -566,7 +566,7 @@ else
        },
        new VocWeekStatusCountDTO
        {
-           Date = new DateTime(2025, 1, 11).ToString("MM.dd"),
+           Date = new DateTime(2025, 2, 12).ToString("MM.dd"),
            Total = 27,
            UnProcessed = 6,
            Processing = 8,
@@ -574,7 +574,7 @@ else
        },
        new VocWeekStatusCountDTO
        {
-           Date = new DateTime(2025, 1, 12).ToString("MM.dd"),
+           Date = new DateTime(2025, 2, 13).ToString("MM.dd"),
            UnProcessed = 3,
            Processing = 7,
            Completed = 18,
@@ -582,7 +582,7 @@ else
        },
        new VocWeekStatusCountDTO
        {
-           Date = new DateTime(2025, 1, 13).ToString("MM.dd"),
+           Date = new DateTime(2025, 2, 14).ToString("MM.dd"),
            Total = 29,
            UnProcessed = 5,
            Processing = 4,

@@ -140,6 +140,11 @@
     color: #454040;
 }
 
+.rz-chart-tooltip-content [class^=rz-], [class^=rz-]::before, [class^=rz-]::after, [class^=rz-] *, [class^=rz-] *::before, [class^=rz-] *::after, [class*=" rz-"], [class*=" rz-"]::before, [class*=" rz-"]::after, [class*=" rz-"] *, [class*=" rz-"] *::before, [class*=" rz-"] *::after {
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
 /*
     애니메이션 끝
 */
