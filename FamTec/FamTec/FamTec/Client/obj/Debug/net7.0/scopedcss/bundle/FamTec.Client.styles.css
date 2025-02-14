@@ -7097,6 +7097,12 @@ modal-table[b-deolor0pp1]{
     display: flex;
     gap: var(--default-pd);
 }
+
+.sub-title[b-deolor0pp1] {
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
 /* /Pages/Normal/Facility/MachineHistory/Components/HistoryTable.razor.rz.scp.css */
 .table[b-jlw2d52a8k] {
     border-collapse: separate;

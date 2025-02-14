@@ -7,32 +7,37 @@
 @using FamTec.Shared.Server.DTO
 
 
-<div class="modal">
-    <div class="header">
-        <span class="title">
-            품목 검색
-        </span>
-    </div>
-    <InputCol 
-    T="string"
-    Placeholder="품목코드, 품목명, 제조사"
-    ValueChanged="@((e)=>OnSearch(e))"
-    />
-    <div class="content yappear">
-        <div class="modal-table">
-            <SearchTable 
-            OnCheck="OnCheck" 
-            ListData="@FilterData" 
-            CheckedItem="@checkItem" />
+@if (isLoading)
+{
+    <Loading />
+    
+}else{
+    <div class="modal">
+        <div class="header">
+            <span class="title">
+                품목 검색
+            </span>
+            <span class="sub-title">
+                (최대 4개)
+            </span>
         </div>
-    </div>
+        <InputCol T="string"
+                  Placeholder="품목코드, 품목명, 제조사"
+                  ValueChanged="@((e)=>OnSearch(e))" />
+        <div class="content yappear">
+            <div class="modal-table">
+                <SearchTable OnCheck="OnCheck"
+                             ListData="@FilterData"
+                             CheckedItem="@checkItem" />
+            </div>
+        </div>
+        <div class="btns">
+            <Button Name="확인" Type="0" OnClick="OnAdd" />
+            <Button Name="취소" Type="1" OnClick="OnClicked" />
+        </div>
 
-    <div class="btns">
-        <Button Name="확인" Type="0" OnClick="OnAdd" />
-        <Button Name="취소" Type="1" OnClick="OnClicked" />
     </div>
-
-</div>
+}
 
 @code {
     [Parameter] public EventCallback OnClose { get; set; }
@@ -40,6 +45,7 @@
     [Parameter] public List<ShowMaterialIdxDTO> SelectData { get; set; }
     [Parameter] public EventCallback OnChangeMaterial { get; set; }
     [Parameter] public EventCallback<List<ShowMaterialIdxDTO>> SelectDataChanged { get; set; }
+
 
 
     List<ShowMaterialIdxDTO> FilterData = new List<ShowMaterialIdxDTO>();
@@ -50,6 +56,8 @@
 
     //확정전 선택데이터
     private List<ShowMaterialIdxDTO> _tempSelectData = new List<ShowMaterialIdxDTO>();
+
+    private bool isLoading = false;
 
 
     protected override async Task OnParametersSetAsync()
@@ -102,26 +110,59 @@
         StateHasChanged();
     }
 
+    // //등록
+    // private async Task OnAdd()
+    // {
+    //     if(_tempSelectData.Count < 1)
+    //     {
+    //         await JS.InvokeVoidAsync("alert", "1개 이상 선택해주세요.");
+    //         await OnClose.InvokeAsync();
+    //         return;
+    //     }
+    //     if(_tempSelectData.Count > 4){
+    //         await JS.InvokeVoidAsync("alert", "4개 이하로 선택해주세요.");
+    //         await OnClose.InvokeAsync();
+    //         return;
+    //     }
+
+    //     // SelectData를 직접 업데이트
+    //     SelectData = new List<ShowMaterialIdxDTO>(_tempSelectData);
+    //     await SelectDataChanged.InvokeAsync(SelectData);
+    //     await OnChangeMaterial.InvokeAsync();
+    //     await OnClose.InvokeAsync();
+    // }
     //등록
     private async Task OnAdd()
     {
-        if(_tempSelectData.Count < 1)
+        try
         {
-            await JS.InvokeVoidAsync("alert", "1개 이상 선택해주세요.");
-            await OnClose.InvokeAsync();
-            return;
-        }
-        if(_tempSelectData.Count > 4){
-            await JS.InvokeVoidAsync("alert", "4개 이하로 선택해주세요.");
-            await OnClose.InvokeAsync();
-            return;
-        }
+            isLoading = true;
+            StateHasChanged();
 
-        // SelectData를 직접 업데이트
-        SelectData = new List<ShowMaterialIdxDTO>(_tempSelectData);
-        await SelectDataChanged.InvokeAsync(SelectData);
-        await OnChangeMaterial.InvokeAsync();
-        await OnClose.InvokeAsync();
+            if (_tempSelectData.Count < 1)
+            {
+                await JS.InvokeVoidAsync("alert", "1개 이상 선택해주세요.");
+                await OnClose.InvokeAsync();
+                return;
+            }
+            if (_tempSelectData.Count > 4)
+            {
+                await JS.InvokeVoidAsync("alert", "4개 이하로 선택해주세요.");
+                await OnClose.InvokeAsync();
+                return;
+            }
+
+            // SelectData를 직접 업데이트
+            SelectData = new List<ShowMaterialIdxDTO>(_tempSelectData);
+            await SelectDataChanged.InvokeAsync(SelectData);
+            await OnChangeMaterial.InvokeAsync();
+            await OnClose.InvokeAsync();
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
     }
 
     private async Task OnClicked()

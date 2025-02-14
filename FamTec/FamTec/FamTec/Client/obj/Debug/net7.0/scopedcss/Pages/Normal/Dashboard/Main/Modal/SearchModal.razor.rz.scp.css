@@ -37,3 +37,9 @@ modal-table[b-deolor0pp1]{
     display: flex;
     gap: var(--default-pd);
 }
+
+.sub-title[b-deolor0pp1] {
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
