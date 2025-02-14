@@ -10,10 +10,10 @@
                 {
                     <RadzenColumnSeries Data="@Data" CategoryProperty="Date" Title="@i.Value" LineType="LineType.Dashed" ValueProperty="@i.Key">
                         <RadzenSeriesDataLabels Visible="@showDataLabels"/>
-
+                        <RadzenMarkers Visible=true MarkerType="MarkerType.Square" Size="3" StrokeWidth="1" />
                     </RadzenColumnSeries>
                 }
-
+                
                 <RadzenColumnOptions Radius="5" Width="6" />
                 <RadzenCategoryAxis Padding="-40" />
 
