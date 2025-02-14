@@ -1,13 +1,6 @@
 ﻿@typeparam T
 @using System.Globalization
 
-<<<<<<< HEAD
-<style>
- 
-</style>
-
-=======
->>>>>>> origin/Front
 <RadzenCard Style="grid-column:span 5">
     <RadzenColumn Style="height:100%;">
         <h4>@Title</h4>
@@ -17,13 +10,8 @@
             <RadzenLegend Position="LegendPosition.Bottom"/>
             @foreach (KeyValuePair<string, string> i in PropertyTrans)
             {
-<<<<<<< HEAD
-                <RadzenLineSeries Smooth="@smooth" Data="@Data" CategoryProperty="Date" Title="@i.Value" ValueProperty="@i.Key">
-                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Circle"/>
-=======
                 <RadzenLineSeries Smooth="@smooth" Data="@Data" CategoryProperty="Date" Title="@i.Value" ValueProperty="@i.Key" >
                     <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Square" />
->>>>>>> origin/Front
                     <RadzenSeriesDataLabels Visible="@showDataLabels" />
                 </RadzenLineSeries>
             }

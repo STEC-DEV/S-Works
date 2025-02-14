@@ -484,7 +484,7 @@ namespace FamTec.Server.Repository.Maintenence
                 List<MaintanceWeekCount> result = allDates
                     .Select(date => new MaintanceWeekCount
                     {
-                        Date = $"{date.Day}일",
+                        Date = $"{date.ToString("MM.dd")}",
                         MachineType = MaintanceDays.Count(m =>
                             m.Date == date &&
                             facilityCategories.TryGetValue(m.FacilityTbId, out var cat) &&
