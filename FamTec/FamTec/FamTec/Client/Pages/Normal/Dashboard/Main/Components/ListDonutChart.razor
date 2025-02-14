@@ -17,12 +17,12 @@
     @if (Data == null){
         <sapn>없음</sapn>
     }else{
-        <RadzenRow>
+        <RadzenRow Style="height:100%; align-items:center" JustifyContent="JustifyContent.Center">
             @foreach (InventoryAmountDTO item in Data)
             {
-                <RadzenColumn Size="6">
+                <RadzenColumn Size="6" Style="display:flex;flex-direction:column; justify-content:center;">
                     <h5>@item.Name</h5>
-                    <RadzenChart Style="width: 100%; height: 200px;">
+                    <RadzenChart Style="width: 100%; height: 250px; ">
                         <RadzenDonutSeries Data="@item.RoomInvenList" CategoryProperty="Name" ValueProperty="Num" TotalAngle="360" StartAngle="360">
                             <TooltipTemplate Context="item">
                                 <div style="display: flex; flex-direction: column; gap:0.5rem;">

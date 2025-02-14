@@ -1,8 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\",
+  "WorkspaceRootPath": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\dashboard\\main\\components\\linechart.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\dashboard\\main\\components\\linechart.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -29,6 +30,34 @@
     {
       "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\wwwroot\\img\\steclogo.png||{177559E0-D141-11D0-92DF-00A0C9138C45}",
       "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\wwwroot\\img\\steclogo.png||{177559E0-D141-11D0-92DF-00A0C9138C45}"
+=======
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\dashboard\\main\\components\\listdonutchart.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\dashboard\\main\\components\\listdonutchart.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\dashboard\\main\\components\\linechart.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\dashboard\\main\\components\\linechart.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\dashboard\\main\\main.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\dashboard\\main\\main.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\facility\\machine\\machinedetail\\modal\\updatesubitemmodal.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\facility\\machine\\machinedetail\\modal\\updatesubitemmodal.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\commoncomponents\\button.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\commoncomponents\\button.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+>>>>>>> origin/Front
     }
   ],
   "DocumentGroupContainers": [
@@ -38,11 +67,29 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
+<<<<<<< HEAD
           "SelectedChildIndex": 2,
+=======
+          "SelectedChildIndex": 0,
+>>>>>>> origin/Front
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "app.css",
+              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\css\\app.css",
+              "RelativeDocumentMoniker": "FamTec\\Client\\wwwroot\\css\\app.css",
+              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\css\\app.css",
+              "RelativeToolTip": "FamTec\\Client\\wwwroot\\css\\app.css",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAkwH4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-02-14T00:22:15.618Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+<<<<<<< HEAD
               "Title": "Common.css",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\css\\Common.css",
               "RelativeDocumentMoniker": "FamTec\\Client\\wwwroot\\css\\Common.css",
@@ -51,11 +98,22 @@
               "ViewState": "AgIAADAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-02-14T00:13:03.997Z",
+=======
+              "Title": "ListDonutChart.razor",
+              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Components\\ListDonutChart.razor",
+              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Components\\ListDonutChart.razor",
+              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Components\\ListDonutChart.razor",
+              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Components\\ListDonutChart.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-02-13T23:41:55.693Z",
+>>>>>>> origin/Front
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+<<<<<<< HEAD
               "Title": "app.css",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\css\\app.css",
               "RelativeDocumentMoniker": "FamTec\\Client\\wwwroot\\css\\app.css",
@@ -64,10 +122,42 @@
               "ViewState": "AgIAAC0AAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-02-14T00:12:58.383Z",
+=======
+              "Title": "LineChart.razor",
+              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Components\\LineChart.razor",
+              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Components\\LineChart.razor",
+              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Components\\LineChart.razor",
+              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Components\\LineChart.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-02-13T23:35:29.002Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Program.cs",
+              "RelativeDocumentMoniker": "FamTec\\Client\\Program.cs",
+              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Program.cs",
+              "RelativeToolTip": "FamTec\\Client\\Program.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAgwEIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-06T07:20:38.292Z",
+>>>>>>> origin/Front
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 0,
               "Title": "LineChart.razor",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Components\\LineChart.razor",
@@ -81,19 +171,26 @@
             },
             {
               "$type": "Document",
+=======
+>>>>>>> origin/Front
               "DocumentIndex": 3,
               "Title": "Main.razor",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Main.razor",
+              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Main.razor",
               "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Main.razor",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Main.razor",
+              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Main.razor",
               "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Dashboard\\Main\\Main.razor",
+<<<<<<< HEAD
               "ViewState": "AgIAAAwAAAAAAAAAAAAAABoAAAAWAAAAAAAAAA==",
+=======
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAQAAAAAAAAAA==",
+>>>>>>> origin/Front
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-02-13T23:28:24.568Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 4,
               "Title": "SortTable.razor",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\CommonComponents\\SortTable.razor",
@@ -104,10 +201,22 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-02-13T23:17:17.838Z",
               "EditorCaption": ""
+=======
+              "DocumentIndex": 5,
+              "Title": "UpdateSubItemModal.razor",
+              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Facility\\Machine\\MachineDetail\\Modal\\UpdateSubItemModal.razor",
+              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Facility\\Machine\\MachineDetail\\Modal\\UpdateSubItemModal.razor",
+              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Facility\\Machine\\MachineDetail\\Modal\\UpdateSubItemModal.razor",
+              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Facility\\Machine\\MachineDetail\\Modal\\UpdateSubItemModal.razor",
+              "ViewState": "AgIAAFsAAAAAAAAAAAAuwFMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-02-06T07:18:29.827Z"
+>>>>>>> origin/Front
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
+<<<<<<< HEAD
               "Title": "steclogo.png - PNG [360x120, 32\uBE44\uD2B8, PNG]",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\img\\steclogo.png",
               "RelativeDocumentMoniker": "FamTec\\Client\\wwwroot\\img\\steclogo.png",
@@ -128,6 +237,16 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
               "WhenOpened": "2025-02-13T06:21:44.791Z",
               "EditorCaption": " - PNG [253x55, 32\uBE44\uD2B8, PNG]"
+=======
+              "Title": "Button.razor",
+              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\CommonComponents\\Button.razor",
+              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\CommonComponents\\Button.razor",
+              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\CommonComponents\\Button.razor",
+              "RelativeToolTip": "FamTec\\Client\\Pages\\CommonComponents\\Button.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-02-06T07:17:01.383Z"
+>>>>>>> origin/Front
             }
           ]
         }

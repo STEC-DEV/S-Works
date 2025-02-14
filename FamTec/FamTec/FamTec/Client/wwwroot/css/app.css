@@ -134,6 +134,11 @@
     background-color: #F97316;
 }
 
+.rz-legend-item[style*="line-through"] {
+    text-decoration-line: line-through;
+    text-decoration-thickness: 3px !important;
+    color: #454040;
+}
 
 /*
     애니메이션 끝
