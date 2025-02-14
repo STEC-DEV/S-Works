@@ -1,6 +1,9 @@
 ﻿@typeparam T
 @using System.Globalization
 
+<style>
+ 
+</style>
 
 <RadzenCard Style="grid-column:span 5">
     <RadzenColumn Style="height:100%;">
@@ -12,7 +15,7 @@
             @foreach (KeyValuePair<string, string> i in PropertyTrans)
             {
                 <RadzenLineSeries Smooth="@smooth" Data="@Data" CategoryProperty="Date" Title="@i.Value" ValueProperty="@i.Key">
-                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Circle" />
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Circle"/>
                     <RadzenSeriesDataLabels Visible="@showDataLabels" />
                 </RadzenLineSeries>
             }
