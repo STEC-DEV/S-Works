@@ -11,7 +11,7 @@
             @foreach (KeyValuePair<string, string> i in PropertyTrans)
             {
                 <RadzenLineSeries Smooth="@smooth" Data="@Data" CategoryProperty="Date" Title="@i.Value" ValueProperty="@i.Key" >
-                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Square" />
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Square" Size="3" StrokeWidth="1"/>
                     <RadzenSeriesDataLabels Visible="@showDataLabels" />
                 </RadzenLineSeries>
             }
