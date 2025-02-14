@@ -1,30 +1,20 @@
 ﻿@typeparam T
 @using System.Globalization
 
-
 <RadzenCard Style="grid-column:span 5">
     <RadzenColumn Style="height:100%;">
         <h4>@Title</h4>
-        <RadzenChart Style="height: calc(100% - 32px)">
+        <RadzenChart >
             <RadzenChartTooltipOptions Shared="@sharedTooltip" />
             <RadzenValueAxis FormatString="{0:0.0}" />
-            <RadzenLegend Position="LegendPosition.Right"/>
+            <RadzenLegend Position="LegendPosition.Bottom"/>
             @foreach (KeyValuePair<string, string> i in PropertyTrans)
             {
-                <RadzenLineSeries Smooth="@smooth" Data="@Data" CategoryProperty="Date" Title="@i.Value" ValueProperty="@i.Key">
-                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Circle" />
+                <RadzenLineSeries Smooth="@smooth" Data="@Data" CategoryProperty="Date" Title="@i.Value" ValueProperty="@i.Key" >
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Square" />
                     <RadzenSeriesDataLabels Visible="@showDataLabels" />
                 </RadzenLineSeries>
             }
-         @*    @foreach (string i in PropertyName)
-            {
-                <RadzenLineSeries Smooth="@smooth" Data="@Data" CategoryProperty="Date" Title="@i" ValueProperty="@i.">
-                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Circle" />
-                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
-                </RadzenLineSeries>
-            } *@
-
-
             <RadzenCategoryAxis Padding="20" />
         </RadzenChart>
     </RadzenColumn>
