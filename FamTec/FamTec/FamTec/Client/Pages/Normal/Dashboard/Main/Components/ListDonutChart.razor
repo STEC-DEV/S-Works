@@ -17,7 +17,7 @@
     @if (Data == null){
         <sapn>없음</sapn>
     }else{
-        <RadzenRow Style="height:100%; align-items:center" JustifyContent="JustifyContent.Center">
+        <RadzenRow Style="height:100%; align-items:center">
             @foreach (InventoryAmountDTO item in Data)
             {
                 <RadzenColumn Size="6" Style="display:flex;flex-direction:column; justify-content:center;">

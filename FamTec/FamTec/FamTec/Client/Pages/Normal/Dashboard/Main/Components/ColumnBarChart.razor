@@ -9,11 +9,13 @@
                 @foreach (KeyValuePair<string,string> i in PropertyTrans)
                 {
                     <RadzenColumnSeries Data="@Data" CategoryProperty="Date" Title="@i.Value" LineType="LineType.Dashed" ValueProperty="@i.Key">
-                        <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                        <RadzenSeriesDataLabels Visible="@showDataLabels"/>
+
                     </RadzenColumnSeries>
                 }
-                <RadzenColumnOptions Radius="3" Width="4" />
-                <RadzenCategoryAxis Padding="20" />
+
+                <RadzenColumnOptions Radius="5" Width="6" />
+                <RadzenCategoryAxis Padding="-40" />
 
             </RadzenChart>
         </RadzenColumn>
