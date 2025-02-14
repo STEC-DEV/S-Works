@@ -27,12 +27,12 @@
                 </span>
             </th>
             <th class="th">
-                <span>
+                @* <span>
                     <input type="checkbox"
                            checked=@(ListData?.Count > 0 && CheckedItem.Count == ListData?.Count)
                            @onclick:stopPropagation="true"
                            @onchange="OnSelectAllChanged" />
-                </span>
+                </span> *@
             </th>
         </tr>
     </thead>
