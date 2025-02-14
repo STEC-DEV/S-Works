@@ -5,9 +5,15 @@
 
 
 <RadzenCard Style="grid-column: 1 / 8;  height: 100%;">
-    <h3>
-        민원처리현황
-    </h3>
+    <div class="title-row">
+        <h3>
+            민원처리현황
+        </h3>
+        <span class="date">
+            @today.ToString("yyyy.MM.dd.") 기준
+        </span>
+    </div>
+
     <div class="item-row">
         <div class="item-col">
             <div class="item-title-group">
@@ -38,7 +44,7 @@
                     처리중
                 </span>
             </div>
-            
+
             <span class="item-value status1">
                 @Data.Processing
             </span>
@@ -50,7 +56,7 @@
                     처리완료
                 </span>
             </div>
-            
+
             <span class="item-value status2">
                 @Data.Completed
             </span>
@@ -72,62 +78,62 @@
                 <div class="icon-area icon-blue">
                     <MachineIcon Color="white" Width="22" />
                 </div>
-                
+
                 <div class="col">
                     <span class="subitem-title">기계</span>
                     <span class="subitem-value">@SubData.MachineType</span>
                 </div>
-                
+
             </div>
             <div class="sub-item">
                 <div class="icon-area icon-yellow">
                     <LightningIcon Color="white" Width="22" />
                 </div>
-                
+
                 <div class="col">
                     <span class="subitem-title">전기</span>
                     <span class="subitem-value">@SubData.ElecType</span>
                 </div>
-                
+
             </div>
             <div class="sub-item">
                 <div class="icon-area icon-purple">
                     <LiftIcon Color="white" Width="22" />
                 </div>
-                
+
                 <div class="col">
                     <span class="subitem-title">승강</span>
                     <span class="subitem-value">@SubData.liftType</span>
                 </div>
-                
+
             </div>
             <div class="sub-item">
                 <div class="icon-area icon-red">
                     <FireIcon Color="white" Width="22" />
                 </div>
-                
+
                 <div class="col">
                     <span class="subitem-title">소방</span>
                     <span class="subitem-value">@SubData.FireType</span>
                 </div>
-                
+
             </div>
             <div class="sub-item">
                 <div class="icon-area icon-green">
                     <ConstructIcon Color="white" Width="22" />
                 </div>
-                
+
                 <div class="col">
                     <span class="subitem-title">건축</span>
                     <span class="subitem-value">@SubData.ConstructType</span>
                 </div>
-                
+
             </div>
             <div class="sub-item">
                 <div class="icon-area icon-indigo">
                     <NetworkIcon Color="white" Width="22" />
                 </div>
-                
+
                 <div class="col">
                     <span class="subitem-title">통신</span>
                     <span class="subitem-value">@SubData.NetWorkType</span>
@@ -137,12 +143,12 @@
                 <div class="icon-area icon-pink">
                     <BeautyIcon Color="white" Width="22" />
                 </div>
-                
+
                 <div class="col">
                     <span class="subitem-title">미화</span>
                     <span class="subitem-value">@SubData.BeautyType</span>
                 </div>
-                
+
             </div>
             <div class="sub-item">
                 <div class="icon-area icon-orange">
@@ -152,10 +158,10 @@
                     <span class="subitem-title">보안</span>
                     <span class="subitem-value">@SubData.BeautyType</span>
                 </div>
-                
+
             </div>
         </div>
-        
+
     </div>
     @* <span class="chart-title">
         최근 7일
@@ -174,4 +180,7 @@
     [Parameter] public List<TLine> LineBarData { get; set; }
     [Parameter] public Dictionary<string, string> ColPropertyTrans { get; set; }
     [Parameter] public Dictionary<string, string> LinePropertyTrans { get; set; }
+
+    DateTime today = DateTime.Now;
+
 }
