@@ -191,8 +191,8 @@ else
         if (placeVocPerm)
         {
             dataTasks.AddRange(new[] {
-            // OnLoadVocWeekData(),
-            // OnLoadCurrentVoc(),
+            OnLoadVocWeekData(),
+            OnLoadCurrentVoc(),
             OnLoadVocByType(),
             OnLoadVocByTypeDay()
         });
@@ -200,8 +200,8 @@ else
 
 
         // 5-1. 모의 데이터는 즉시 설정
-        OnMockupVocDay();
-        OnMockupVocWeek();
+        //OnMockupVocDay();
+        //OnMockupVocWeek();
         await GetAllMaterialList();
         if (placeMaterialPerm)
         {
@@ -291,34 +291,6 @@ else
             }
             vocWeekData = resGet.data;
 
-            // Sample
-            vocWeekData[0].UnProcessed = 20;
-            vocWeekData[0].Processing = 25;
-            vocWeekData[0].Completed = 43;
-
-            vocWeekData[1].UnProcessed = 33;
-            vocWeekData[1].Processing = 56;
-            vocWeekData[1].Completed = 2;
-
-            vocWeekData[2].UnProcessed = 101;
-            vocWeekData[2].Processing = 2;
-            vocWeekData[2].Completed = 23;
-
-            vocWeekData[3].UnProcessed = 55;
-            vocWeekData[3].Processing = 2;
-            vocWeekData[3].Completed = 77;
-
-            vocWeekData[4].UnProcessed = 23;
-            vocWeekData[4].Processing = 1;
-            vocWeekData[4].Completed = 7;
-
-            vocWeekData[5].UnProcessed = 3;
-            vocWeekData[5].Processing = 44;
-            vocWeekData[5].Completed = 33;
-
-            vocWeekData[6].UnProcessed = 22;
-            vocWeekData[6].Processing = 66;
-            vocWeekData[6].Completed = 10;
         }
         catch (Exception ex)
         {
@@ -344,11 +316,6 @@ else
             }
             vocCurrentData = resGet.data;
 
-            // Sample
-            vocCurrentData.Total = 16;
-            vocCurrentData.UnProcessed = 10;
-            vocCurrentData.Processing = 2;
-            vocCurrentData.Completed = 4;
         }
         catch (Exception ex)
         {
@@ -373,84 +340,6 @@ else
                 return;
             }
             vocByTypeWeekData = resGet.data;
-            vocByTypeWeekData[0].FireType = 10;
-            vocByTypeWeekData[0].DefaultType = 22;
-            vocByTypeWeekData[0].MachineType = 1;
-            vocByTypeWeekData[0].ConstructType = 2;
-            vocByTypeWeekData[0].ElecType = 10;
-            vocByTypeWeekData[0].liftType = 55;
-            vocByTypeWeekData[0].ConstructType = 92;
-            vocByTypeWeekData[0].FireType = 1;
-            vocByTypeWeekData[0].NetWorkType = 3;
-            vocByTypeWeekData[0].BeautyType = 0;
-            vocByTypeWeekData[0].SecurityType = 3;
-
-            vocByTypeWeekData[1].FireType = 5;
-            vocByTypeWeekData[1].DefaultType = 4;
-            vocByTypeWeekData[1].MachineType = 3;
-            vocByTypeWeekData[1].ConstructType = 2;
-            vocByTypeWeekData[1].ElecType = 8;
-            vocByTypeWeekData[1].liftType = 90;
-            vocByTypeWeekData[1].ConstructType = 4;
-            vocByTypeWeekData[1].FireType = 1;
-            vocByTypeWeekData[1].NetWorkType = 2;
-            vocByTypeWeekData[1].BeautyType = 8;
-            vocByTypeWeekData[1].SecurityType = 10;
-
-            vocByTypeWeekData[2].FireType = 1;
-            vocByTypeWeekData[2].DefaultType = 0;
-            vocByTypeWeekData[2].MachineType = 5;
-            vocByTypeWeekData[2].ConstructType = 3;
-            vocByTypeWeekData[2].ElecType = 2;
-            vocByTypeWeekData[2].liftType = 1;
-            vocByTypeWeekData[2].ConstructType = 66;
-            vocByTypeWeekData[2].FireType = 4;
-            vocByTypeWeekData[2].NetWorkType = 2;
-            vocByTypeWeekData[2].BeautyType = 1;
-            vocByTypeWeekData[2].SecurityType = 0;
-
-            vocByTypeWeekData[3].FireType = 80;
-            vocByTypeWeekData[3].DefaultType = 46;
-            vocByTypeWeekData[3].MachineType = 55;
-            vocByTypeWeekData[3].ConstructType = 65;
-            vocByTypeWeekData[3].ElecType = 3;
-            vocByTypeWeekData[3].liftType = 0;
-            vocByTypeWeekData[3].ConstructType = 1;
-            vocByTypeWeekData[3].FireType = 33;
-            vocByTypeWeekData[3].NetWorkType = 35;
-            vocByTypeWeekData[3].BeautyType = 2;
-            vocByTypeWeekData[3].SecurityType = 1;
-
-            vocByTypeWeekData[4].FireType = 10;
-            vocByTypeWeekData[4].DefaultType = 22;
-            vocByTypeWeekData[4].MachineType = 1;
-            vocByTypeWeekData[4].ConstructType = 2;
-            vocByTypeWeekData[4].ElecType = 10;
-            vocByTypeWeekData[4].liftType = 55;
-            vocByTypeWeekData[4].ConstructType = 92;
-            vocByTypeWeekData[4].FireType = 1;
-            vocByTypeWeekData[4].NetWorkType = 3;
-            vocByTypeWeekData[4].BeautyType = 0;
-            vocByTypeWeekData[4].SecurityType = 3;
-
-            vocByTypeWeekData[5].FireType = 10;
-            vocByTypeWeekData[5].DefaultType = 22;
-            vocByTypeWeekData[5].MachineType = 1;
-            vocByTypeWeekData[5].ConstructType = 2;
-            vocByTypeWeekData[5].ElecType = 10;
-            vocByTypeWeekData[5].liftType = 55;
-            vocByTypeWeekData[5].ConstructType = 92;
-            vocByTypeWeekData[5].FireType = 1;
-            vocByTypeWeekData[5].NetWorkType = 3;
-            vocByTypeWeekData[5].BeautyType = 0;
-            vocByTypeWeekData[5].SecurityType = 3;
-
-            vocByTypeWeekData[6].ElecType = 11; // 전기
-            vocByTypeWeekData[6].MachineType = 1; // 기계
-            vocByTypeWeekData[6].DefaultType = 10;
-            vocByTypeWeekData[6].BeautyType = 1;
-            vocByTypeWeekData[6].SecurityType = 1;
-
         }
         catch (Exception ex)
         {
@@ -476,12 +365,6 @@ else
             }
             vocByTypeDayData = resGet.data;
             
-            // Sample Data
-            vocByTypeDayData.DefaultType = 10;
-            vocByTypeDayData.BeautyType = 1;
-            vocByTypeDayData.MachineType = 1;
-            vocByTypeDayData.FireType = 2;
-            vocByTypeDayData.ElecType = 1;
         }
         catch (Exception ex)
         {
@@ -603,77 +486,6 @@ else
             }
             maintenanceWeekData = resGet.data;
             
-            // sample
-            maintenanceWeekData[0].FireType = 10;
-            maintenanceWeekData[0].MachineType = 1;
-            maintenanceWeekData[0].ConstructType = 2;
-            maintenanceWeekData[0].ElecType = 10;
-            maintenanceWeekData[0].liftType = 55;
-            maintenanceWeekData[0].ConstructType = 92;
-            maintenanceWeekData[0].FireType = 1;
-            maintenanceWeekData[0].NetWorkType = 3;
-            maintenanceWeekData[0].BeautyType = 0;
-            maintenanceWeekData[0].SecurityType = 3;
-
-            maintenanceWeekData[1].FireType = 5;
-            maintenanceWeekData[1].MachineType = 3;
-            maintenanceWeekData[1].ConstructType = 2;
-            maintenanceWeekData[1].ElecType = 8;
-            maintenanceWeekData[1].liftType = 90;
-            maintenanceWeekData[1].ConstructType = 4;
-            maintenanceWeekData[1].FireType = 1;
-            maintenanceWeekData[1].NetWorkType = 2;
-            maintenanceWeekData[1].BeautyType = 8;
-            maintenanceWeekData[1].SecurityType = 10;
-
-            maintenanceWeekData[2].FireType = 1;
-            maintenanceWeekData[2].MachineType = 5;
-            maintenanceWeekData[2].ConstructType = 3;
-            maintenanceWeekData[2].ElecType = 2;
-            maintenanceWeekData[2].liftType = 1;
-            maintenanceWeekData[2].ConstructType = 66;
-            maintenanceWeekData[2].FireType = 4;
-            maintenanceWeekData[2].NetWorkType = 2;
-            maintenanceWeekData[2].BeautyType = 1;
-            maintenanceWeekData[2].SecurityType = 0;
-
-            maintenanceWeekData[3].FireType = 80;
-            maintenanceWeekData[3].MachineType = 55;
-            maintenanceWeekData[3].ConstructType = 65;
-            maintenanceWeekData[3].ElecType = 3;
-            maintenanceWeekData[3].liftType = 0;
-            maintenanceWeekData[3].ConstructType = 1;
-            maintenanceWeekData[3].FireType = 33;
-            maintenanceWeekData[3].NetWorkType = 35;
-            maintenanceWeekData[3].BeautyType = 2;
-            maintenanceWeekData[3].SecurityType = 1;
-            
-            maintenanceWeekData[4].FireType = 10;
-            maintenanceWeekData[4].MachineType = 1;
-            maintenanceWeekData[4].ConstructType = 2;
-            maintenanceWeekData[4].ElecType = 10;
-            maintenanceWeekData[4].liftType = 55;
-            maintenanceWeekData[4].ConstructType = 92;
-            maintenanceWeekData[4].FireType = 1;
-            maintenanceWeekData[4].NetWorkType = 3;
-            maintenanceWeekData[4].BeautyType = 0;
-            maintenanceWeekData[4].SecurityType = 3;
-            
-            maintenanceWeekData[5].FireType = 10;
-            maintenanceWeekData[5].MachineType = 1;
-            maintenanceWeekData[5].ConstructType = 2;
-            maintenanceWeekData[5].ElecType = 10;
-            maintenanceWeekData[5].liftType = 55;
-            maintenanceWeekData[5].ConstructType = 92;
-            maintenanceWeekData[5].FireType = 1;
-            maintenanceWeekData[5].NetWorkType = 3;
-            maintenanceWeekData[5].BeautyType = 0;
-            maintenanceWeekData[5].SecurityType = 3;
-            
-            maintenanceWeekData[6].ElecType = 11; // 전기
-            maintenanceWeekData[6].MachineType = 1; // 기계
-            maintenanceWeekData[6].BeautyType = 1;
-            maintenanceWeekData[6].SecurityType = 1;
         }
         catch (Exception ex)
         {

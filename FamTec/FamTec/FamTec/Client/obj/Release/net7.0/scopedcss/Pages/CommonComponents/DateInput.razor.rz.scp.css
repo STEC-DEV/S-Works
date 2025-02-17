@@ -1,0 +1,46 @@
+
+
+.dateinput[b-qvxd8gjmfu] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-pd);
+    width: 100%;
+    position : relative;
+}
+
+
+.row[b-qvxd8gjmfu] {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--default-pd);
+}
+
+.label[b-qvxd8gjmfu] {
+    min-width: 50px;
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+    white-space: normal;
+}
+
+.required[b-qvxd8gjmfu]::after {
+    position: absolute;
+    margin-left: 4px;
+    content: '*';
+    color: red;
+}
+
+
+.input[b-qvxd8gjmfu] {
+    width: 100%;
+    padding: var(--default-pd);
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    /*background-color: var(--content-back-color);*/
+    background-color: var(--default-color);
+    transition: all .3s;
+}
+
+.input:focus[b-qvxd8gjmfu]{
+    border: var(--default-bd);
+}

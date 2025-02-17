@@ -72,7 +72,7 @@ namespace FamTec.Server.Services.User
         {
             try
             {
-                string? filePath = Path.Combine(WebHostEnvironment.ContentRootPath, "GuideForm", "S-Works_사용자설명서_1.3_KO_241211.pdf");
+                string? filePath = Path.Combine(WebHostEnvironment.ContentRootPath, "GuideForm", "S-Works_사용자설명서_KO_SWS.pdf");
                 if (String.IsNullOrWhiteSpace(filePath))
                     return null;
 

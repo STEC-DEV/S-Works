@@ -1,0 +1,30 @@
+.placeform-container[b-ka8q354chg]{
+    display:flex;
+    flex-direction:column;
+
+    border:var(--comp-bd);
+    border-radius:var(--default-rd);
+    background-color : var(--default-color);
+    padding : var(--default-pd);
+
+    height:100%;
+}
+
+.placeform-container .placeform-title[b-ka8q354chg]{
+    font-size: var(--title-size);
+    font-weight:var(--bold-wt);
+    padding: var(--default-pd);
+    border-bottom: var(--default-bd);
+}
+.placeform-container .placeform-title .title[b-ka8q354chg]{
+    color:var(--main-color);
+}
+
+.placeform-container .placeform-info[b-ka8q354chg]{
+    display:flex;
+    flex-direction:column;
+    justify-content:space-evenly;
+    gap: var(--default-pd);
+    height:100%;
+    padding:var(--default-pd);
+}

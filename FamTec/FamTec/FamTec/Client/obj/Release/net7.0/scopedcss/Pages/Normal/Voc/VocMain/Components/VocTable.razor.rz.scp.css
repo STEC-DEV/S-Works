@@ -1,0 +1,82 @@
+.table[b-on0bmwg9js] {
+    border-collapse: separate;
+    width: 100%;
+    /*table-layout: fixed;*/
+    height: 100%;
+}
+
+.table .thead[b-on0bmwg9js]{
+    background-color : var(--main-color);
+    position:sticky;
+    top:0;
+    box-shadow: 0 8px 12px -2px #a1a1a1;
+}
+
+.table .thead-tr[b-on0bmwg9js]{
+    background-color:var(--main-color);
+    border-radius: var(--default-rd);
+}
+
+/*
+    테이블 헤더 둥글게
+*/
+.table .th:first-child[b-on0bmwg9js] {
+    border-radius: 4px 0 0 4px;
+}
+
+.table .th:last-child[b-on0bmwg9js] {
+    border-radius: 0 4px 4px 0;
+}
+/* 둥글게 끝*/
+
+.table .th[b-on0bmwg9js]{
+    padding:var(--three-q-pd);
+    font-size:var(--normal-size);
+    font-weight:var(--bold-wt);
+   
+}
+
+.table .text-center[b-on0bmwg9js]{
+    text-align : center;
+}
+
+.table th>span[b-on0bmwg9js]{
+    color:var(--default-color);
+     white-space : nowrap;
+}
+
+.table .tbody[b-on0bmwg9js]{
+    /*min-height : 500px;
+    height : 300px;*/
+    /*overflow:auto;*/
+}
+
+.table .tbody-tr[b-on0bmwg9js]{
+    border-bottom : var(--layout-bd);
+}
+
+
+.table .tbody-tr:hover td[b-on0bmwg9js]{
+    background-color:var(--main-light);
+    
+}
+
+.table .td[b-on0bmwg9js]{
+    text-overflow: ellipsis;
+    /*overflow:hidden;*/
+    white-space: nowrap;
+    word-break:break-all;
+
+    padding:0.8rem;
+
+    
+    text-align: center;
+    font-size:0.8rem;
+    font-weight:var(--bold-wt);
+    color : var(--main-color);
+    border-bottom : var(--layout-bd);
+}
+
+.table[b-on0bmwg9js]  .table-td-link {
+    color : var(--main-color);
+}

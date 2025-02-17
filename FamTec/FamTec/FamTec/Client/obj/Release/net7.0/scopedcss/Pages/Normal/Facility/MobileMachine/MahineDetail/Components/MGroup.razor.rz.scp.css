@@ -1,0 +1,26 @@
+
+
+.mgroup[b-7hoj00mjzz]{
+    display :flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+    padding : var(--default-pd);
+
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+
+    background-color : var(--default-color);
+    
+}
+
+.title[b-7hoj00mjzz]{
+    font-size:1rem;
+    font-weight : bold;
+    color : var(--main-color);
+}
+
+.content[b-7hoj00mjzz] {
+    display : flex;
+    flex-direction :column;
+    gap : var(--half-pd);
+}

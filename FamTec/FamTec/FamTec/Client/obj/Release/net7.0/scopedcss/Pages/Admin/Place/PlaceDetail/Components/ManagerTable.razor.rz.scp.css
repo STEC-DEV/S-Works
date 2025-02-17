@@ -1,0 +1,79 @@
+.table[b-sbtdix8whn] {
+    border-collapse: separate;
+    width: 100%;
+    /*table-layout: fixed;*/
+}
+
+.table .thead[b-sbtdix8whn]{
+    background-color : var(--main-color);
+    position:sticky;
+    top:0;
+    box-shadow: 0 8px 12px -2px #a1a1a1;
+}
+
+.table .thead-tr[b-sbtdix8whn]{
+    background-color:var(--main-color);
+    border-radius: var(--default-rd);
+}
+
+/*
+    테이블 헤더 둥글게
+*/
+.table .th:first-child[b-sbtdix8whn] {
+    border-radius: 4px 0 0 4px;
+}
+
+.table .th:last-child[b-sbtdix8whn] {
+    border-radius: 0 4px 4px 0;
+}
+/* 둥글게 끝*/
+
+.table .th[b-sbtdix8whn]{
+    padding:var(--three-q-pd);
+    font-size:var(--normal-size);
+    font-weight:var(--bold-wt);
+   
+}
+
+.table .text-center[b-sbtdix8whn]{
+    text-align : center;
+}
+
+.table th>span[b-sbtdix8whn]{
+    color:var(--default-color);
+     white-space : nowrap;
+}
+
+.table .tbody[b-sbtdix8whn]{
+    overflow:auto;
+}
+
+.table .tbody-tr[b-sbtdix8whn]{
+    border-bottom : var(--layout-bd);
+}
+
+
+.table .tbody-tr:hover td[b-sbtdix8whn]{
+    background-color:var(--main-light);
+    
+}
+
+.table .td[b-sbtdix8whn]{
+    text-overflow: ellipsis;
+    /*overflow:hidden;*/
+    white-space: nowrap;
+    word-break:break-all;
+
+    padding:0.8rem;
+
+    
+    text-align: center;
+    font-size:0.8rem;
+    font-weight:var(--bold-wt);
+    color : var(--main-color);
+    border-bottom : var(--layout-bd);
+}
+
+.table[b-sbtdix8whn]  .table-td-link {
+    color : var(--main-color);
+}

@@ -5,7 +5,7 @@
   },
   "projects": {
     "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\FamTec.Client.csproj": {
-      "version": "1.3.0",
+      "version": "1.4.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\FamTec.Client.csproj",
         "projectName": "FamTec.Client",
@@ -261,6 +261,10 @@
             "Dapper": {
               "target": "Package",
               "version": "[2.1.35, )"
+            },
+            "DevExpress.Xpo": {
+              "target": "Package",
+              "version": "[24.1.7, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",

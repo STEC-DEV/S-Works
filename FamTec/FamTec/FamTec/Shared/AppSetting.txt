@@ -1,0 +1,63 @@
+﻿/* 배포버전 */
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning",
+      /* 디버깅 시에 살려둬야함. */
+      //"Microsoft.EntityFrameworkCore.Database.Command": "None"
+    }
+  },
+  "AllowedHosts": "*",
+
+  "Cors": {
+    "AllowedOrigins": [
+      "http://localhost:5245",
+      //"http://123.2.156.148:5245",
+      //"http://123.2.156.148:7111",
+      //"https://123.2.156.148:5246",
+      //"http://123.2.156.229:5245",
+      "http://125.131.105.172:5245",
+      "http://125.131.105.172:80",
+      "http://apis.data.go.kr",
+      "http://123.2.159.98:5245", /* IPv4 http */
+      "https://123.2.159.98:5246", /* IPv4 https */
+      "http://sws.s-tec.co.kr", /* 도메인 http */
+      "https://sws.s-tec.co.kr", /* 도메인 https */
+      "http://125.131.105.176:5245", /* 공인IP http */
+      "https://125.131.105.176:5246" /* 공인IP https */
+    ]
+  },
+  /* http: IPv4 : 123.2.159.98:5245 */
+  /* https: IPv4 : 5246 */
+  "Kestrel": {
+    "Endpoints": {
+      // 배포시 활성화
+      "HttpsDefaultCert": {
+        "Url": "https://0.0.0.0:5246",
+        "Protocols": "Http1AndHttp2AndHttp3",
+        "Certificate": {
+          "Path": "PFX/sws.s-tec.co.kr_pfx.pfx",
+          "Password": "#sws.s-tec.co.kr@"
+        }
+      },
+      // 개발테스트시 활성화
+      "Http": {
+        //"Url": "http://123.2.156.148:5245",
+        "Url": "http://0.0.0.0:5245",
+        "Protocols": "Http1" // HTTP/1.1만 지원
+      }
+      
+    }
+  },
+  "ConnectionStrings": {
+    //"DefaultConnection": "Server=123.2.159.98;Port=3306;Database=works;User Id=root;Password=stecdev1234!;Connect Timeout=30;SslMode=None;"
+    "DefaultConnection": "Server=127.0.0.1;Port=3306;Database=works;User Id=sworks;Password=stecdev1234!;Connect Timeout=30;SslMode=None;" /* 서버DB */
+    },
+  "JWT": {
+    "Issuer": "https://sws.s-tec.co.kr/",
+    "Audience": "https://sws.s-tec.co.kr/",
+    "authSigningKey": "d5b2e5c7a657f134f879f66f0712578416bed6d698a68d01fbde730b64c45e98"
+  },
+  "APIKEYNAME": "Authorization"
+}

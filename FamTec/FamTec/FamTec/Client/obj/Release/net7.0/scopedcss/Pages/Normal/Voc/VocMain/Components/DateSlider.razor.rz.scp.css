@@ -1,0 +1,65 @@
+.dateslider-container[b-4z1wntt3bs]{
+    display : flex;
+    /*justify-content:center;*/
+    gap : var(--default-pd);
+
+    border-radius : var(--default-rd);
+
+    background-color:var(--default-color);
+}
+
+.dateslider-container .dateslider-btn[b-4z1wntt3bs]{
+    display:flex;
+    align-items: center;
+
+}
+
+.dateslider-container .dateslider-display[b-4z1wntt3bs] {
+    display: flex; /* 내부 요소를 가로로 정렬하기 위해 */
+    /*justify-content : center;*/
+    align-items: center; /* 세로 중앙 정렬 */
+    /*padding: var(--half-pd) var(--default-pd);*/
+    min-width: max-content; /* 최소 너비를 설정하여 고정 너비 유지 */
+    text-align: center; /* 텍스트를 가운데 정렬 */
+}
+
+.dateslider-container .year[b-4z1wntt3bs], .month[b-4z1wntt3bs]{
+    letter-spacing : normal;
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+    white-space: nowrap; /* 텍스트 줄 바꿈 방지 */
+}
+
+/*.arrowL{
+    position : relative;
+}
+
+
+.arrowL::after{
+     position: absolute;
+    left: 0; 
+    top: 0; 
+    content: '';
+    width: 100%;*/ /* 사이즈 */
+    /*height: 100%;*/ /* 사이즈 */
+    /*border-top: 5px solid #000;*/ /* 선 두께 */
+    /*border-right: 5px solid #000;*/ /* 선 두께 */
+    /*transform: rotate(225deg);*/ /* 각도 */
+/*}
+.arrowR{
+    position : relative;
+}
+
+
+.arrowR::after{
+     position: absolute;
+    left: 0; 
+    top: 0; 
+    content: '';
+    width: 50px;*/ /* 사이즈 */
+    /*height: 50px;*/ /* 사이즈 */
+    /*border-top: 5px solid #000;*/ /* 선 두께 */
+    /*border-right: 5px solid #000;*/ /* 선 두께 */
+    /*transform: rotate(45deg);*/ /* 각도 */
+/*}*/

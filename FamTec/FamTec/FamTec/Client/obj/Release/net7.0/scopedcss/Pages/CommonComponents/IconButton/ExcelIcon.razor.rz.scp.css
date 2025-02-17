@@ -1,0 +1,20 @@
+.icon[b-5tccqw2efa]{
+    display:flex;
+    align-items:center;
+
+    height:100%;
+}
+
+.icon:hover[b-5tccqw2efa]{
+    cursor : pointer;
+
+}
+
+
+/*.icon:hover > svg{
+    fill: var(--main-color);
+}
+*/
+svg[b-5tccqw2efa] {
+    transition: all .2s;
+}

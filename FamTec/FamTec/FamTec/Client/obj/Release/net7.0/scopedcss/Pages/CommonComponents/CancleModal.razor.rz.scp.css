@@ -1,0 +1,37 @@
+.cancle-modal[b-m8ptrnziqb] {
+    display:flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+    padding :var(--default-pd);
+
+    border-radius :var(--default-rd) ;
+    border : var(--comp-bd);
+
+
+    width : 20%;
+    height : 20%;
+
+    background-color:var(--default-color);
+    box-shadow : var(--default-bs);
+}
+
+.cancle-modal .cancle-content[b-m8ptrnziqb] {
+    display : flex;
+    align-items:center;
+    justify-content:center;
+    height:100%;
+    width:100%;
+}
+
+.cancle-modal .cancle-content > .content[b-m8ptrnziqb]{
+    font-size : 18px;
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+.cancle-modal .cancle-btns[b-m8ptrnziqb] {
+    display: flex;
+    gap: var(--default-pd);
+    width: 100%;
+    border-radius: var(--default-rd);
+}

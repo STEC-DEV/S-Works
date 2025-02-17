@@ -1,0 +1,56 @@
+.list-container[b-kke3sjgqub]{
+    display:flex;
+    flex-direction : column;
+    gap:0.5rem;
+    width:100%;
+    /*height : 100%;*/
+   
+}
+
+
+.list-item[b-kke3sjgqub] {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: min-content auto max-content;
+    grid-template-areas: "img info checkbox";
+    padding: 0.5rem;
+    width: 100%;
+    border-radius: 4px;
+    border: 2px solid #200d69;
+    float:left;
+    background-color:#ffffff;
+}
+
+
+.list-item .item-img[b-kke3sjgqub]{
+    grid-area : img;
+    place-self :center;
+
+    padding : 0.25rem;
+    border-radius:4px;
+
+    width : max-content;
+    height : max-content;
+
+}
+
+.list-item .item-info[b-kke3sjgqub]{
+    grid-area : info;
+    place-self :center;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    width:100%;
+
+}
+.list-item .item-name[b-kke3sjgqub]{
+    display:flex;
+    flex-direction:column;
+}
+
+.list-item .item-checkbox[b-kke3sjgqub]{
+    grid-area : checkbox;
+    place-self :center;
+}

@@ -1,0 +1,14 @@
+
+
+.grid[b-pjhtqrdzia] {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    /*grid-template-rows: repeat(4,1fr);*/
+    grid-gap: var(--default-pd);
+    width: 100%;
+}
+
+.padding[b-pjhtqrdzia]{
+    padding : var(--default-pd);
+}
+
