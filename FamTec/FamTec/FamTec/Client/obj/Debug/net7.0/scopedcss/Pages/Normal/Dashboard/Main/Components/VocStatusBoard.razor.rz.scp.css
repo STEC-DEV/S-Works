@@ -16,6 +16,18 @@
     width: 100%; /* 전체 너비 차지 */
     justify-content: center; /* 내용 중앙 정렬 */
 }
+
+.title-row[b-c42g4wyet7]{
+    display : flex;
+    justify-content:space-between;
+
+}
+
+.date[b-c42g4wyet7] {
+    font-size: var(--normal-size);
+    color: #878787;
+}
+
 .chart-title[b-c42g4wyet7]{
     font-size:var(--normal-size);
     font-weight:bold;
