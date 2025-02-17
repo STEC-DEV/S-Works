@@ -1597,8 +1597,11 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\co
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\u7rrvoavnc-tptq2av103.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\qol3osisp2-lfu7j35m59.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\94ux1qv49h-7cxe8oq9xu.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\hdcz3xcx9t-edm3aphz50.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ao3m03jn2x-egboyocla7.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\hdcz3xcx9t-qic9sqgc96.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ao3m03jn2x-ain0vhxrfr.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\gw3driixm1-vfmkfochob.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\fdaugk9c5z-gwkz5laijq.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\58zld0z5vl-cxh6ao6orq.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\staticwebassets.build.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\staticwebassets.development.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\staticwebassets.build.endpoints.json
@@ -1614,6 +1617,3 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\Fa
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\refint\FamTec.Client.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\ref\FamTec.Client.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\gw3driixm1-4fpqs0efui.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\fdaugk9c5z-3jfnumradn.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\58zld0z5vl-lrj4p4yx53.gz
