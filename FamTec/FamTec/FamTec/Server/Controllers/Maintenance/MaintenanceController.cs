@@ -104,6 +104,8 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 if (model.code == 200)
                     return Ok(model);
+                else if (model.code == 204)
+                    return Ok(new ResponseList<MaintanceYearPriceDTO>() { message = "값이 존재하지 않습니다.", data = null, code = 200 });
                 else
                     return BadRequest();
             }
@@ -132,13 +134,14 @@ namespace FamTec.Server.Controllers.Maintenance
                     return BadRequest();
 
                 ResponseList<MaintanceWeekCount>? model = await MaintanceService.GetMaintanceDashBoardDataService(HttpContext);
+
                 if (model == null)
                     return BadRequest();
-
+                else if (model.code == 204)
+                    return Ok(new ResponseList<MaintanceWeekCount>() { message = "값이 존재하지 않습니다.", data = null, code = 200 });
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
 #endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)

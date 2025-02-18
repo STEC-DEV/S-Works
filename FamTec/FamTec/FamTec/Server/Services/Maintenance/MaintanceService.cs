@@ -105,6 +105,8 @@ namespace FamTec.Server.Services.Maintenance
 
                 if (model is [_, ..])
                     return new ResponseList<MaintanceYearPriceDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else if(model.Count == 0)
+                    return new ResponseList<MaintanceYearPriceDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 204 };
                 else
                     return new ResponseList<MaintanceYearPriceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }

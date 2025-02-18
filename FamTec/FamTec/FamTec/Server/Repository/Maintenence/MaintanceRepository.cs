@@ -65,7 +65,7 @@ namespace FamTec.Server.Repository.Maintenence
                     .ToListAsync();
 
                 if (BuildingTB is not [_, ..])
-                    return null;
+                    return new List<MaintanceYearPriceDTO>();
 
                 // 2. 층 테이블 조회
                 List<FloorTb>? FloorTB = await context.FloorTbs
@@ -129,6 +129,8 @@ namespace FamTec.Server.Repository.Maintenence
                                 m.CreateDt >= StartDate &&
                                 m.CreateDt <= LastDate)
                     .ToListAsync();
+
+                
 
                 // 설비 리스트 조회 (이미 FacilityList에 있음)
                 var facilityList = FacilityList.ToList();

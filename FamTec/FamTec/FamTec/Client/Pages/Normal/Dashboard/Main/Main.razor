@@ -364,7 +364,7 @@ else
                 return;
             }
             vocByTypeDayData = resGet.data;
-            
+
         }
         catch (Exception ex)
         {
@@ -386,6 +386,12 @@ else
             if (selectedInventory != null)
             {
                 selected = selectedInventory.Where(m => m.DashBoardYN == true).Select(m => m.Id).ToList();
+                // if(selected.Count() == 0)
+                // {
+                //     inventoryAmount = new List<InventoryAmountDTO>();
+                //     return;
+                // }
+
                 string ids = string.Join("&MaterialIdx=", selected);
 
                 ResponseList<InventoryAmountDTO> resGet = await apiManager.GetListAsync<InventoryAmountDTO>($"Store/sign/v2/GetInventoryAmount?MaterialIdx={ids}");

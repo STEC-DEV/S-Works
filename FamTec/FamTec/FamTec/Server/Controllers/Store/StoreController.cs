@@ -85,7 +85,7 @@ namespace FamTec.Server.Controllers.Store
                     return BadRequest();
 
                 if (MaterialIdx is null || MaterialIdx.Count == 0)
-                    return Ok();
+                    return NoContent();
 
                 ResponseList<InventoryAmountDTO>? model = await InStoreService.GetDashBoardInvenAmountData(HttpContext, MaterialIdx);
 

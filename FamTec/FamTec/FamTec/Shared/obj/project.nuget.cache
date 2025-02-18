@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "pPr59aprE3g=",
+  "dgSpecHash": "7I8P3oIi6iI=",
   "success": true,
   "projectFilePath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\FamTec.Shared.csproj",
   "expectedPackageFiles": [
@@ -63,10 +63,6 @@
     "C:\\Users\\kyw\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\mysqlconnector\\2.2.5\\mysqlconnector.2.2.5.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\pomelo.entityframeworkcore.mysql\\7.0.0\\pomelo.entityframeworkcore.mysql.7.0.0.nupkg.sha512",
-    "C:\\Users\\kyw\\.nuget\\packages\\runtime.any.system.runtime\\4.3.0\\runtime.any.system.runtime.4.3.0.nupkg.sha512",
-    "C:\\Users\\kyw\\.nuget\\packages\\runtime.any.system.text.encoding\\4.3.0\\runtime.any.system.text.encoding.4.3.0.nupkg.sha512",
-    "C:\\Users\\kyw\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
-    "C:\\Users\\kyw\\.nuget\\packages\\runtime.unix.system.private.uri\\4.3.0\\runtime.unix.system.private.uri.4.3.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.buffers\\4.5.0\\system.buffers.4.5.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.codedom\\4.4.0\\system.codedom.4.4.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.configuration.configurationmanager\\6.0.1\\system.configuration.configurationmanager.6.0.1.nupkg.sha512",
@@ -78,7 +74,6 @@
     "C:\\Users\\kyw\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.memory.data\\1.0.2\\system.memory.data.1.0.2.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
-    "C:\\Users\\kyw\\.nuget\\packages\\system.private.uri\\4.3.0\\system.private.uri.4.3.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.runtime\\4.3.0\\system.runtime.4.3.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.runtime.caching\\6.0.0\\system.runtime.caching.6.0.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
@@ -102,8 +97,7 @@
       "message": "'Azure.Identity' 1.10.3 패키지에 알려진 보통 심각도 취약성인 https://github.com/advisories/GHSA-m5vv-6r4h-3vj9이(가) 있습니다.",
       "libraryId": "Azure.Identity",
       "targetGraphs": [
-        "net7.0",
-        "net7.0/linux-x64"
+        "net7.0"
       ]
     },
     {
@@ -113,8 +107,7 @@
       "message": "'Azure.Identity' 1.10.3 패키지에 알려진 보통 심각도 취약성인 https://github.com/advisories/GHSA-wvxc-855f-jvrv이(가) 있습니다.",
       "libraryId": "Azure.Identity",
       "targetGraphs": [
-        "net7.0",
-        "net7.0/linux-x64"
+        "net7.0"
       ]
     },
     {
@@ -124,8 +117,7 @@
       "message": "'Microsoft.Identity.Client' 4.56.0 패키지에 알려진 보통 심각도 취약성인 https://github.com/advisories/GHSA-m5vv-6r4h-3vj9이(가) 있습니다.",
       "libraryId": "Microsoft.Identity.Client",
       "targetGraphs": [
-        "net7.0",
-        "net7.0/linux-x64"
+        "net7.0"
       ]
     },
     {
@@ -135,8 +127,7 @@
       "message": "'Microsoft.Identity.Client' 4.56.0 패키지에 알려진 낮음 심각도 취약성인 https://github.com/advisories/GHSA-x674-v45j-fwxw이(가) 있습니다.",
       "libraryId": "Microsoft.Identity.Client",
       "targetGraphs": [
-        "net7.0",
-        "net7.0/linux-x64"
+        "net7.0"
       ]
     },
     {
@@ -146,38 +137,7 @@
       "message": "'System.Formats.Asn1' 5.0.0 패키지에 알려진 높음 심각도 취약성인 https://github.com/advisories/GHSA-447r-wph3-92pm이(가) 있습니다.",
       "libraryId": "System.Formats.Asn1",
       "targetGraphs": [
-        "net7.0",
-        "net7.0/linux-x64"
-      ]
-    },
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "'System.Private.Uri' 4.3.0 패키지에 알려진 높음 심각도 취약성인 https://github.com/advisories/GHSA-5f2m-466j-3848이(가) 있습니다.",
-      "libraryId": "System.Private.Uri",
-      "targetGraphs": [
-        "net7.0/linux-x64"
-      ]
-    },
-    {
-      "code": "NU1902",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "'System.Private.Uri' 4.3.0 패키지에 알려진 보통 심각도 취약성인 https://github.com/advisories/GHSA-x5qj-9vmx-7g6g이(가) 있습니다.",
-      "libraryId": "System.Private.Uri",
-      "targetGraphs": [
-        "net7.0/linux-x64"
-      ]
-    },
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "'System.Private.Uri' 4.3.0 패키지에 알려진 높음 심각도 취약성인 https://github.com/advisories/GHSA-xhfc-gr8f-ffwc이(가) 있습니다.",
-      "libraryId": "System.Private.Uri",
-      "targetGraphs": [
-        "net7.0/linux-x64"
+        "net7.0"
       ]
     },
     {
@@ -187,8 +147,7 @@
       "message": "'System.Text.Json' 7.0.0 패키지에 알려진 높음 심각도 취약성인 https://github.com/advisories/GHSA-hh2w-p6rv-4g7w이(가) 있습니다.",
       "libraryId": "System.Text.Json",
       "targetGraphs": [
-        "net7.0",
-        "net7.0/linux-x64"
+        "net7.0"
       ]
     }
   ]
