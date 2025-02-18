@@ -1,1 +1,0 @@
-import{a as t}from"./layouthelper-0c7c89da.js";class e{static viewport(){return new t(window.scrollX,window.scrollY,document.documentElement.clientWidth,document.documentElement.clientHeight)}static page(){return new t(0,0,document.body.clientWidth,document.body.clientHeight)}}export{e as S};

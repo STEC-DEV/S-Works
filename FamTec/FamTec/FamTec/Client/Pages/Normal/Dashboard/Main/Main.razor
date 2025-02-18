@@ -24,7 +24,7 @@ else
             <ColumnBarChart title="민원처리현황(최근 7일)" Data="vocWeekData" PropertyTrans="vocWeekProperyDic" />
             @* <donutchart title="민원발생현황" data="voccurrentdata" propertyname="vocweekpropery" /> *@
             //<RowBarChart title="유형별 민원발생현황" Data="vocByTypeDayData" PropertyName="vocTypeProperty" />
-            <LineChart title="유형별 민원발생추이(최근 7일)" Data="vocByTypeWeekData" propertytrans="vocTypePropertyDic" />
+            <LineChart title="유형별 민원발생추이(최근 7일)" Data="vocByTypeWeekData" propertytrans="vocTypePropertyDic" ErrMsg="" />
         }
         @if (placeMaterialPerm)
         {
@@ -37,7 +37,7 @@ else
         @if (placeMachinePerm || placeElecPerm || placeLiftPerm || placeFirePerm ||
     placeConstructPerm || placeNetworkPerm || placeBeautyPerm || placeSecurityPerm)
         {
-            <LineChart Title="유지보수건수(최근 7일)" Data="maintenanceWeekData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
+            <LineChart Title="유지보수건수(최근 7일)" Data="maintenanceWeekData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" ErrMsg="등록된 설비가 없습니다. 설비를 추가해주세요." />
             <StackBarChart Title="유지보수비용추이(1년)" Data="maintenanceYearPriceData" PropertyName="maintenaceTypeProperty" PropertyTrans="maintenaceTypePropertyDic" />
         }
 
@@ -387,20 +387,13 @@ else
             if (selectedInventory != null)
             {
                 selected = selectedInventory.Where(m => m.DashBoardYN == true).Select(m => m.Id).ToList();
-<<<<<<< HEAD
-                // if(selected.Count() == 0)
-                // {
-                //     inventoryAmount = new List<InventoryAmountDTO>();
-                //     return;
-                // }
 
-=======
                 if(selected.Count == 0)
                 {
                     inventoryAmount = new List<InventoryAmountDTO>();
                     return;
                 }
->>>>>>> origin/Front
+
                 string ids = string.Join("&MaterialIdx=", selected);
 
                 ResponseList<InventoryAmountDTO> resGet = await apiManager.GetListAsync<InventoryAmountDTO>($"Store/sign/v2/GetInventoryAmount?MaterialIdx={ids}");

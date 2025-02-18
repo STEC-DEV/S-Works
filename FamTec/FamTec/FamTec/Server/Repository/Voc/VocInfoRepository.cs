@@ -73,7 +73,7 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>
         /// <returns></returns>
-        public async Task<List<VocWeekStatusCountDTO>?> GetDashBoardWeeksStatusData(DateTime StartDate, DateTime EndDate)
+        public async Task<List<VocWeekStatusCountDTO>?> GetDashBoardWeeksStatusData(DateTime StartDate, DateTime EndDate, int placeid)
         {
             try
             {
@@ -81,9 +81,12 @@ namespace FamTec.Server.Repository.Voc
                     .Select(offset => StartDate.AddDays(offset + 1).Date)
                     .ToList();
 
+                var Buildinglist = await context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToListAsync();
+                var BuildingIdx = Buildinglist.Select(m => m.Id).ToList();
+                
                 // Step 2: 날짜 범위 내의 데이터 가져오기
                 var VocList = await context.VocTbs
-                    .Where(m => m.DelYn != true && m.UpdateDt.Date >= StartDate.AddDays(1) && m.UpdateDt.Date <= EndDate)
+                    .Where(m => m.DelYn != true && m.UpdateDt.Date >= StartDate.AddDays(1) && m.UpdateDt.Date <= EndDate && BuildingIdx.Contains(m.BuildingTbId))
                     .ToListAsync()
                     .ConfigureAwait(false);
 
@@ -205,7 +208,7 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>
         /// <returns></returns>
-        public async Task<List<VocWeekCountDTO>?> GetDashBoardWeeksData(DateTime LastDate, DateTime StartDate)
+        public async Task<List<VocWeekCountDTO>?> GetDashBoardWeeksData(DateTime LastDate, DateTime StartDate, int placeid)
         {
             try
             {
@@ -216,9 +219,13 @@ namespace FamTec.Server.Repository.Voc
 
                 var adjustedEndDate = LastDate.Date.AddDays(1).AddTicks(-1);
 
+                var BuildingList = await context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToListAsync();
+                var BuildingIds = BuildingList.Select(m => m.Id);
+
                 var groupedReceipts = await context.VocTbs
                     .Where(m => m.DelYn != true &&
                                 (m.Type >= 0 && m.Type <= 8) &&
+                                BuildingIds.Contains(m.BuildingTbId) &&
                                 m.CreateDt >= StartDate.AddDays(1) && m.CreateDt <= adjustedEndDate)
                     .GroupBy(m => new { m.CreateDt.Date, m.Type })
                     .ToListAsync()

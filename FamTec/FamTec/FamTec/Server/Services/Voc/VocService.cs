@@ -768,7 +768,7 @@ namespace FamTec.Server.Services.Voc
                 DateTime EndOfWeek = startOfWeek.AddDays(-7);
 
 
-                List<VocWeekCountDTO>? model = await VocInfoRepository.GetDashBoardWeeksData(startOfWeek, EndOfWeek).ConfigureAwait(false);
+                List<VocWeekCountDTO>? model = await VocInfoRepository.GetDashBoardWeeksData(startOfWeek, EndOfWeek, Convert.ToInt32(placeidx)).ConfigureAwait(false);
 
 
                 if (model is not null && model.Any())
@@ -891,7 +891,7 @@ namespace FamTec.Server.Services.Voc
                 DateTime StartDate = ToDays.AddDays(-7);
                 DateTime EndOfWeek = ToDays.AddDays(1).AddTicks(-1);
 
-                List<VocWeekStatusCountDTO>? model = await VocInfoRepository.GetDashBoardWeeksStatusData(StartDate, EndOfWeek);
+                List<VocWeekStatusCountDTO>? model = await VocInfoRepository.GetDashBoardWeeksStatusData(StartDate, EndOfWeek, Convert.ToInt32(placeidx));
 
                 /*
                 var result = model?
