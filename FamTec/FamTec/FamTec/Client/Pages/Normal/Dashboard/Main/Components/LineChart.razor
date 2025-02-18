@@ -4,19 +4,29 @@
 <RadzenCard Style="grid-column:span 5">
     <RadzenColumn Style="height:100%;">
         <h4>@Title</h4>
-        <RadzenChart >
-            <RadzenChartTooltipOptions Shared="@sharedTooltip" />
-            <RadzenValueAxis FormatString="{0:0}" />
-            <RadzenLegend Position="LegendPosition.Bottom"/>
-            @foreach (KeyValuePair<string, string> i in PropertyTrans)
-            {
-                <RadzenLineSeries Smooth="@smooth" Data="@Data" CategoryProperty="Date" Title="@i.Value" ValueProperty="@i.Key" >
-                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Square" Size="3" StrokeWidth="1"/>
-                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
-                </RadzenLineSeries>
-            }
-            <RadzenCategoryAxis Padding="-40" />
-        </RadzenChart>
+        @if(Data == null){
+            <div class="center">
+                <span class="err-msg">
+                    
+                    모든 설비가 존재하지 않습니다. 설비를 등록해주세요.
+                </span>
+            </div>
+        }else{
+            <RadzenChart>
+                <RadzenChartTooltipOptions Shared="@sharedTooltip" />
+                <RadzenValueAxis FormatString="{0:0}" />
+                <RadzenLegend Position="LegendPosition.Bottom" />
+                @foreach (KeyValuePair<string, string> i in PropertyTrans)
+                {
+                    <RadzenLineSeries Smooth="@smooth" Data="@Data" CategoryProperty="Date" Title="@i.Value" ValueProperty="@i.Key">
+                        <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Square" Size="3" StrokeWidth="1" />
+                        <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                    </RadzenLineSeries>
+                }
+                <RadzenCategoryAxis Padding="-40" />
+            </RadzenChart>
+        }
+
     </RadzenColumn>
 </RadzenCard>
 

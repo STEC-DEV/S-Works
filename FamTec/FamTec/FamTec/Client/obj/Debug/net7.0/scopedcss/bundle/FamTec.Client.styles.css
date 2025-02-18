@@ -6794,10 +6794,41 @@ svg:hover[b-5q32ql2i5a] {
         grid-column: 1 / -1;
     }
 }
+/* /Pages/Normal/Dashboard/Main/Components/LineChart.razor.rz.scp.css */
+
+.err-msg[b-ua7h4y178b]{
+    font-size:var(--noraml-size);
+    font-weight:bold;
+    color : #808080;
+
+}
+
+.center[b-ua7h4y178b]{
+    height:calc(100% - 24px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}
 /* /Pages/Normal/Dashboard/Main/Components/ListDonutChart.razor.rz.scp.css */
 .row[b-j8r1sgu0qh]{
     display:flex;
     justify-content:space-between;
+}
+
+.err-msg[b-j8r1sgu0qh]{
+    font-size:var(--noraml-size);
+    font-weight:bold;
+    color : #808080;
+
+}
+
+.center[b-j8r1sgu0qh]{
+    height:calc(100% - 24px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
 }
 /* /Pages/Normal/Dashboard/Main/Components/SearchTable.razor.rz.scp.css */
 .table[b-od1ctiu5t4] {
@@ -6896,6 +6927,20 @@ svg:hover[b-5q32ql2i5a] {
     white-space: normal; /* 줄바꿈 허용 */
     max-height: 3rem; /* 스크롤 영역 높이 제한 */
     max-width: 150px; /* 스크롤 영역 너비 제한 */
+}
+/* /Pages/Normal/Dashboard/Main/Components/StackBarChart.razor.rz.scp.css */
+
+.err-msg[b-tmzrkl63hj] {
+    font-size: var(--noraml-size);
+    font-weight: bold;
+    color: #808080;
+}
+
+.center[b-tmzrkl63hj] {
+    height: calc(100% - 24px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 /* /Pages/Normal/Dashboard/Main/Components/VocStatusBoard.razor.rz.scp.css */
 

@@ -1,20 +1,31 @@
 ﻿@typeparam T
 
-<RadzenCard Style="height:100%; grid-column:span 4; min-height:300px;">
-    <RadzenColumn >
+<RadzenCard Style=" grid-column:span 4; min-height:300px;">
+    <RadzenColumn Style="height:100%;">
         <h4>@Title</h4>
-        <RadzenChart>
-            
-            @foreach (KeyValuePair<string, string> i in PropertyTrans)
-            {
-                <RadzenStackedColumnSeries Data="Data" CategoryProperty="Month" Title="@i.Value" LineType="LineType.Dashed" ValueProperty="@i.Key">
-                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
-                    <RadzenMarkers Visible=true MarkerType="MarkerType.Square" Size="3" StrokeWidth="1" />
-                </RadzenStackedColumnSeries>
-            }
-            <RadzenColumnOptions Radius="5" Width="10" />
-            
-        </RadzenChart>
+        @if (Data == null)
+        {
+            <div class="center">
+                <span class="err-msg">
+
+                    모든 설비가 존재하지 않습니다. 설비를 등록해주세요.
+                </span>
+            </div>
+        }else{
+            <RadzenChart>
+
+                @foreach (KeyValuePair<string, string> i in PropertyTrans)
+                {
+                    <RadzenStackedColumnSeries Data="Data" CategoryProperty="Month" Title="@i.Value" LineType="LineType.Dashed" ValueProperty="@i.Key">
+                        <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                        <RadzenMarkers Visible=true MarkerType="MarkerType.Square" Size="3" StrokeWidth="1" />
+                    </RadzenStackedColumnSeries>
+                }
+                <RadzenColumnOptions Radius="5" Width="10" />
+
+            </RadzenChart>
+        }
+        
     </RadzenColumn>
 </RadzenCard>
 
