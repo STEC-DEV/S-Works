@@ -1,0 +1,15 @@
+﻿
+.err-msg{
+    font-size:var(--noraml-size);
+    font-weight:bold;
+    color : #808080;
+
+}
+
+.center{
+    height:calc(100% - 24px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}

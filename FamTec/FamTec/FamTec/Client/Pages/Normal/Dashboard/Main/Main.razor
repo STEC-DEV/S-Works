@@ -205,6 +205,7 @@ else
         await GetAllMaterialList();
         if (placeMaterialPerm)
         {
+            Console.WriteLine("실행");
             dataTasks.Add(OnLoadInventorybyMaterial());
         }
 
@@ -364,7 +365,7 @@ else
                 return;
             }
             vocByTypeDayData = resGet.data;
-            
+
         }
         catch (Exception ex)
         {
@@ -386,6 +387,11 @@ else
             if (selectedInventory != null)
             {
                 selected = selectedInventory.Where(m => m.DashBoardYN == true).Select(m => m.Id).ToList();
+                if(selected.Count == 0)
+                {
+                    inventoryAmount = new List<InventoryAmountDTO>();
+                    return;
+                }
                 string ids = string.Join("&MaterialIdx=", selected);
 
                 ResponseList<InventoryAmountDTO> resGet = await apiManager.GetListAsync<InventoryAmountDTO>($"Store/sign/v2/GetInventoryAmount?MaterialIdx={ids}");
@@ -481,11 +487,11 @@ else
             }
             if (resGet.data == null)
             {
-                maintenanceWeekData = new List<MaintenanceWeekCountDTO>();
+                maintenanceWeekData = null;
                 return;
             }
             maintenanceWeekData = resGet.data;
-            
+
         }
         catch (Exception ex)
         {
@@ -505,7 +511,7 @@ else
             }
             if (resGet.data == null)
             {
-                maintenanceYearPriceData = new List<MaintenanceYearPriceDTO>();
+                maintenanceYearPriceData = null;
 
                 return;
             }

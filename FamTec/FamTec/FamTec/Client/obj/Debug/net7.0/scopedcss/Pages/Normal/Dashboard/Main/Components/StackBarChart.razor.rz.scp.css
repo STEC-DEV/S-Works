@@ -1,0 +1,13 @@
+
+.err-msg[b-tmzrkl63hj] {
+    font-size: var(--noraml-size);
+    font-weight: bold;
+    color: #808080;
+}
+
+.center[b-tmzrkl63hj] {
+    height: calc(100% - 24px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,15 @@
+
+.err-msg[b-ua7h4y178b]{
+    font-size:var(--noraml-size);
+    font-weight:bold;
+    color : #808080;
+
+}
+
+.center[b-ua7h4y178b]{
+    height:calc(100% - 24px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}

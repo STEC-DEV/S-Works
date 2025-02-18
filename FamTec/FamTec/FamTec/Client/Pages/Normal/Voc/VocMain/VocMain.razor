@@ -10,28 +10,28 @@
     <div class="condition-container">
 
         <SearchFilter 
-            DefaultOption="@DefaultOptionv2"
-            OnSearchClicked="OnSearch"
-            
-            Bulildingsv2="@buildingv2"
-            Statusv2="@statev2"
-            Typev2="@typev2"
-            Divisionv2="@divisionv2"
-            />
+        DefaultOption="@DefaultOptionv2"
+        OnSearchClicked="OnSearch"
+
+        Bulildingsv2="@buildingv2"
+        Statusv2="@statev2"
+        Typev2="@typev2"
+        Divisionv2="@divisionv2"
+        />
     </div>
     @* MonthListData="MonthVocData" *@
     <div class="content-container">
-            <VocHIstory 
-                ListData="VocData" 
-                CurrentMonth="@curMonth"
-                DefaultOption=@DefaultOptionv2 
-                IsLoading=@IsLoading
-                CurrentDate="@curDate"
-                OnDateChange=HandleDateChanged
-                OnLoadVoc = "OnRequestVocV2"
-                SearchParam="@SearchParams"
-                />
-        </div>
+        <VocHIstory 
+        ListData="VocData" 
+        CurrentMonth="@curMonth"
+        DefaultOption=@DefaultOptionv2 
+        IsLoading=@IsLoading
+        CurrentDate="@curDate"
+        OnDateChange=HandleDateChanged
+        OnLoadVoc = "OnRequestVocV2"
+        SearchParam="@SearchParams"
+        />
+    </div>
 </div>
 
 @code {
@@ -55,15 +55,15 @@
         await OnLoadBuildingv2();
         DateTime date = DateTime.Now;
         curMonth = date.ToString("yyyy-MM");
-        await OnRequestVocV2();
+        // await OnRequestVocV2();
+
         StateHasChanged();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-
-
         await OnRequestVocV2();
+
     }
 
 
@@ -157,6 +157,12 @@
     {
         try
         {
+            
+            if(buildingv2.Count < 1){
+                await JS.InvokeVoidAsync("alert", "건물이 존재하지않습니다.");
+                VocData = new List<ListVocDTO>();
+                return;
+            }
             if (!string.IsNullOrEmpty(SearchParams))
             {                
                 OnParseQueryStringv2();
@@ -214,7 +220,7 @@
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            await JS.InvokeVoidAsync("alert", "조회 실패");
+            await JS.InvokeVoidAsync("alert", "조회 실패2");
         }
     }
 

@@ -282,8 +282,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName>ScopedCss</AssetTraitName>
       <AssetTraitValue>ApplicationBundle</AssetTraitValue>
-      <Fingerprint>upis30zpy3</Fingerprint>
-      <Integrity>wqDCgxaNgnpMbNX1/g4ytJhdR7WigbJPHJTFDj2Emtw=</Integrity>
+      <Fingerprint>kwurw4t19i</Fingerprint>
+      <Integrity>NJWm54V+zCwoiAofkr4hOpt0vyZMVVB77XRD2u4ZGF8=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\FamTec.Client.styles.css'))</OriginalItemSpec>
@@ -786,8 +786,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>tlyt07seuc</Fingerprint>
-      <Integrity>cRDLjrec378mzCcC1cFHBN/Mp21HYGEpWja3jv8sDpk=</Integrity>
+      <Fingerprint>hjj0b2llu1</Fingerprint>
+      <Integrity>7SX5hcTLIHM2OQsevz49Gm+Dq3fWNJIGraYuvaWA+QQ=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\viewerOutsideClickListener.js'))</OriginalItemSpec>

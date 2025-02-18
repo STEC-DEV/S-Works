@@ -14,8 +14,13 @@
         <EditButton OnClick="OnEdit" />
     </div>
 
-    @if (Data == null){
-        <sapn>없음</sapn>
+    @if (Data.Count < 1){
+        <div class="center">
+            <span class="err-msg">
+                선택된 품목이 존재하지 않습니다. 품목을 선택해주세요.
+            </span>
+        </div>
+        
     }else{
         <RadzenRow Style="height:100%; align-items:center">
             @foreach (InventoryAmountDTO item in Data)
