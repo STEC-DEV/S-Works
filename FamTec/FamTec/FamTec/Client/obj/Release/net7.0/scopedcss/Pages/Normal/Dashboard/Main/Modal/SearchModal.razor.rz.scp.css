@@ -1,0 +1,45 @@
+.modal[b-deolor0pp1] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    /*width: 30%;*/
+    max-width: 50%;
+    max-height: 530px;
+    min-width: 440px;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+.modal .header>.title[b-deolor0pp1]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+
+.content[b-deolor0pp1] {
+    height: 100%;
+    display : flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+    overflow : auto;
+}
+
+modal-table[b-deolor0pp1]{
+    overflow : auto;
+}
+
+
+.btns[b-deolor0pp1] {
+    display: flex;
+    gap: var(--default-pd);
+}
+
+.sub-title[b-deolor0pp1] {
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}

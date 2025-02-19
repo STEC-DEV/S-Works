@@ -1,0 +1,13 @@
+.modal-background[b-ctitcvxjcv] {
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    inset: 0;
+    background: #a9a9a9b2;
+    /*width: 100vw;
+    height: 100vh;*/
+}

@@ -1,0 +1,35 @@
+
+.pagenation[b-vebw2pb2rq]{
+    display :flex;
+    gap : var(--default-pd);
+    align-items :center;
+}
+
+.page-wrap[b-vebw2pb2rq]{
+    display : flex;
+    gap : var(--half-pd);
+}
+
+.page[b-vebw2pb2rq]{
+    font-size : var(--normal-size);
+    color : var(--main-color);
+
+    border : var(--comp-bd);
+    padding :var(--one-q-pd) var(--half-pd);
+    transition : all .3s ;
+}
+
+.page:hover[b-vebw2pb2rq] {
+    background-color : var(--main-color);
+    color : var(--default-color);
+    cursor :pointer;
+}
+
+.move:hover[b-vebw2pb2rq] {
+    cursor: pointer;
+}
+
+.active[b-vebw2pb2rq]{
+    background-color :var(--main-color);
+    color:white;
+}

@@ -1,0 +1,117 @@
+.table[b-sfcufcjpv9] {
+    border-collapse: separate;
+    width: 100%;
+    /*table-layout: fixed;*/
+    /*height: 100%;*/
+}
+
+.table .thead[b-sfcufcjpv9]{
+    background-color : var(--main-color);
+    position:sticky;
+    top:0;
+    box-shadow: 0 8px 12px -2px #a1a1a1;
+}
+
+.table .th-tr[b-sfcufcjpv9]{
+    background-color:var(--main-color);
+    border-radius: var(--default-rd);
+}
+
+/*
+    테이블 헤더 둥글게
+*/
+.table .th:first-child[b-sfcufcjpv9] {
+    border-radius: 4px 0 0 4px;
+}
+
+.table .th:last-child[b-sfcufcjpv9] {
+    border-radius: 0 4px 4px 0;
+}
+
+/* 둥글게 끝*/
+
+.table .th[b-sfcufcjpv9]{
+    padding:0 var(--half-pd);
+    font-size:var(--normal-size);
+    font-weight:var(--bold-wt);
+   
+}
+
+
+.table .th-subp[b-sfcufcjpv9] {
+     padding:var(--half-pd);
+    font-size:var(--normal-size);
+    font-weight:var(--bold-wt);
+}
+
+
+.sub-span[b-sfcufcjpv9] {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: var(--bold-wt);
+    color: var(--default-color);
+    padding: var(--half-pd)
+}
+
+.table .text-center[b-sfcufcjpv9]{
+    text-align : center;
+}
+
+.table th>span[b-sfcufcjpv9]{
+     display : inline-block;
+
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+    color : var(--default-color);
+
+    padding : var(--three-q-pd) var(--half-pd);
+}
+
+.table .tbody[b-sfcufcjpv9]{
+    overflow:auto;
+}
+
+.table .tr[b-sfcufcjpv9]{
+    border-bottom : var(--layout-bd);
+}
+
+
+.table .tr:hover td[b-sfcufcjpv9]{
+    background-color:var(--main-light);
+    
+}
+
+.table .td[b-sfcufcjpv9]{
+    text-overflow: ellipsis;
+    /*overflow:hidden;*/
+    white-space: nowrap;
+    word-break:break-all;
+
+    padding:0.8rem;
+
+    
+    text-align: center;
+    font-size:0.8rem;
+    font-weight:var(--bold-wt);
+    color : var(--main-color);
+    border-bottom : var(--layout-bd);
+}
+.table .tbody-tr:hover td[b-sfcufcjpv9]{
+    background-color:var(--main-light);
+    
+}
+
+.table[b-sfcufcjpv9]  .table-td-link {
+    color : var(--main-color);
+}
+
+.row[b-sfcufcjpv9]{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap :var(--one-q-pd);
+}
+
+.icon[b-sfcufcjpv9]{
+    width:0.8rem;
+}

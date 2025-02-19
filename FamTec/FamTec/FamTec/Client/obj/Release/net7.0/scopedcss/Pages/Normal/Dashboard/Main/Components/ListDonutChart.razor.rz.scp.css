@@ -1,0 +1,19 @@
+.row[b-j8r1sgu0qh]{
+    display:flex;
+    justify-content:space-between;
+}
+
+.err-msg[b-j8r1sgu0qh]{
+    font-size:var(--noraml-size);
+    font-weight:bold;
+    color : #808080;
+
+}
+
+.center[b-j8r1sgu0qh]{
+    height:calc(100% - 24px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}

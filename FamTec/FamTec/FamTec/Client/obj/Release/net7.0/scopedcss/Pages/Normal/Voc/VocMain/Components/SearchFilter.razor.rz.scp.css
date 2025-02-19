@@ -1,0 +1,102 @@
+
+
+.filter[b-y76zd9c9py] {
+    padding: var(--default-pd);
+    min-height: 100%;
+    height: 100%;
+    width:100%;
+    
+    /*overflow: hidden;*/
+}
+
+
+.filter-wrap[b-y76zd9c9py] {
+    background-color: var(--default-color);
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd) var(--wide-pd);
+    min-height: 100%;
+    height: 100%;
+    width: 100%;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    box-shadow: var(--shadow-1);
+}
+
+.header[b-y76zd9c9py] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--default-pd) 0;
+    border-bottom: var(--default-bd);
+}
+
+.title[b-y76zd9c9py] {
+    white-space: nowrap;
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.content[b-y76zd9c9py] {
+    /*display : flex;
+    justify-content : space-between;
+    gap : var(--wide-pd);*/
+    width:100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-row-gap: var(--default-pd);
+    grid-column-gap: calc(var(--wide-pd) * 3);
+}
+
+.filter-date[b-y76zd9c9py] {
+    width: 100%;
+    display: flex;
+    gap: var(--default-pd);
+    font-size: inherit;
+}
+
+.filter-date .filter-date-title[b-y76zd9c9py]{
+    display:flex;
+    align-items:center;
+    font-size:var(--normal-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+    white-space:nowrap;
+    font-size: var(--normal-size) !important;
+   /* font-weight : var(--bold-wt);
+    color : var(--main-color);*/
+}
+
+.filter-date-content[b-y76zd9c9py] {
+    display: flex;
+    gap: var(--default-pd);
+}
+
+.filter-date-item[b-y76zd9c9py]{
+    width:100%;
+    display : flex;
+    align-items :center;
+    gap : var(--default-pd);
+}
+
+.item-group[b-y76zd9c9py]{
+    display:flex;
+    gap:var(--half-pd);
+    
+}
+
+.width[b-y76zd9c9py]{
+    width:100%;
+}
+
+.filter-date .label[b-y76zd9c9py] {
+    color: var(--main-color);
+    white-space: nowrap;
+    font-size:var(--normal-size);
+}
+
+.none[b-y76zd9c9py]{
+    display : none;
+}
