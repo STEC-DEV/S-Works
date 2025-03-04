@@ -49,7 +49,7 @@
         var base64 = Convert.ToBase64String(fileBytes);
         var fileUrl = $"data:application/pdf;base64,{base64}";
 
-        await JS.InvokeVoidAsync("downloadFile", fileUrl, "S-Works_관리자설명서_1.3_KO_241211.pdf");
+        await JS.InvokeVoidAsync("downloadFile", fileUrl, "S-Works_관리자설명서_KO_SWS.pdf");
     }
 
     protected async Task btnDownloadBuildingForm()

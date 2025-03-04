@@ -46,7 +46,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 byte[]? fileBytes = await AdminPlaceService.DownloadAdminGuidForm(HttpContext);
 
                 if (fileBytes is not null)
-                    return File(fileBytes, "application/pdf", "S-Works_관리자설명서_1.3_KO_241211.pdf");
+                    return File(fileBytes, "application/pdf", "S-Works_관리자설명서_KO_SWS.pdf");
                 else
                     return Ok();
             }

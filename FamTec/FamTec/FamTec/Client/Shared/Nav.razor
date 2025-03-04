@@ -408,7 +408,7 @@
         var base64 = Convert.ToBase64String(filebytes);
         var fileurl = $"data:application/pdf;base64,{base64}";
 
-        string title = LoginMode ? "S-Works_관리자설명서_1.3.pdf" : "S-Works_사용자설명서_KO_SWS.pdf";
+        string title = LoginMode ? "S-Works_관리자설명서_KO_SWS.pdf" : "S-Works_사용자설명서_KO_SWS.pdf";
         await JS.InvokeVoidAsync("downloadFile", fileurl, title);
     }
 

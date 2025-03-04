@@ -59,6 +59,9 @@
 		<None Update="GuideForm\S-Works_관리자설명서_1.3_KO_241211.pdf">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<None Update="GuideForm\S-Works_관리자설명서_KO_SWS.pdf">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 		<None Update="GuideForm\S-Works_사용자설명서_1.3_KO_241211.pdf">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
