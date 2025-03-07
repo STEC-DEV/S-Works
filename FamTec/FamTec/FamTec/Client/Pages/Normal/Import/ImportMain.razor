@@ -87,7 +87,7 @@
     bool placeBeauty;
     bool placeSecurity;
     bool placeMaterial;
-    
+
 
 
     IBrowserFile buildingFile;
@@ -131,7 +131,7 @@
         placeBeauty = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Beauty");
         placeSecurity = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Security");
         placeMaterial = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Material");
-        
+
 
         bool hasAnyPermission = building == 2 ||
             (machine == 2 && placeMachine) ||
@@ -187,9 +187,16 @@
         await JS.InvokeVoidAsync("downloadFile", fileurl, "건물정보(양식).xlsx");
     }
 
+    /*
+     * 설비양식 다운
+     */
     protected async Task btnDownloadFaciliyForm()
     {
-
+        if (RoomList.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "위치를 생성해주세요.");
+            return;
+        }
         var filebytes = await apiManager.GetFileAsync("machinefacility/sign/downloadmachinefacilityform");
         var base64 = Convert.ToBase64String(filebytes);
         var fileurl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
@@ -202,7 +209,10 @@
     */
     protected async Task btnDownloadMaterialForm()
     {
-
+        if(RoomList.Count == 0){
+            await JS.InvokeVoidAsync("alert", "위치를 생성해주세요.");
+            return;
+        }
         var filebytes = await apiManager.GetFileAsync("material/sign/downloadmaterialform");
         var base64 = Convert.ToBase64String(filebytes);
         var fileurl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
