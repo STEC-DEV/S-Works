@@ -15,6 +15,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\ExcelForm\건물정보(양식).xlsx
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\ExcelForm\사용자정보(양식).xlsx
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\GuideForm\S-Works_관리자설명서_1.3_KO_241211.pdf
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\GuideForm\S-Works_관리자설명서_KO_SWS.pdf
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\GuideForm\S-Works_사용자설명서_1.3_KO_241211.pdf
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\GuideForm\S-Works_사용자설명서_KO_SWS.pdf
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\PFX\sws.s-tec.co.kr_pfx.pfx
@@ -200,4 +201,3 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\FamTec.Server.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\FamTec.Server.genruntimeconfig.cache
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\ref\FamTec.Server.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\GuideForm\S-Works_관리자설명서_KO_SWS.pdf
