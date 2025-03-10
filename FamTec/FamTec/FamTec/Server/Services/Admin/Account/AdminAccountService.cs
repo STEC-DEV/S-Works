@@ -257,6 +257,7 @@ namespace FamTec.Server.Services.Admin.Account
                 model.VocMachine = true;
                 model.VocElec = true;
                 model.VocLift = true;
+                model.VocFire = true;
                 model.VocConstruct = true;
                 model.VocNetwork = true;
                 model.VocBeauty = true;
