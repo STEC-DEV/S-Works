@@ -1601,9 +1601,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\comp
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\94ux1qv49h-7cxe8oq9xu.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\hdcz3xcx9t-4ino0ooz5n.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\ao3m03jn2x-18rru8eb3u.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\gw3driixm1-2mwzvk9n5e.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\fdaugk9c5z-ctgco6b4kw.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\58zld0z5vl-28d8hhfgdk.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\staticwebassets.build.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\staticwebassets.development.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\staticwebassets.build.endpoints.json
@@ -1619,3 +1616,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\FamT
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\refint\FamTec.Client.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\FamTec.Client.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\ref\FamTec.Client.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\gw3driixm1-z8i2bok5fu.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\fdaugk9c5z-37ndoh31a4.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\58zld0z5vl-mzh9lqewcl.gz
