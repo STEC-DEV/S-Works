@@ -808,7 +808,7 @@ namespace FamTec.Server.Services.Voc
 
                 DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
 
-                VocDaysCountDTO? model = await VocInfoRepository.GetDashBoardDaysData(NowDate).ConfigureAwait(false);
+                VocDaysCountDTO? model = await VocInfoRepository.GetDashBoardDaysData(NowDate, Convert.ToInt32(placeidx)).ConfigureAwait(false);
                 if(model is not null)
                 {
                     
@@ -847,7 +847,7 @@ namespace FamTec.Server.Services.Voc
 
                 DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
 
-                VocDaysStatusCountDTO? model = await VocInfoRepository.GetDashBoardDaysStatusData(NowDate).ConfigureAwait(false);
+                VocDaysStatusCountDTO? model = await VocInfoRepository.GetDashBoardDaysStatusData(NowDate,Convert.ToInt32(placeidx)).ConfigureAwait(false);
 
                 if(model is not null)
                 {

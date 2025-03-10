@@ -1,4 +1,6 @@
-﻿using FamTec.Client.Pages.Normal.User.UserAdd;
+﻿using DevExpress.Blazor;
+using DevExpress.Xpo.Metadata;
+using FamTec.Client.Pages.Normal.User.UserAdd;
 using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
@@ -30,12 +32,19 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="NowDate"></param>
         /// <returns></returns>
-        public async Task<VocDaysStatusCountDTO?> GetDashBoardDaysStatusData(DateTime NowDate)
+        public async Task<VocDaysStatusCountDTO?> GetDashBoardDaysStatusData(DateTime NowDate,int placeid)
         {
             try
             {
+                var BuildingList = await context.BuildingTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid).ToListAsync();
+                if (BuildingList is null)
+                    return null;
+
+                List<int> BuildingIdx = BuildingList.Select(m => m.Id).ToList();
+
+
                 List<VocTb> VocList = await context.VocTbs
-                .Where(m => m.DelYn != true && m.UpdateDt.Date == NowDate)
+                .Where(m => m.DelYn != true && m.UpdateDt.Date == NowDate && BuildingIdx.Contains(m.BuildingTbId))
                 .ToListAsync()
                 .ConfigureAwait(false);
 
@@ -135,13 +144,17 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="NowDate"></param>
         /// <returns></returns>
-        public async Task<VocDaysCountDTO?> GetDashBoardDaysData(DateTime NowDate)
+        public async Task<VocDaysCountDTO?> GetDashBoardDaysData(DateTime NowDate, int placeid)
         {
             try
             {
+                var Buildinglist = await context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToListAsync();
+                var BuildingIdx = Buildinglist.Select(m => m.Id).ToList();
+
                 // Step 1: 데이터베이스에서 오늘 날짜에 해당하는 데이터만 가져오기
                 var groupedReceipts = await context.VocTbs
                     .Where(m => m.DelYn != true &&
+                                BuildingIdx.Contains(m.BuildingTbId) &&
                                 (m.Type >= 0 && m.Type <= 8) &&  // 0부터 8까지의 Type
                                 m.CreateDt.Date == NowDate)       // 오늘 날짜만 필터링
                     .GroupBy(m => new { m.CreateDt.Date, m.Type }) // CreateDt의 Date와 Type을 기준으로 그룹화

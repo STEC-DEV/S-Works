@@ -72,7 +72,7 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="NowDate"></param>
         /// <returns></returns>
-        Task<VocDaysCountDTO?> GetDashBoardDaysData(DateTime NowDate);
+        Task<VocDaysCountDTO?> GetDashBoardDaysData(DateTime NowDate, int placeid);
 
         /// <summary>
         /// DashBoard 용 7일 처리현황별 카운트
@@ -87,7 +87,7 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="NowDate"></param>
         /// <returns></returns>
-        Task<VocDaysStatusCountDTO?> GetDashBoardDaysStatusData(DateTime NowDate);
+        Task<VocDaysStatusCountDTO?> GetDashBoardDaysStatusData(DateTime NowDate,int placeid);
 
     }
 }
