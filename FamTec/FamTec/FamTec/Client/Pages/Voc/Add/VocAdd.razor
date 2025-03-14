@@ -7,120 +7,125 @@
 @using FamTec.Shared.Server.DTO
 
 
-<div class="voc ">
-    <div class="header yappear">
-        <span class="title">
-            @PlaceName [@BuildingName] 민원 접수
-        </span>
-    </div>
-    <div class="content yappear">
-        <InputCol Label="성함"
-                  @bind-Value=@Voc.Name
-                  Placeholder="성함" />
-        <div class="row">
-            <div class="flex3">
-                <InputCol Label="휴대폰 번호"
-                          ValueType="number"
-                          MaxLength=11
-                          @bind-Value=@Voc.PhoneNumber
-                          Placeholder="휴대폰번호 11자 ( - 제외)" 
-                          ReadOnly=@(authCheck ? true : false)
-                          />
-               
-            </div>
-            <div class="flex1">
-                <span class="text @(isRunning ?  null : "none")">
-                    @($"남은 횟수 : {tryCount}")
-                </span>
-                @if (Voc.PhoneNumber?.Length != 11 || authCheck || tryCount==0)
-                {
+@if(isLoading){
+    <Loading/>
+}else{
+    <div class="voc ">
+        <div class="header yappear">
+            <span class="title">
+                @PlaceName [@BuildingName] 민원 접수
+            </span>
+        </div>
+        <div class="content yappear">
+            <InputCol Label="성함"
+            @bind-Value=@Voc.Name
+            Placeholder="성함" />
+            <div class="row">
+                <div class="flex3">
+                    <InputCol Label="휴대폰 번호"
+                    ValueType="number"
+                    MaxLength=11
+                    @bind-Value=@Voc.PhoneNumber
+                    Placeholder="휴대폰번호 11자 ( - 제외)"
+                    ReadOnly=@(authCheck ? true : false) />
 
-                    <button class="blockbtn">인증번호 요청</button>
-                }
-                else
-                {
-                    if (isRunning)
+                </div>
+                <div class="flex1">
+                    <span class="text @(isRunning ?  null : "none")">
+                        @($"남은 횟수 : {tryCount}")
+                    </span>
+                    @if (Voc.PhoneNumber?.Length != 11 || authCheck || tryCount == 0)
                     {
-                        <Button Name="인증번호 재요청" OnClick="OnRequestCode" />
+
+                        <button class="blockbtn">인증번호 요청</button>
                     }
                     else
                     {
-                        <Button Name="인증번호 요청" OnClick="OnRequestCode" />
-                    }
+                        if (isRunning)
+                        {
+                            <Button Name="인증번호 재요청" OnClick="OnRequestCode" />
+                        }
+                        else
+                        {
+                            <Button Name="인증번호 요청" OnClick="OnRequestCode" />
+                        }
 
-                }
-            </div>
-        </div>
-        @if (isRunning || tryCount > -1)
-        {
-            <div class="row">
-                <div class="flex3">
-                    <InputCol Label=@($"인증번호")
-                              ValueType="number"
-                              MaxLength=4
-                              @bind-Value=@Code
-                              Placeholder="인증번호" />
-                </div> 
-                <div class="flex1">
-                    <span class="text @(isRunning ?  null : "none")">
-                        @($"{timeLeft / 60:D2}:{timeLeft % 60:D2}")
-                    </span>
-                    <Button Name="인증번호 확인" OnClick="OnVerifyCode" />
+                    }
                 </div>
             </div>
-        }
-
-        <InputCol Label="제목"
-                  @bind-Value=@Voc.Title
-                  Placeholder="제목" />
-        <VocInput Label="내용"
-                  @bind-Value=@Voc.Contents
-                  Placeholder="내용"
-                  TextArea=true
-                  Height=true />
-        @if (image.Count > 0)
-        {
-            <ImageSlider Label="첨부 이미지" Images="@image" />
-            <ul class="ul">
-                @foreach (string i in _imageName)
-                {
-                    <li class="li">
-                        <span class="img-title">
-                            @i
+            @if (isRunning || tryCount > -1)
+            {
+                <div class="row">
+                    <div class="flex3">
+                        <InputCol Label=@($"인증번호")
+                        ValueType="number"
+                        MaxLength=4
+                        @bind-Value=@Code
+                        Placeholder="인증번호" />
+                    </div>
+                    <div class="flex1">
+                        <span class="text @(isRunning ?  null : "none")">
+                            @($"{timeLeft / 60:D2}:{timeLeft % 60:D2}")
                         </span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red"
-                             class="bi bi-x xicon" viewBox="0 0 16 16"
-                             @onclick="()=>OnDelImg(i)">
-                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                        </svg>
-                    </li>
-                }
-            </ul>
-        }
-        <InputImages MaxFilesNum="3" OnChange="OnUploadImage" />
-        
-    </div>
-    <div class="checkitem">
-        <CheckItem CheckPerm="OnCheckPerm" />
-    </div>
+                        <Button Name="인증번호 확인" OnClick="OnVerifyCode" />
+                    </div>
+                </div>
+            }
 
-    <div class="btns yappear">
-        @if (permCheck && !string.IsNullOrEmpty(Voc.Name)
-        && !string.IsNullOrEmpty(Voc.PhoneNumber)
-        && authCheck
-        && !string.IsNullOrEmpty(Voc.Title)
-        && !string.IsNullOrEmpty(Voc.Contents)
-        )
-        {
-            <Button Name="접수" Type="0" OnClick="@OnAdd" />
-        }
-        else
-        {
-            <button class="blockbtn">접수</button>
-        }
-        
+            <InputCol Label="제목"
+            @bind-Value=@Voc.Title
+            Placeholder="제목" />
+            <VocInput Label="내용"
+            @bind-Value=@Voc.Contents
+            Placeholder="내용"
+            TextArea=true
+            Height=true />
+            @if (image.Count > 0)
+            {
+                <ImageSlider Label="첨부 이미지" Images="@image" />
+                <ul class="ul">
+                    @foreach (string i in _imageName)
+                    {
+                        <li class="li">
+                            <span class="img-title">
+                                @i
+                            </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red"
+                            class="bi bi-x xicon" viewBox="0 0 16 16"
+                            @onclick="()=>OnDelImg(i)">
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                            </svg>
+                        </li>
+                    }
+                </ul>
+            }
+            <InputImages MaxFilesNum="3" OnChange="OnUploadImage" />
+
+        </div>
+        <div class="checkitem">
+            <CheckItem CheckPerm="OnCheckPerm" />
+        </div>
+
+        <div class="btns yappear">
+            @if (permCheck && !string.IsNullOrEmpty(Voc.Name)
+          && !string.IsNullOrEmpty(Voc.PhoneNumber)
+          && authCheck
+          && !string.IsNullOrEmpty(Voc.Title)
+          && !string.IsNullOrEmpty(Voc.Contents)
+          )
+            {
+                <Button Name="접수" Type="0" OnClick="@OnAdd" />
+            }
+            else
+            {
+                <button class="blockbtn">접수</button>
+            }
+
+        </div>
     </div>
-</div>
+}
+
+
 
 @code {
     [Parameter] public int PlaceId { get; set; }
@@ -131,6 +136,9 @@
 
     string PlaceName = "";
     string BuildingName = "";
+
+    //
+    bool isLoading = true;
 
     //개인약관 체크
     private bool permCheck = false;
@@ -151,6 +159,7 @@
     {
         await OnLoadBuildingName();
         await OnLoadPlaceName();
+        isLoading = false;
     }
 
     /*==========================*/
