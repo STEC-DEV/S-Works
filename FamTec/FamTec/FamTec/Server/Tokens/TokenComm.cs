@@ -38,7 +38,6 @@ namespace FamTec.Server.Tokens
                         IssuerSigningKey = new SymmetricSecurityKey(authSigningKey),
                         ValidateIssuer = false,
                         ValidateAudience = false,
-                        // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
                         ClockSkew = TimeSpan.Zero
                     }, out SecurityToken validatedToken);
 

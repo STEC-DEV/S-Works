@@ -308,19 +308,11 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
 
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
-        //[HttpGet]
         [Route("sign/UpdatePlaceManager")]
-        //public async Task<IActionResult> UpdatePlaceManager()
         public async Task<IActionResult> UpdatePlaceManager([FromBody]UpdatePlaceManagerDTO dto)
         {
             try
             {
-                //UpdatePlaceManagerDTO dto = new UpdatePlaceManagerDTO();
-                //dto.PlaceId = 1;
-                //dto.AdminId.Add(1);
-                //dto.AdminId.Add(3);
-                //dto.AdminId.Add(4);
-
                 if (dto.PlaceId is 0)
                     return NoContent();
 

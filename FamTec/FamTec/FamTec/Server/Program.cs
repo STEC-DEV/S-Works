@@ -83,11 +83,11 @@ using FamTec.Server.Repository.DapperTemp;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 #region Kestrel 서버
 builder.WebHost.UseKestrel((context, options) =>
 {
     options.Configure(context.Configuration.GetSection("Kestrel"));
+    options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1); // 서버가 요청 헤더를 수신하는 데 걸리는 최대 시간을 설정한다.
     // Keep-Alive TimeOut 3분설정 Keep-Alive 타임아웃: 일반적으로 2~5분. 너무 짧으면 연결이 자주 끊어질 수 있고, 너무 길면 리소스가 낭비될 수 있음.
     options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(3);
     // 최대 동시 업그레이드 연결 수:  일반적으로 1000 ~ 5000 사이로 설정하는 것이 좋음
@@ -100,9 +100,38 @@ builder.WebHost.UseKestrel((context, options) =>
         endpointOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
     });
 });
-
 #endregion
 
+// 전달된 헤더의 미들웨어 순서 지정
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
+
+#region 응답압축 설정
+/* 응답압축 설정 */
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.EnableForHttps = true; // HTTPS 요청에서도 응답압축 활성화
+    opts.Providers.Add<BrotliCompressionProvider>();
+    opts.Providers.Add<GzipCompressionProvider>();
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+     {
+            "application/wasm", // WASM 파일 추가
+            "application/octet-stream",
+            "application/json",
+            "application/xml",
+            "text/plain",
+            "text/css",
+            "text/javascript",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/pdf",
+        }).Except(new[] { "text/html" });
+});
+#endregion
+
+#region 의존성 주입
 // Add services to the container. - Repository
 builder.Services.AddTransient<IPlaceInfoRepository, PlaceInfoRepository>();
 builder.Services.AddTransient<IBuildingInfoRepository, BuildingInfoRepository>();
@@ -187,8 +216,11 @@ builder.Services.AddSingleton<WorksSetting>();
 //메모리 캐시 사용
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<AuthCodeService>();
+#endregion
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
 
 
 
@@ -286,13 +318,11 @@ else
 #region SIGNAL R 등록
 builder.Services.AddSignalR().AddHubOptions<BroadcastHub>(options =>
 {
-    options.EnableDetailedErrors = true;
-    options.ClientTimeoutInterval = System.TimeSpan.FromSeconds(30);
+    options.EnableDetailedErrors = false; // 허브에서 오류가 발생할때, 클라이언트에게 자세한 오류 정보를 전송할지 여부 
+    options.KeepAliveInterval = System.TimeSpan.FromSeconds(15); // 서버가 클라이언트로 주기적으로 핑을 보냄
+    options.HandshakeTimeout = System.TimeSpan.FromSeconds(15); // 클라이언트가 연결 핸드셰이크를 완료할 때 까지 기다리는 최대 시간.
+    options.ClientTimeoutInterval = System.TimeSpan.FromSeconds(30); // 클라이언트로부터 하트비트를 못받았을 때 서버가 30초동안 기다려준다.
 });
-#endregion
-
-#region SIGNAL R CORS 등록
-
 
 var MyAllowSpectificOrigins = "AllowLocalAndSpecificIP";
 string[]? CorsArr = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
@@ -315,26 +345,7 @@ else
 {
     throw new InvalidOperationException("'Cors' is null or empty.");
 }
-
-/* 응답압축 설정 */
-builder.Services.AddResponseCompression(opts =>
-{
-    opts.EnableForHttps = true; // HTTPS 요청에서도 응답압축 활성화
-    opts.Providers.Add<BrotliCompressionProvider>();
-    opts.Providers.Add<GzipCompressionProvider>();
-    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
-     {
-            "application/wasm", // WASM 파일 추가
-            "application/octet-stream",
-            "application/json",
-            "application/xml",
-            "text/plain",
-            "text/css",
-            "text/javascript",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "application/pdf",
-        }).Except(new[] { "text/html" });
-});
+#endregion
 
 
 /* Brotli와 Gzip 압축 제공자 설정 */
@@ -347,7 +358,7 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {
     options.Level = System.IO.Compression.CompressionLevel.Fastest;
 });
-#endregion
+
 
 /* HttpClient 등록 */
 builder.Services.AddHttpClient("KakaoSendAPI", client =>

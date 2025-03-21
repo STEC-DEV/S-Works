@@ -8,7 +8,6 @@ namespace FamTec.Server.Middleware
         private readonly RequestDelegate Next;
         private readonly ConsoleLogService<IPManageMiddleware> CreateBuilderLogger;
 
-
         public IPManageMiddleware(RequestDelegate _next,
             ILogService _logservice,
             ConsoleLogService<IPManageMiddleware> _createbuilderlogger)
