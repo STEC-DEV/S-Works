@@ -67,6 +67,8 @@
 
     public class LogService : ILogService
     {
+        // 클래스 내에 정적 lock 객체를 선언합니다.
+        private static readonly object LogLock = new object();
         public void LogMessage(string? message)
         {
             try
@@ -96,11 +98,14 @@
                 string filepath = Path.Combine(path, $"{thisday.Year}_{thisday.Month}_{thisday.Day}.txt");
 
                 // 일.txt + 로그내용
-                using (StreamWriter writer = new StreamWriter(filepath, true))
+                lock (LogLock)
                 {
-                    System.Diagnostics.StackTrace objStackTrace = new System.Diagnostics.StackTrace(new System.Diagnostics.StackFrame(1));
-                    var s = objStackTrace.ToString(); // 호출한 함수 위치
-                    writer.WriteLine($"[{thisday.ToString()}]\t{message}");
+                    using (var fs = new FileStream(filepath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                    using (StreamWriter writer = new StreamWriter(filepath))
+                    {
+                        System.Diagnostics.StackTrace objStackTrace = new System.Diagnostics.StackTrace(new System.Diagnostics.StackFrame(1));
+                        var s = objStackTrace.ToString(); // 호출한 함수 위치
+                        writer.WriteLine($"[{thisday.ToString()}]\t{message}");
 
 #if DEBUG
                     Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
@@ -108,6 +113,7 @@
                     Console.WriteLine($"[{thisday.ToString()}]\t{message}");
                     Console.ResetColor();
 #endif
+                    }
                 }
             }
             catch(Exception ex)
