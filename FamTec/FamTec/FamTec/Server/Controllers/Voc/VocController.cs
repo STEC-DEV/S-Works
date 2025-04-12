@@ -35,6 +35,41 @@ namespace FamTec.Server.Controllers.Voc
             this.FileService = _fileservice;
         }
 
+        /// <summary>
+        /// 민원 이전이력 엑셀 업로드용 양식 다운로드
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/v1/DownloadVocForm")]
+        public async Task<IActionResult> DownloadVocForm()
+        {
+            try
+            {
+                Console.WriteLine("이거호출");
+                if (HttpContext is null)
+                    return BadRequest();
+
+                byte[]? fileBytes = await VocService.DownloadVocForm(HttpContext);
+
+                if (fileBytes is not null)
+                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "민원(양식).xlsx");
+                else
+                    return Ok();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        
+
+
         /* ##################  */
         // [2]. 민원발생현황 - 금일
         [AllowAnonymous]

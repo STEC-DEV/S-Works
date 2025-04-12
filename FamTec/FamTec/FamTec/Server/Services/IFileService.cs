@@ -19,7 +19,7 @@ namespace FamTec.Server.Services
         public Task<bool?> AddImageFile(string newFileName, string folderpath, IFormFile files, [CallerMemberName] string membername = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
 
         /// <summary>
-        /// 이밎지 비율축소 등록
+        /// 이미지 비율축소 등록
         /// </summary>
         /// <param name="newFileName"></param>
         /// <param name="folderpath"></param>

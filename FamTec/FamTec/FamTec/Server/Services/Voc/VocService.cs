@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Hubs;
+﻿using ClosedXML.Excel;
+using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
@@ -29,7 +30,9 @@ namespace FamTec.Server.Services.Voc
 
         private readonly IPlaceInfoRepository PlaceInfoRepository;
         private readonly IHubContext<BroadcastHub> HubContext;
-        
+
+        private readonly IWebHostEnvironment WebHostEnvironment;
+
         private readonly ConsoleLogService<VocService> CreateBuilderLogger;
 
         // 파일디렉터리
@@ -48,6 +51,7 @@ namespace FamTec.Server.Services.Voc
             IKakaoService _kakaoservice,
             IFileService _fileservice,
             ILogService _logservice,
+            IWebHostEnvironment _webhostenvironment,
             ConsoleLogService<VocService> _createbuilderlogger)
         {
             this.VocInfoRepository = _vocinforepository;
@@ -61,10 +65,71 @@ namespace FamTec.Server.Services.Voc
             this.HubContext = _hubcontext;
             this.KakaoService = _kakaoservice;
 
+            this.WebHostEnvironment = _webhostenvironment;
+
             this.FileService = _fileservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
+
+        /// <summary>
+        /// VOC 엑셀 양식 다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<byte[]?> DownloadVocForm(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return null;
+
+                string? PlaceId = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(PlaceId))
+                    return null;
+
+                string? filePath = Path.Combine(WebHostEnvironment.ContentRootPath, "ExcelForm", "민원(양식).xlsx");
+                if (!File.Exists(filePath))
+                    return null;
+
+
+                using var workbook = new XLWorkbook(filePath);
+                var ws = workbook.Worksheet(1); // 건물정보 Sheet
+
+                var BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(PlaceId));
+
+                for (int i = 0; i < BuildingList.Count; i++)
+                {
+                    ws.Cell(i + 3, 1).Value = BuildingList[i].Id;
+                    IXLCell cell = ws.Cell(i + 3, 1);
+                    cell.Style.Font.FontName = "맑은 고딕"; // 셀의 문자의 글꼴을 설정
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙 정렬
+                    cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // 중앙정렬
+
+                    ws.Cell(i + 3, 2).Value = BuildingList[i].Name ?? null;
+                    cell = ws.Cell(i + 3, 2);
+                    cell.Style.Font.FontName = "맑은 고딕";
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙 정렬
+                    cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // 중앙정렬
+                }
+
+                using var ms = new MemoryStream();
+                workbook.SaveAs(ms);
+                return ms.ToArray();
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
 
         /// <summary>
         /// 사업장별 VOC 리스트 조회

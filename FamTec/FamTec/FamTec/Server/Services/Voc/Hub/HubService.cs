@@ -11,6 +11,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.SignalR;
+using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
 
 namespace FamTec.Server.Services.Voc.Hub
 {
@@ -203,10 +204,247 @@ namespace FamTec.Server.Services.Voc.Hub
         }
 
         /// <summary>
+        /// 민원 추가 V2
+        /// - 알림톡 전송여부 추가
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<AddVocReturnDTO?>> AddVocServiceV2(AddVocDTOV2 dto, List<IFormFile>? image)
+        {
+            try
+            {
+                if (dto is null)
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 204 };
+
+                if (String.IsNullOrWhiteSpace(dto.title) || String.IsNullOrWhiteSpace(dto.contents) || String.IsNullOrWhiteSpace(dto.name))
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 204 };
+
+                if(!String.IsNullOrWhiteSpace(dto.phoneNumber))
+                {
+                    bool PhoneNumber = long.TryParse(dto.phoneNumber, out _);
+                    if (!PhoneNumber)
+                        return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 전화번호입니다.", data = null, code = 204 };
+                }
+
+                List<string> newFileName = new List<string>();
+
+                if (image is not null)
+                {
+                    foreach(IFormFile file in image)
+                    {
+                        // 이미지명칭 새롭게 지정
+                        newFileName.Add(FileService.SetNewFileName(dto.name!, file));
+                    }
+                }
+
+                DateTime ThisDate = DateTime.Now;
+
+                var buildingTB = await BuildingInfoRepository.GetBuildingInfo(dto.buildingId!).ConfigureAwait(false);
+                if (buildingTB is null)
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "존재하지 않는 건물입니다.", data = null, code = 404 };
+
+                // ** 전송하지 않더라도 조회 코드는 만들어야할듯 ** //
+                string? ReceiptCode;
+
+                do
+                {
+                    // VOC 에서 SELECT
+                    ReceiptCode = KakaoService.RandomCode();
+                } while (await VocInfoRepository.GetVocInfoByCode(ReceiptCode).ConfigureAwait(false) != null);
+
+                // ================================================
+
+                VocTb? model = new VocTb();
+                model.Title = dto.title; ; // 민원의 제목
+                model.Content = dto.contents; // 민원의 내용
+                model.Type = dto.type; // ADD -> 미분류
+                model.Phone = dto.phoneNumber; // 전화번호
+                model.Status = 0; // Add - > 미처리
+                model.Division = dto.division; // 모바일 : 0, 웹 : 1
+
+                if (dto.phoneNumber is null) // 전화번호 있으면 회신 True / 없으면 False
+                    model.ReplyYn = false;
+                else
+                    model.ReplyYn = true;
+                model.CreateDt = ThisDate;
+                model.CreateUser = dto.name;  // 작성자
+                model.UpdateDt = ThisDate;
+                model.UpdateUser = dto.name; // 작성자
+                model.BuildingTbId = dto.buildingId; // 건물 위치
+
+                // 파일이 있으면
+                if (image is not null && image.Count > 0)
+                {
+                    // 이미지 저장
+                    for (int i = 0; i < image.Count(); i++)
+                    {
+                        switch (i)
+                        {
+                            case 0: model.Image1 = newFileName[i]; break;
+                            case 1: model.Image2 = newFileName[i]; break;
+                            case 2: model.Image3 = newFileName[i]; break;
+                            default: break;
+                        }
+                    }
+                }
+
+                int? resultseq = null;
+                if(dto.sendYn == true) // 받기로 체크한 경우
+                {
+                    if(model.ReplyYn == true) // 전화번호가 있어서 카카오 API를 사용가능한 경우
+                    {
+                        // BlackList Check
+                        BlacklistTb? BlackListTB;
+                        if (!String.IsNullOrWhiteSpace(dto.phoneNumber)) 
+                        {
+                            BlackListTB = await BlackListInfoRepository.GetBlackListInfo(dto.phoneNumber).ConfigureAwait(false);
+                            if(BlackListTB is not null) // 블랙리스트임.
+                            {
+                                // 그냥 DB에 저장만 
+                                var result = await VocInfoRepository.AddAsync(model).ConfigureAwait(false);
+                                if (result is null)
+                                    return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+
+                                resultseq = result.Id;
+                            }
+                            else
+                            {
+                                // 카카오 API + DB저장
+                                var result = await VocInfoRepository.AddAsync(model).ConfigureAwait(false);
+                                if (result is null)
+                                    return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                else
+                                {
+                                    var PlaceTB = await PlaceInfoRepository.GetBuildingPlace(result.BuildingTbId).ConfigureAwait(false);
+
+                                    string Title = model.Title.Length > 8 ? model.Title.Substring(0, 8) + "..." : model.Title;
+                                    string url = $"https://sws.s-tec.co.kr/m/voc/select/{result.Code}";
+
+                                    // 카카오 API 전송 (보낸 USER 휴대폰번호에 전송)
+                                    AddKakaoLogDTO? ApiSendResult = await KakaoService.AddVocAnswer(Title, model.Code, ThisDate, model.Phone, url, PlaceTB.Tel);
+                                    if (ApiSendResult is not null)
+                                    {
+                                        // 카카오 메시지 성공 - 벤더사에 넘어가면 여기탐.
+                                        KakaoLogTb LogTB = new KakaoLogTb();
+                                        LogTB.Code = ApiSendResult.Code!;
+                                        LogTB.Message = ApiSendResult.Message!;
+                                        LogTB.Msgid = ApiSendResult.MSGID;
+                                        LogTB.Phone = result.Phone; // 받는사람 전화번호
+                                        LogTB.MsgUpdate = false; // 카카오 API 밴더에서 전송결과 유무를 받아서 전송됐는지 확인위한 FLAG
+                                        LogTB.CreateDt = ThisDate;
+                                        LogTB.CreateUser = model.CreateUser;
+                                        LogTB.UpdateDt = ThisDate;
+                                        LogTB.UpdateUser = model.UpdateUser;
+                                        LogTB.VocTbId = model.Id; // 민원 ID
+                                        LogTB.PlaceTbId = dto.placeId; // 사업장ID
+                                        LogTB.BuildingTbId = dto.buildingId;
+
+                                        // 카카오API 로그 테이블 ADD
+                                        var LogTBResult = await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
+                                        if (LogTBResult is null)
+                                            return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+
+                                        resultseq = result.Id;
+                                    }
+                                    else
+                                    {
+                                        // 카카오 메시지 에러
+                                        KakaoLogTb LogTB = new KakaoLogTb();
+                                        LogTB.Code = null;
+                                        LogTB.Message = "500";
+                                        LogTB.Msgid = null;
+                                        LogTB.Phone = result.Phone;
+                                        LogTB.MsgUpdate = true;
+                                        LogTB.CreateDt = ThisDate;
+                                        LogTB.CreateUser = model.CreateUser;
+                                        LogTB.UpdateDt = ThisDate;
+                                        LogTB.UpdateUser = model.UpdateUser;
+                                        LogTB.VocTbId = model.Id; // 민원 ID
+                                        LogTB.PlaceTbId = dto.placeId; // 사업장ID
+                                        LogTB.BuildingTbId = dto.buildingId;
+
+                                        // 카카오API 로그 테이블 ADD
+                                        var LogTBResult = await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
+                                        if (LogTBResult is null)
+                                            return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+
+                                        resultseq = result.Id;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else // 아닌경우 그냥 DB 저장만
+                    {
+                        // DB 저장 
+                        // 그냥 DB에 저장만 
+                        var result = await VocInfoRepository.AddAsync(model).ConfigureAwait(false);
+                        if (result is null)
+                            return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+
+                        resultseq = result.Id;
+                    }
+                }
+                else // 아닌경우 그냥 DB 저장만
+                {
+                    // DB 저장 
+                    // 그냥 DB에 저장만 
+                    var result = await VocInfoRepository.AddAsync(model).ConfigureAwait(false);
+                    if (result is null)
+                        return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+
+                    resultseq = result.Id;
+                }
+
+                // 그리고 여기에서 진짜 파일저장하고
+                VocFileFolderPath = Path.Combine(Common.FileServer, dto.placeId.ToString(), "Voc", resultseq.ToString());
+
+                di = new DirectoryInfo(VocFileFolderPath);
+                if (!di.Exists) di.Create();
+
+                // 파일넣기
+                if(image is not null)
+                {
+                    for(int i = 0; i < image.Count;i++)
+                    {
+                        await FileService.AddResizeImageFile(newFileName[i], VocFileFolderPath, image[i]).ConfigureAwait(false);
+                    }
+                }
+
+                // SignalR 쏘고
+                // 민원등록 알림
+                await HubContext.Clients.Group($"{dto.placeId}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다").ConfigureAwait(false);
+                // 민원 상태변경 알림 - 대쉬보드
+                await HubContext.Clients.Group($"{dto.placeId}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
+
+
+                // return
+                return new ResponseUnit<AddVocReturnDTO?>()
+                {
+                    message = "요청이 정상 처리되었습니다.",
+                    data = new AddVocReturnDTO
+                    {
+                        ReceiptCode = ReceiptCode, // 접수번호
+                        PhoneNumber = dto.phoneNumber, // 전화번호
+                        CreateDT = ThisDate.ToString("yyyy-MM-dd HH:mm:ss") // 생성일
+                    },
+                    code = 200
+                };
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
         /// 민원 추가 - 민원인 전용
         /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="image"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<AddVocReturnDTO?>> AddVocService(AddVocDTO dto, List<IFormFile>? files)
         {
@@ -414,7 +652,6 @@ namespace FamTec.Server.Services.Voc.Hub
         /// <summary>
         /// 민원 조회 - 민원인 전용
         /// </summary>
-        /// <param name="voccode"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<VocUserDetailDTO?>> GetVocRecord(string? voccode, bool isMobile)
         {
@@ -577,9 +814,7 @@ namespace FamTec.Server.Services.Voc.Hub
       /// <summary>
       /// 민원 댓글조회 - 민원인 전용
       /// </summary>
-      /// <param name="voccode"></param>
       /// <returns></returns>
-      /// <exception cref="NotImplementedException"></exception>
       public async Task<ResponseList<VocCommentListDTO>?> GetVocCommentList(string? voccode, bool isMobile)
       {
           try
@@ -750,7 +985,6 @@ namespace FamTec.Server.Services.Voc.Hub
         /// <summary>
         /// 민원댓글 상세보기 - 민원인 전용
         /// </summary>
-        /// <param name="commentid"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(int? commentid, bool isMobile)
         {
@@ -898,6 +1132,6 @@ namespace FamTec.Server.Services.Voc.Hub
             }
         }
 
-     
+    
     }
 }

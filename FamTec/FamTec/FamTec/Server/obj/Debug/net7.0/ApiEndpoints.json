@@ -6318,6 +6318,16 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "DownloadVocForm",
+    "RelativePath": "api/Voc/sign/v1/DownloadVocForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
     "Method": "GetVocDaysCount",
     "RelativePath": "api/Voc/sign/v2/GetVocDaysCount",
     "HttpMethod": "GET",

@@ -104,13 +104,65 @@ namespace FamTec.Server.Controllers.Hubs
                 return Problem("서버에서 처리하지 못함", statusCode: 500);
             }
         }
-        
+
+        /// <summary>
+        /// 민원접수 V2 [일반사용자] / 직원용이랑 같이쓰는듯
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("v2/AddVoc")]
+        public async Task<IActionResult> AddVocV2([FromForm] AddVocDTOV2 dto, [FromForm] List<IFormFile>? files)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(dto.title)) // 민원 제목 NULL CHECK
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.contents)) // 민원 내용 NULL CEHCK
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.name)) // 작성자 이름 NULL CHECK
+                    return NoContent();
+
+                // 확장자 검사
+                if (files is [_, ..])
+                {
+                    foreach (IFormFile file in files)
+                    {
+                        if (file.Length > Common.MEGABYTE_10)
+                            return Ok(new ResponseUnit<AddVocReturnDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+
+                        string? extension = Path.GetExtension(file.FileName);
+                        if (String.IsNullOrWhiteSpace(extension))
+                        {
+                            return BadRequest();
+                        }
+
+                        bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                        if (!extensioncheck)
+                        {
+                            return Ok(new ResponseUnit<AddVocReturnDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                        }
+                    }
+                }
+
+
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
+        }
+
 
         /// <summary>
         /// 민원접수 [일반사용자] / 직원용이랑 같이쓰는듯
         /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="files"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("AddVoc")]

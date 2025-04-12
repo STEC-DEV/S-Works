@@ -30,12 +30,45 @@
 <input type="button" value="미화설비양식다운로드" @onclick="(() => btnDownloadbeautyFacilityForm())"/>
 <input type="button" value="품목다운로드" @onclick="(() => btnDownloadMaterialForm())"/>
 <input type="button" value="가이드 다운로드" @onclick="(() => btnDownloadGuideForm())"/>
+<input type="button" value="민원 다운로드" @onclick="(() => btnDownloadVocForm())"/>
 
 
 
 @code {
     private IBrowserFile? selectedFile;
     private bool isFileSelected = false;
+
+    protected async Task btnDownloadVocForm()
+    {
+        Console.WriteLine("여기가 호출됨");
+        HttpClient.DefaultRequestHeaders.Accept.Clear();
+        HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+
+        string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMyIsIk5hbWUiOiLquYDsmqnsmrAiLCJqdGkiOiIzMTE4YWE0Mi1hODYzLTRlZTctYjYyNC1hZjU3NWZjNTZlZjkiLCJBbGFybVlOIjoiVHJ1ZSIsIkFkbWluWU4iOiJUcnVlIiwiVXNlclR5cGUiOiJBRE1JTiIsIkFkbWluSWR4IjoiMyIsIlBsYWNlSWR4IjoiMSIsIlBsYWNlTmFtZSI6IuqwleuCqOyasOyytOq1rSIsIlBsYWNlQ3JlYXRlRFQiOiIyMDI1LTAyLTA2IiwiUm9sZSI6Ik1hc3RlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsIlVzZXJQZXJtcyI6IntcIlVzZXJQZXJtX0Jhc2ljXCI6XCIyXCIsXCJVc2VyUGVybV9NYWNoaW5lXCI6XCIyXCIsXCJVc2VyUGVybV9FbGVjXCI6XCIyXCIsXCJVc2VyUGVybV9MaWZ0XCI6XCIyXCIsXCJVc2VyUGVybV9GaXJlXCI6XCIyXCIsXCJVc2VyUGVybV9Db25zdHJ1Y3RcIjpcIjJcIixcIlVzZXJQZXJtX05ldHdvcmtcIjpcIjJcIixcIlVzZXJQZXJtX0JlYXV0eVwiOlwiMlwiLFwiVXNlclBlcm1fU2VjdXJpdHlcIjpcIjJcIixcIlVzZXJQZXJtX01hdGVyaWFsXCI6XCIyXCIsXCJVc2VyUGVybV9FbmVyZ3lcIjpcIjJcIixcIlVzZXJQZXJtX1VzZXJcIjpcIjJcIixcIlVzZXJQZXJtX1ZvY1wiOlwiMlwifSIsIlZvY1Blcm1zIjoie1wiVm9jTWFjaGluZVwiOlwiVHJ1ZVwiLFwiVm9jRWxlY1wiOlwiVHJ1ZVwiLFwiVm9jTGlmdFwiOlwiVHJ1ZVwiLFwiVm9jRmlyZVwiOlwiVHJ1ZVwiLFwiVm9jQ29uc3RydWN0XCI6XCJUcnVlXCIsXCJWb2NOZXR3b3JrXCI6XCJUcnVlXCIsXCJWb2NCZWF1dHlcIjpcIlRydWVcIixcIlZvY1NlY3VyaXR5XCI6XCJUcnVlXCIsXCJWb2NEZWZhdWx0XCI6XCJUcnVlXCJ9IiwiUGxhY2VQZXJtcyI6IntcIlBsYWNlUGVybV9NYWNoaW5lXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRWxlY1wiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0xpZnRcIjpcIlRydWVcIixcIlBsYWNlUGVybV9GaXJlXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fQ29uc3RydWN0XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fTmV0d29ya1wiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0JlYXV0eVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX1NlY3VyaXR5XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fTWF0ZXJpYWxcIjpcIlRydWVcIixcIlBsYWNlUGVybV9FbmVyZ3lcIjpcIlRydWVcIixcIlBsYWNlUGVybV9Wb2NcIjpcIlRydWVcIn0iLCJleHAiOjE3NDQ0MTQzODQsImlzcyI6Imh0dHBzOi8vc3dzLnMtdGVjLmNvLmtyLyIsImF1ZCI6Imh0dHBzOi8vc3dzLnMtdGVjLmNvLmtyLyJ9.YOw4E4vbVLRIizCvkEFbauq3A1cnPJtww9Rab7vx5Mw";
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+        var fileBytes = await HttpClient.GetByteArrayAsync("http://123.2.156.148:5245/api/Voc/sign/v1/DownloadVocForm");
+        var base64 = Convert.ToBase64String(fileBytes);
+        var fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
+
+        await JS.InvokeVoidAsync("downloadFile", fileUrl, "민원(양식).xlsx");
+    }
+
+    protected async Task btnDownloadForm()
+    {
+        //string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMyIsIk5hbWUiOiLquYDsmqnsmrAiLCJqdGkiOiJlYzgzNDhiMi1jM2VhLTRlYTItODFkOC0xZjY1YWQ3ZmRmOGMiLCJBbGFybVlOIjoiVHJ1ZSIsIkFkbWluWU4iOiJUcnVlIiwiVXNlclR5cGUiOiJBRE1JTiIsIkFkbWluSWR4IjoiMyIsIlBsYWNlSWR4IjoiMSIsIlBsYWNlTmFtZSI6IuqwleuCqOyasOyytOq1rSIsIlBsYWNlQ3JlYXRlRFQiOiIyMDI0LTEwLTMwIiwiUm9sZSI6Ik1hc3RlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsIlVzZXJQZXJtcyI6IntcIlVzZXJQZXJtX0Jhc2ljXCI6XCIyXCIsXCJVc2VyUGVybV9NYWNoaW5lXCI6XCIyXCIsXCJVc2VyUGVybV9FbGVjXCI6XCIyXCIsXCJVc2VyUGVybV9MaWZ0XCI6XCIyXCIsXCJVc2VyUGVybV9GaXJlXCI6XCIyXCIsXCJVc2VyUGVybV9Db25zdHJ1Y3RcIjpcIjJcIixcIlVzZXJQZXJtX05ldHdvcmtcIjpcIjJcIixcIlVzZXJQZXJtX0JlYXV0eVwiOlwiMlwiLFwiVXNlclBlcm1fU2VjdXJpdHlcIjpcIjJcIixcIlVzZXJQZXJtX01hdGVyaWFsXCI6XCIyXCIsXCJVc2VyUGVybV9FbmVyZ3lcIjpcIjJcIixcIlVzZXJQZXJtX1VzZXJcIjpcIjJcIixcIlVzZXJQZXJtX1ZvY1wiOlwiMlwifSIsIlZvY1Blcm1zIjoie1wiVm9jTWFjaGluZVwiOlwiVHJ1ZVwiLFwiVm9jRWxlY1wiOlwiVHJ1ZVwiLFwiVm9jTGlmdFwiOlwiVHJ1ZVwiLFwiVm9jRmlyZVwiOlwiRmFsc2VcIixcIlZvY0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiVm9jTmV0d29ya1wiOlwiVHJ1ZVwiLFwiVm9jQmVhdXR5XCI6XCJUcnVlXCIsXCJWb2NTZWN1cml0eVwiOlwiVHJ1ZVwiLFwiVm9jRGVmYXVsdFwiOlwiVHJ1ZVwifSIsIlBsYWNlUGVybXMiOiJ7XCJQbGFjZVBlcm1fTWFjaGluZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0VsZWNcIjpcIlRydWVcIixcIlBsYWNlUGVybV9MaWZ0XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRmlyZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX05ldHdvcmtcIjpcIlRydWVcIixcIlBsYWNlUGVybV9CZWF1dHlcIjpcIlRydWVcIixcIlBsYWNlUGVybV9TZWN1cml0eVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX01hdGVyaWFsXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRW5lcmd5XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fVm9jXCI6XCJUcnVlXCJ9IiwiZXhwIjoxNzMxMzc1NDE3LCJpc3MiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8iLCJhdWQiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8ifQ.oPlbCOzkIu4D-c4131TLfGQMJEuAOh7ivlJ4SgN2Ngw";
+        //HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+        HttpClient.DefaultRequestHeaders.Accept.Clear();
+        HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+
+        var fileBytes = await HttpClient.GetByteArrayAsync("http://123.2.156.148:5245/api/User/DownloadUserForm");
+        var base64 = Convert.ToBase64String(fileBytes);
+        var fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
+
+        //await JS.InvokeVoidAsync("downloadFile", fileUrl, "사용자정보.xlsx");
+        //await JS.InvokeAsync<object>("saveAsFile", "사용자정보", fileUrl); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
+        await JS.InvokeVoidAsync("downloadFile", fileUrl, "사용자정보(양식).xlsx");
+    }
 
     protected async Task btnDownloadGuideForm()
     {
@@ -112,21 +145,7 @@
         //await JS.InvokeAsync<object>("saveAsFile", "설비내용", System.Convert.ToBase64String(fileBytes)); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
     }
 
-    protected async Task btnDownloadForm()
-    {
-        //string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMyIsIk5hbWUiOiLquYDsmqnsmrAiLCJqdGkiOiJlYzgzNDhiMi1jM2VhLTRlYTItODFkOC0xZjY1YWQ3ZmRmOGMiLCJBbGFybVlOIjoiVHJ1ZSIsIkFkbWluWU4iOiJUcnVlIiwiVXNlclR5cGUiOiJBRE1JTiIsIkFkbWluSWR4IjoiMyIsIlBsYWNlSWR4IjoiMSIsIlBsYWNlTmFtZSI6IuqwleuCqOyasOyytOq1rSIsIlBsYWNlQ3JlYXRlRFQiOiIyMDI0LTEwLTMwIiwiUm9sZSI6Ik1hc3RlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsIlVzZXJQZXJtcyI6IntcIlVzZXJQZXJtX0Jhc2ljXCI6XCIyXCIsXCJVc2VyUGVybV9NYWNoaW5lXCI6XCIyXCIsXCJVc2VyUGVybV9FbGVjXCI6XCIyXCIsXCJVc2VyUGVybV9MaWZ0XCI6XCIyXCIsXCJVc2VyUGVybV9GaXJlXCI6XCIyXCIsXCJVc2VyUGVybV9Db25zdHJ1Y3RcIjpcIjJcIixcIlVzZXJQZXJtX05ldHdvcmtcIjpcIjJcIixcIlVzZXJQZXJtX0JlYXV0eVwiOlwiMlwiLFwiVXNlclBlcm1fU2VjdXJpdHlcIjpcIjJcIixcIlVzZXJQZXJtX01hdGVyaWFsXCI6XCIyXCIsXCJVc2VyUGVybV9FbmVyZ3lcIjpcIjJcIixcIlVzZXJQZXJtX1VzZXJcIjpcIjJcIixcIlVzZXJQZXJtX1ZvY1wiOlwiMlwifSIsIlZvY1Blcm1zIjoie1wiVm9jTWFjaGluZVwiOlwiVHJ1ZVwiLFwiVm9jRWxlY1wiOlwiVHJ1ZVwiLFwiVm9jTGlmdFwiOlwiVHJ1ZVwiLFwiVm9jRmlyZVwiOlwiRmFsc2VcIixcIlZvY0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiVm9jTmV0d29ya1wiOlwiVHJ1ZVwiLFwiVm9jQmVhdXR5XCI6XCJUcnVlXCIsXCJWb2NTZWN1cml0eVwiOlwiVHJ1ZVwiLFwiVm9jRGVmYXVsdFwiOlwiVHJ1ZVwifSIsIlBsYWNlUGVybXMiOiJ7XCJQbGFjZVBlcm1fTWFjaGluZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0VsZWNcIjpcIlRydWVcIixcIlBsYWNlUGVybV9MaWZ0XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRmlyZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX05ldHdvcmtcIjpcIlRydWVcIixcIlBsYWNlUGVybV9CZWF1dHlcIjpcIlRydWVcIixcIlBsYWNlUGVybV9TZWN1cml0eVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX01hdGVyaWFsXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRW5lcmd5XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fVm9jXCI6XCJUcnVlXCJ9IiwiZXhwIjoxNzMxMzc1NDE3LCJpc3MiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8iLCJhdWQiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8ifQ.oPlbCOzkIu4D-c4131TLfGQMJEuAOh7ivlJ4SgN2Ngw";
-        //HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
-        HttpClient.DefaultRequestHeaders.Accept.Clear();
-        HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-
-        var fileBytes = await HttpClient.GetByteArrayAsync("http://123.2.156.148:5245/api/User/DownloadUserForm");
-        var base64 = Convert.ToBase64String(fileBytes);
-        var fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
-
-        //await JS.InvokeVoidAsync("downloadFile", fileUrl, "사용자정보.xlsx");        
-        //await JS.InvokeAsync<object>("saveAsFile", "사용자정보", fileUrl); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
-        await JS.InvokeVoidAsync("downloadFile", fileUrl, "사용자정보(양식).xlsx");
-    }
+ 
 
     // 품목정보 EXPORT
     protected async Task btnExport2()
