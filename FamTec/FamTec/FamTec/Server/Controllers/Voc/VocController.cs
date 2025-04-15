@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using DevExpress.Utils;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Voc;
 using FamTec.Shared.Server.DTO;
@@ -46,7 +47,6 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                Console.WriteLine("이거호출");
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -67,7 +67,45 @@ namespace FamTec.Server.Controllers.Voc
             }
         }
 
-        
+        /// <summary>
+        /// 민원처리 내역 최신상태 알림톡으로 전송
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/v1/RecentVoc")]
+        public async Task<IActionResult> RecentVoc([FromBody]RecentVocDTO dto)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return Unauthorized();
+
+                if (dto.vocId == 0)
+                    return NoContent();
+
+                var model = await VocService.RecentVocSendService(HttpContext, dto);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return NoContent();
+                else if (model.code == 401)
+                    return Unauthorized();
+                else
+                    return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
 
 
         /* ##################  */
@@ -222,8 +260,113 @@ namespace FamTec.Server.Controllers.Voc
 
         /* ##################  */
 
+
         /// <summary>
-        /// 
+        /// 민원 리스트 조회 - v2
+        /// </summary>
+        /// <param name="searchType"></param>
+        /// <param name="type">0,1,2,3,4,5,6,7 : 민원유형</param>
+        /// <param name="status">민원상태 : 미처리, 처리, 처리완료</param>
+        /// <param name="buildingid">민원위치</param>
+        /// <param name="division">모바일-웹</param>
+        /// <param name="searchdate">월간용 - 날짜</param>
+        /// <param name="StartDate">기간용 - 시작날짜</param>
+        /// <param name="EndDate">기간용 - 종료날짜</param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/v2/GetVocSearchList")]
+        //public async Task<IActionResult> GetVocSearchListV2()
+        public async Task<IActionResult> GetVocSearchListV2([FromQuery] int searchType, [FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid, [FromQuery] List<int> division, [FromQuery] string? searchdate, [FromQuery] DateTime? StartDate, [FromQuery] DateTime? EndDate)
+        {
+            try
+            {
+                //int searchType = 0;
+                //DateTime? StartDate = null;
+                //DateTime? EndDate = null;
+                //string searchdate = "2025-04";
+                //List<int> type = new List<int>
+                //{
+                //    0,1,2,3,4,5,6,7,8
+                //};
+                //List<int> status = new List<int>
+                //{
+                //    0,1,2
+                //};
+                //List<int> buildingid = new List<int>()
+                //{
+                //    1,2,3,4,5,10,23,28,29,30,31,32,34,35,43
+                //};
+                //List<int> division = new List<int>
+                //{
+                //    0,1
+                //};
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (searchType == 0) // 월간
+                {
+                    if (String.IsNullOrWhiteSpace(searchdate))
+                        return NoContent();
+                }
+                else  // 기간
+                {
+                    if (StartDate is null)
+                        return NoContent();
+                    if (EndDate is null)
+                        return NoContent();
+                }
+
+                if (status.Count == 0)
+                    return NoContent();
+
+                if (buildingid.Count == 0)
+                    return NoContent();
+
+                if (division.Count == 0)
+                    return NoContent();
+
+                if (searchType == 0)
+                {
+                    // 월간 Service API 호출
+                    ResponseList<VocListDTOV2>? model = await VocService.GetMonthVocSearchListV2(HttpContext, type, status, buildingid, division, searchdate);
+                    if (model is null)
+                        return BadRequest();
+                    if (model.code == 200)
+                        return Ok(model);
+                    else
+                        return BadRequest();
+                }
+                else if (searchType == 1)
+                {
+                    // 기간 Service API 호출
+                    ResponseList<VocListDTOV2>? model = await VocService.GetDateVocSearchListV2(HttpContext, type, status, buildingid, division, StartDate!.Value, EndDate!.Value);
+                    if (model is null)
+                        return BadRequest();
+                    if (model.code == 200)
+                        return Ok(model);
+                    else
+                        return BadRequest();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+
+        /// <summary>
+        /// 민원 리스트 조회
         /// </summary>
         /// <param name="searchType"></param>
         /// <param name="type">0,1,2,3,4,5,6,7 : 민원유형</param>
@@ -237,7 +380,6 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocSearchList")]
-        //public async Task<IActionResult> GetVocSearchList()
         public async Task<IActionResult> GetVocSearchList([FromQuery] int searchType, [FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid, [FromQuery] List<int> division, [FromQuery]string? searchdate, [FromQuery]DateTime? StartDate, [FromQuery]DateTime? EndDate)
         {
             try

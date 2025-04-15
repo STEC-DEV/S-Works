@@ -3140,6 +3140,67 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
+    "Method": "AddVocV2",
+    "RelativePath": "api/Hub/v2/AddVoc",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "division",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "type",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "title",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "contents",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "phoneNumber",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "buildingId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "placeId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "sendYn",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      },
+      {
+        "Name": "files",
+        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
     "Method": "GetVocCommentDetail",
     "RelativePath": "api/Hub/VocCommentDetail",
     "HttpMethod": "GET",
@@ -6328,6 +6389,22 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "RecentVoc",
+    "RelativePath": "api/Voc/sign/v1/RecentVoc",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Voc.RecentVocDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
     "Method": "GetVocDaysCount",
     "RelativePath": "api/Voc/sign/v2/GetVocDaysCount",
     "HttpMethod": "GET",
@@ -6340,6 +6417,16 @@
     "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
     "Method": "GetVocDaysStatusCount",
     "RelativePath": "api/Voc/sign/v2/GetVocDaysStatusCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "GetVocSearchListV2",
+    "RelativePath": "api/Voc/sign/v2/GetVocSearchList",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -6424,6 +6511,42 @@
       {
         "Name": "vocid",
         "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocCommentController",
+    "Method": "AddVocCommandV2",
+    "RelativePath": "api/VocComment/sign/v2/AddVocComment",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Content",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Status",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "VocTbId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "sendYn",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      },
+      {
+        "Name": "files",
+        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
         "IsRequired": false
       }
     ],

@@ -1,6 +1,4 @@
-﻿using DevExpress.Blazor;
-using DevExpress.Xpo.Metadata;
-using FamTec.Client.Pages.Normal.User.UserAdd;
+﻿using FamTec.Client.Pages.Normal.Building.BulidingAdd;
 using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
@@ -30,7 +28,6 @@ namespace FamTec.Server.Repository.Voc
         /// <summary>
         /// DashBoard 용 금일 처리현황별 카운트
         /// </summary>
-        /// <param name="NowDate"></param>
         /// <returns></returns>
         public async Task<VocDaysStatusCountDTO?> GetDashBoardDaysStatusData(DateTime NowDate,int placeid)
         {
@@ -79,8 +76,6 @@ namespace FamTec.Server.Repository.Voc
         /// <summary>
         /// DashBoard 용 7일 처리현황별 카운트
         /// </summary>
-        /// <param name="StartDate"></param>
-        /// <param name="EndDate"></param>
         /// <returns></returns>
         public async Task<List<VocWeekStatusCountDTO>?> GetDashBoardWeeksStatusData(DateTime StartDate, DateTime EndDate, int placeid)
         {
@@ -142,7 +137,6 @@ namespace FamTec.Server.Repository.Voc
         /// <summary>
         /// DashBoard 용 오늘 각 타입별 카운트
         /// </summary>
-        /// <param name="NowDate"></param>
         /// <returns></returns>
         public async Task<VocDaysCountDTO?> GetDashBoardDaysData(DateTime NowDate, int placeid)
         {
@@ -218,8 +212,6 @@ namespace FamTec.Server.Repository.Voc
         /// <summary>
         /// DashBoard 용 일주일치 각 타입별 카운트
         /// </summary>
-        /// <param name="StartDate"></param>
-        /// <param name="EndDate"></param>
         /// <returns></returns>
         public async Task<List<VocWeekCountDTO>?> GetDashBoardWeeksData(DateTime LastDate, DateTime StartDate, int placeid)
         {
@@ -319,7 +311,6 @@ namespace FamTec.Server.Repository.Voc
         /// <summary>
         /// VOC 추가
         /// </summary>
-        /// <param name="model"></param>
         /// <returns></returns>
         public async Task<VocTb?> AddAsync(VocTb model)
         {
@@ -363,7 +354,6 @@ namespace FamTec.Server.Repository.Voc
         /// <summary>
         /// 사업장별 민원 리스트 조회
         /// </summary>
-        /// <param name="placeid"></param>
         /// <returns></returns>
         public async Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division)
         {
@@ -453,7 +443,67 @@ namespace FamTec.Server.Repository.Voc
         }
 
         /// <summary>
-        /// 월간 사업장별 VOC 조회
+        /// 월간 사업장별 VOC 조회 - V2
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<VocListDTOV2>?> GetVocMonthListV2(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division, int searchyear, int searchmonth)
+        {
+            try
+            {
+                List<VocTb>? VocList = await context.VocTbs
+                    .Where(m => type.Contains(m.Type) &&
+                    status.Contains(m.Status) &&
+                    division.Contains(m.Division!.Value) &&
+                    buildingid.Contains(m.BuildingTbId) &&
+                    m.CreateDt.Year == searchyear &&
+                    m.CreateDt.Month == searchmonth)
+                    .OrderBy(m => m.CreateDt)
+                    .ToListAsync().ConfigureAwait(false);
+
+                if (VocList is [_, ..])
+                {
+                    List<VocListDTOV2>? dto = (from VocTB in VocList
+                                             join BuildingTB in context.BuildingTbs.Where(m => m.DelYn != true).ToList()
+                                             on VocTB.BuildingTbId equals BuildingTB.Id
+                                             select new VocListDTOV2
+                                             {
+                                                 createDT = VocTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 요청일시
+                                                 Id = VocTB.Id, // VOC ID
+                                                 buildingName = BuildingTB.Name, // 건물명
+                                                 type = VocTB.Type, // 유형
+                                                 division = VocTB.Division!.Value, // 모바일 / 웹
+                                                 title = VocTB.Title, // 민원제목
+                                                 status = VocTB.Status, // 민원상태
+                                                 completeDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 처리일시
+                                                 createUser = VocTB.CreateUser.ToString(), // 작성자
+                                                 phone = VocTB.Phone,
+                                                 durationDT = VocTB.DurationDt, // 소요시간
+                                                 replyYn = VocTB.ReplyYn,
+                                                 sendYn = VocTB.KakaosendYn
+                                             }).OrderByDescending(m => m.createDT)
+                        .ToList();
+
+                    return dto;
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+        
+
+        /// <summary>
+        /// 월간 사업장별 VOC 조회 [Regacy]
         /// </summary>
         /// <param name="placeid"></param>
         /// <param name="type"></param>
@@ -517,10 +567,74 @@ namespace FamTec.Server.Repository.Voc
         }
 
         /// <summary>
-        /// 조건별 민원 리스트 조회
+        /// 조건별 민원 리스트 조회 - V2
         /// </summary>
-        /// <param name="buildinglist"></param>
-        /// <param name="date"></param>
+        /// <returns></returns>
+        public async Task<List<VocListDTOV2>?> GetVocFilterListV2(int placeid, DateTime StartDate, DateTime EndDate, List<int> Type, List<int> status, List<int> BuildingId, List<int> division)
+        {
+            try
+            {
+                List<VocTb>? VocList = await context.VocTbs
+                    .Where(m => Type.Contains(m.Type) &&
+                    status.Contains(m.Status) &&
+                    division.Contains(m.Division!.Value) &&
+                    BuildingId.Contains(m.BuildingTbId) &&
+                    m.CreateDt >= StartDate && m.CreateDt <= EndDate.AddDays(1))
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                if (VocList is [_, ..])
+                {
+                    List<VocListDTOV2>? dto = (from VocTB in VocList
+                                             join BuildingTB in context.BuildingTbs.Where(m => m.DelYn != true).ToList()
+                                             on VocTB.BuildingTbId equals BuildingTB.Id
+                                             select new VocListDTOV2
+                                             {
+                                                 createDT = VocTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 요청일시
+                                                 Id = VocTB.Id, // VOC ID
+                                                 buildingName = BuildingTB.Name, // 건물명
+                                                 type = VocTB.Type, // 유형
+                                                 division = VocTB.Division!.Value, // 모바일 / 웹
+                                                 title = VocTB.Title, // 민원제목
+                                                 status = VocTB.Status, // 민원상태
+                                                 completeDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 처리일시
+                                                 createUser = VocTB.CreateUser.ToString(), // 작성자
+                                                 phone = VocTB.Phone,
+                                                 durationDT = VocTB.DurationDt, // 소요시간
+                                                 replyYn = VocTB.ReplyYn,
+                                                 sendYn = VocTB.KakaosendYn
+                                             }).OrderByDescending(m => m.createDT)
+                                            .ToList();
+
+                    return dto;
+                }
+                else
+                {
+                    // VocList 조회결과가 없음.
+                    return null;
+                }
+            }
+            catch (MySqlException ex)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 조건별 민원 리스트 조회 [Regacy]
+        /// </summary>
         /// <returns></returns>
         public async Task<List<VocListDTO>?> GetVocFilterList(int placeid, DateTime StartDate, DateTime EndDate, List<int> Type, List<int> status,List<int> BuildingID, List<int> division)
         {
@@ -585,7 +699,6 @@ namespace FamTec.Server.Repository.Voc
         /// <summary>
         /// ID로 민원 상세조회
         /// </summary>
-        /// <param name="vocid"></param>
         /// <returns></returns>
         public async Task<VocTb?> GetVocInfoById(int vocid)
         {
@@ -623,9 +736,7 @@ namespace FamTec.Server.Repository.Voc
         /// <summary>
         /// Code로 민원 상세조회
         /// </summary>
-        /// <param name="code"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
         public async Task<VocTb?> GetVocInfoByCode(string code)
         {
             try
@@ -666,7 +777,6 @@ namespace FamTec.Server.Repository.Voc
             }
         }
 
-  
-
+   
     }
 }

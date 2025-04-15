@@ -65,6 +65,12 @@ public partial class CommentTb
     [StringLength(255)]
     public string? Image3 { get; set; }
 
+    /// <summary>
+    /// 카카오API 전송 유무
+    /// </summary>
+    [Column("KAKAOSEND_YN")]
+    public bool KakaosendYn { get; set; }
+
     [Column("VOC_TB_ID", TypeName = "int(11)")]
     public int VocTbId { get; set; }
 

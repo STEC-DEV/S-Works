@@ -10,6 +10,7 @@ using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.DashBoard;
+using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.SignalR;
 
@@ -17,6 +18,7 @@ namespace FamTec.Server.Services.Voc
 {
     public class VocService : IVocService
     {
+        private readonly IVocCommentRepository VocCommentRepository;
         private readonly IVocInfoRepository VocInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IAlarmInfoRepository AlarmInfoRepository;
@@ -41,6 +43,7 @@ namespace FamTec.Server.Services.Voc
         private ILogService LogService;
 
         public VocService(IVocInfoRepository _vocinforepository,
+            IVocCommentRepository _voccommentrepository,
             IBuildingInfoRepository _buildinginforepository,
             IAlarmInfoRepository _alarminforepository,
             IUserInfoRepository _userinforepository,
@@ -55,6 +58,7 @@ namespace FamTec.Server.Services.Voc
             ConsoleLogService<VocService> _createbuilderlogger)
         {
             this.VocInfoRepository = _vocinforepository;
+            this.VocCommentRepository = _voccommentrepository;
             this.BuildingInfoRepository = _buildinginforepository;
             this.AlarmInfoRepository = _alarminforepository;
             this.UserInfoRepository = _userinforepository;
@@ -75,7 +79,6 @@ namespace FamTec.Server.Services.Voc
         /// <summary>
         /// VOC 엑셀 양식 다운로드
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
         public async Task<byte[]?> DownloadVocForm(HttpContext context)
         {
@@ -130,11 +133,125 @@ namespace FamTec.Server.Services.Voc
             }
         }
 
+        /// <summary>
+        /// 등록된 민원 처리내역 최신상태를 알림톡으로 전송
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ResponseUnit<bool>> RecentVocSendService(HttpContext context, RecentVocDTO dto)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool>() { message = "요청 권한이 없습니다.", data = false, code = 401 };
+                if (dto is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 204 };
+                if(dto.vocId == 0)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 204 };
+
+                string? placeId = Convert.ToString(context.Items["PlaceIdx"]);
+                string? Creator = Convert.ToString(context.Items["Name"]);
+                
+                if (String.IsNullOrWhiteSpace(placeId) || String.IsNullOrWhiteSpace(Creator))
+                    return new ResponseUnit<bool>() { message = "요청 권한이 없습니다.", data = false, code = 401 };
+
+                // VocTB
+                var VocTB = await VocInfoRepository.GetVocInfoById(dto.vocId).ConfigureAwait(false);
+                if (VocTB is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 204 };
+
+                if (VocTB.Status == 0)
+                    return new ResponseUnit<bool>() { message = "미처리 내역은 전송하실 수 없습니다.", data = false, code = 200 };
+                
+                // CommentTB
+                var commentTB = await VocCommentRepository.GetCommentList(dto.vocId).ConfigureAwait(false);
+                if(commentTB is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 204 };
+
+                var latestComment = commentTB.OrderByDescending(c => c.CreateDt).FirstOrDefault();
+                if(latestComment is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 204 };
+                
+                // PlaceTB
+                var PlaceTB = await PlaceInfoRepository.GetBuildingPlace(VocTB.BuildingTbId).ConfigureAwait(false);
+                if(PlaceTB is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 204 };
+
+                string? receiver = VocTB.Phone; // 받는사람 전화번호
+                string? placetel = PlaceTB.Tel; // 사업장 전화번호
+                string url = $"https://sws.s-tec.co.kr/m/voc/select/{VocTB.Code}";
+
+                string statusResult = String.Empty;
+
+                if(latestComment.Status == 1)
+                {
+                    statusResult = "처리중";
+                }
+                else if(latestComment.Status == 2)
+                {
+                    statusResult = "처리완료";
+                }
+
+                DateTime ThisDate = DateTime.Now;
+
+                AddKakaoLogDTO? ApiSendResult = await KakaoService.UpdateVocAnswer(VocTB.Code, statusResult, receiver!, url, placetel).ConfigureAwait(false);
+                if(ApiSendResult is not null)
+                {
+                    // 카카오 메시지 성공 - 벤더사에 넘어가면 여기 탐
+                    KakaoLogTb LogTB = new KakaoLogTb();
+                    LogTB.Code = ApiSendResult.Code;
+                    LogTB.Message = ApiSendResult.Message;
+                    LogTB.Msgid = ApiSendResult.MSGID;
+                    LogTB.Phone = ApiSendResult.Phone; // 받는사람 전화번호
+                    LogTB.MsgUpdate = false; // 카카오 API 벤더에서 전송결과 유무를 받아서 전송됐는지 확인하기 위한 FLAG
+                    LogTB.CreateDt = ThisDate; // 현재시간
+                    LogTB.CreateUser = $"[재발송]_{Creator}"; // 작성자
+                    LogTB.UpdateDt = ThisDate; // 현재시간
+                    LogTB.UpdateUser = Creator; // 작성자
+                    LogTB.VocTbId = VocTB.Id; // 민원 ID
+                    LogTB.PlaceTbId = PlaceTB.Id; // 사업장 ID
+                    LogTB.BuildingTbId = VocTB.BuildingTbId; // 건물 ID
+
+                    var LogTBResult = await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
+                    if (LogTBResult is null)
+                        return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                }
+                else
+                {
+                    // 카카오 메시지 실패
+                    KakaoLogTb LogTB = new KakaoLogTb();
+                    LogTB.Code = null;
+                    LogTB.Message = "500";
+                    LogTB.Msgid = null;
+                    LogTB.Phone = receiver; // 받는사람 전화번호
+                    LogTB.MsgUpdate = true;
+                    LogTB.CreateDt = ThisDate; // 현재시간
+                    LogTB.CreateUser = Creator; // 작성자
+                    LogTB.UpdateDt = ThisDate; // 현재시간
+                    LogTB.UpdateUser = Creator; // 작성자
+                    LogTB.VocTbId = VocTB.Id; // 민원 ID
+                    LogTB.PlaceTbId = PlaceTB.Id; // 사업장 ID
+                    LogTB.BuildingTbId = VocTB.BuildingTbId; // 건물 ID
+
+                    var LogTBResult = await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
+                    if(LogTBResult is null)
+                        return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                }
+                return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+            }
+        }
+
 
         /// <summary>
         /// 사업장별 VOC 리스트 조회
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
         public async Task<ResponseList<AllVocListDTO>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division)
         {
@@ -166,8 +283,6 @@ namespace FamTec.Server.Services.Voc
         /// <summary>
         /// 해당 사업장의 선택된 일자의 VOC LIST 반환
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="date"></param>
         /// <returns></returns>
         public async Task<ResponseList<VocListDTO>> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, List<int> type, List<int> status,List<int> buildingid, List<int>division)
         {
@@ -201,14 +316,60 @@ namespace FamTec.Server.Services.Voc
 
 
         /// <summary>
-        /// 월간 사업장 VOC 조회
+        /// 월간 사업장별 VOC 조회 - V2
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="type"></param>
-        /// <param name="status"></param>
-        /// <param name="buildingid"></param>
-        /// <param name="division"></param>
-        /// <param name="searchDate"></param>
+        /// <returns></returns>
+        public async Task<ResponseList<VocListDTOV2>> GetMonthVocSearchListV2(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchDate)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<VocListDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseList<VocListDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if (String.IsNullOrWhiteSpace(searchDate))
+                    return new ResponseList<VocListDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string[] splitDate = searchDate.Split('-');
+                string year = splitDate[0];
+                string month = splitDate[1].PadLeft(2, '0'); // 한 자리 월을 두 자리로 맞추기 위해 앞에 0 추가
+
+                int checkResult;
+
+                // 년도 숫자값 맞는지 검사
+                bool checkDate = int.TryParse(year, out checkResult);
+                if (!checkDate)
+                    return new ResponseList<VocListDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // 월 숫자값 맞는지 검사
+                checkDate = int.TryParse(month, out checkResult);
+                if (!checkDate)
+                    return new ResponseList<VocListDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<VocListDTOV2>? model = await VocInfoRepository.GetVocMonthListV2(Convert.ToInt32(placeid), type, status, buildingid, division, Convert.ToInt32(year), Convert.ToInt32(month)).ConfigureAwait(false);
+
+                if (model is [_, ..])
+                    return new ResponseList<VocListDTOV2>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<VocListDTOV2>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<VocListDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<VocListDTOV2>(), code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 월간 사업장 VOC 조회 [Regacy]
+        /// </summary>
         /// <returns></returns>
         public async Task<ResponseList<VocListDTO>> GetMonthVocSearchList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchDate)
         {
@@ -258,19 +419,44 @@ namespace FamTec.Server.Services.Voc
             }
         }
 
-        /// <summary>
-        /// 기간 사업장 VOC 조회
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="type"></param>
-        /// <param name="status"></param>
-        /// <param name="buildingid"></param>
-        /// <param name="division"></param>
-        /// <param name="StartDate"></param>
-        /// <param name="EndDate"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+     
 
+        /// <summary>
+        /// 기간 사업장 VOC 조회 -V2
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ResponseList<VocListDTOV2>> GetDateVocSearchListV2(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, DateTime StartDate, DateTime EndDate)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<VocListDTOV2>() { message = "잘못된 요청입니다.", data = new List<VocListDTOV2>(), code = 404 };
+
+                string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(PlaceIdx))
+                    return new ResponseList<VocListDTOV2>() { message = "잘못된 요청입니다.", data = new List<VocListDTOV2>(), code = 404 };
+
+                List<VocListDTOV2>? model = await VocInfoRepository.GetVocFilterListV2(Convert.ToInt32(PlaceIdx), StartDate, EndDate, type, status, buildingid, division).ConfigureAwait(false);
+
+                if (model is [_, ..])
+                    return new ResponseList<VocListDTOV2>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<VocListDTOV2>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<VocListDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<VocListDTOV2>(), code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 기간 사업장 VOC 조회 [Regacy]
+        /// </summary>
+        /// <returns></returns>
         public async Task<ResponseList<VocListDTO>> GetDateVocSearchList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, DateTime StartDate, DateTime EndDate)
         {
             try
@@ -304,8 +490,6 @@ namespace FamTec.Server.Services.Voc
         /// <summary>
         /// VOC 상세보기 - 직원용
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="vocid"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<VocEmployeeDetailDTO>> GetVocDetail(HttpContext context, int vocid, bool isMobile)
         {
@@ -455,8 +639,6 @@ namespace FamTec.Server.Services.Voc
         /// <summary>
         /// voc 유형 변경 -- 여기 바꿔야함
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="dto"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<bool?>> UpdateVocTypeService(HttpContext context, UpdateVocDTO dto)
         {
@@ -741,9 +923,6 @@ namespace FamTec.Server.Services.Voc
         /// <summary>
         /// VOC 알람메시지 처리
         /// </summary>
-        /// <param name="userlist"></param>
-        /// <param name="VocName"></param>
-        /// <param name="VocTableIdx"></param>
         /// <returns></returns>
         public async Task<bool> SetMessage(List<UsersTb>? userlist, string Creater, int VocTableIdx)
         {
@@ -786,7 +965,6 @@ namespace FamTec.Server.Services.Voc
         /// <summary>
         /// DashBoard용 일주일치 민원 각 타입별 카운트
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
         public async Task<ResponseList<VocWeekCountDTO>?> GetVocDashBoardWeeksDataService(HttpContext context)
         {
@@ -858,7 +1036,6 @@ namespace FamTec.Server.Services.Voc
         /// <summary>
         /// 대쉬보드용 금일 유형별 건수 (기타, 기계, 건설, 미화 ..)
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<VocDaysCountDTO>?> GetVocDashBoardDaysDataService(HttpContext context)
         {
@@ -897,7 +1074,6 @@ namespace FamTec.Server.Services.Voc
         /// <summary>
         /// DashBoard용 금일 처리유형별 발생건수 (미처리, 처리중, 처리완료)
         /// </summary>
-        /// <param name="conteext"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<VocDaysStatusCountDTO>?> GetVocDaysStatusDataService(HttpContext context)
         {
@@ -937,7 +1113,6 @@ namespace FamTec.Server.Services.Voc
         /// <summary>
         /// DashBoard용 일주일치 처리유형별 발생건수 (미처리, 처리중, 처리완료)
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
         public async Task<ResponseList<VocWeekStatusCountDTO>?> GetVocWeeksStatusDataService(HttpContext context)
         {
@@ -999,6 +1174,6 @@ namespace FamTec.Server.Services.Voc
             }
         }
 
-
+ 
     }
 }

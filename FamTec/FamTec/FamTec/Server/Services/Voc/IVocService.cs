@@ -14,22 +14,41 @@ namespace FamTec.Server.Services.Voc
         public Task<byte[]?> DownloadVocForm(HttpContext context);
 
         /// <summary>
-        /// 사업장별 VOC 월간 전체보기
+        /// 등록된 미누언 처리내역 최신상태 알림톡으로 전송
+        /// </summary>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> RecentVocSendService(HttpContext context, RecentVocDTO dto);
+
+        /// <summary>
+        /// 사업장별 VOC 월간 전체보기 [Regacy]
         /// </summary>
         /// <returns></returns>
         public Task<ResponseList<VocListDTO>> GetMonthVocSearchList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchDate);
 
         /// <summary>
-        /// 사업장별 VOC 기간 전체보기
+        /// 사업장별 VOC 월간 전체보기 - V2
+        /// </summary>
+        /// <returns></returns>
+        public Task<ResponseList<VocListDTOV2>> GetMonthVocSearchListV2(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchDate);
+
+
+        /// <summary>
+        /// 사업장별 VOC 기간 전체보기 [Regacy]
         /// </summary>
         /// <returns></returns>
         public Task<ResponseList<VocListDTO>> GetDateVocSearchList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, DateTime StartDate, DateTime EndDate);
 
         /// <summary>
+        /// 사업장별 VOC 기간 전체보기 - V2
+        /// </summary>
+        /// <returns></returns>
+        public Task<ResponseList<VocListDTOV2>> GetDateVocSearchListV2(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, DateTime StartDate, DateTime EndDate);
+
+
+        /// <summary>
         /// 사업장별 VOC 리스트 조회
         /// </summary>
         /// <returns></returns>
-        //public Task<ResponseList<AllVocListDTO>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchdate);
         public Task<ResponseList<AllVocListDTO>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division);
 
         /// <summary>

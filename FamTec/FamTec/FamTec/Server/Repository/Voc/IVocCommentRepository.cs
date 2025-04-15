@@ -32,5 +32,7 @@ namespace FamTec.Server.Repository.Voc
         /// <returns></returns>
         Task<bool?> UpdateCommentInfo(CommentTb model);
 
+        
+
     }
 }

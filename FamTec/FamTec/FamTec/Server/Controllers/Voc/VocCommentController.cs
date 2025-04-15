@@ -35,6 +35,79 @@ namespace FamTec.Server.Controllers.Voc
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/v2/AddVocComment")]
+        public async Task<IActionResult> AddVocCommandV2([FromForm]AddVocCommentDTOV2 dto, [FromForm] List<IFormFile>? files)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (String.IsNullOrWhiteSpace(dto.Content))
+                    return NoContent();
+
+                if (dto.Status is null)
+                    return NoContent();
+
+                if (dto.VocTbId is null)
+                    return NoContent();
+
+                if(files is [_, ..])
+                {
+                    foreach(IFormFile file in files)
+                    {
+                        if (file.Length > Common.MEGABYTE_10)
+                            return Ok(new ResponseUnit<AddVocCommentDTOV2?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+
+                        string? extension = FileService.GetExtension(file);
+                        if(String.IsNullOrEmpty(extension))
+                        {
+                            return BadRequest();
+                        }
+                        else
+                        {
+                            bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                            if(!extensioncheck)
+                            {
+                                return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            }
+                        }
+                    }
+                }
+
+
+                // 밑에 추가로 작성
+                ResponseUnit<AddVocCommentDTOV2?> model = await VocCommentService.AddVocCommentServiceV2(HttpContext, dto, files).ConfigureAwait(false);
+                if (model is null)
+                    return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return NoContent();
+                else if (model.code == 401)
+                    return Unauthorized();
+                else if (model.code == 500)
+                    return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
         /// <summary>
         /// 조치사항 입력 - VOC 댓글
         /// </summary>

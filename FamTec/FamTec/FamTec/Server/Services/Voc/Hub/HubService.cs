@@ -217,10 +217,13 @@ namespace FamTec.Server.Services.Voc.Hub
                 if (dto is null)
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 204 };
 
-                if (String.IsNullOrWhiteSpace(dto.title) || String.IsNullOrWhiteSpace(dto.contents) || String.IsNullOrWhiteSpace(dto.name))
+                if (String.IsNullOrEmpty(dto.title) || String.IsNullOrEmpty(dto.contents) || String.IsNullOrEmpty(dto.name))
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 204 };
 
-                if(!String.IsNullOrWhiteSpace(dto.phoneNumber))
+                if (dto.buildingId == 0 || dto.placeId == 0)
+                    return new ResponseUnit<AddVocReturnDTO?> { message = "잘못된 요청입니다.", code = 204 };
+
+                if (!String.IsNullOrEmpty(dto.phoneNumber))
                 {
                     bool PhoneNumber = long.TryParse(dto.phoneNumber, out _);
                     if (!PhoneNumber)
@@ -242,7 +245,7 @@ namespace FamTec.Server.Services.Voc.Hub
 
                 var buildingTB = await BuildingInfoRepository.GetBuildingInfo(dto.buildingId!).ConfigureAwait(false);
                 if (buildingTB is null)
-                    return new ResponseUnit<AddVocReturnDTO?>() { message = "존재하지 않는 건물입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "존재하지 않는 건물입니다.", data = null, code = 401 };
 
                 // ** 전송하지 않더라도 조회 코드는 만들어야할듯 ** //
                 string? ReceiptCode;
@@ -253,11 +256,10 @@ namespace FamTec.Server.Services.Voc.Hub
                     ReceiptCode = KakaoService.RandomCode();
                 } while (await VocInfoRepository.GetVocInfoByCode(ReceiptCode).ConfigureAwait(false) != null);
 
-                // ================================================
-
                 VocTb? model = new VocTb();
-                model.Title = dto.title; ; // 민원의 제목
+                model.Title = dto.title; // 민원의 제목
                 model.Content = dto.contents; // 민원의 내용
+                model.Code = ReceiptCode; // API 검색 코드
                 model.Type = dto.type; // ADD -> 미분류
                 model.Phone = dto.phoneNumber; // 전화번호
                 model.Status = 0; // Add - > 미처리
@@ -267,6 +269,8 @@ namespace FamTec.Server.Services.Voc.Hub
                     model.ReplyYn = false;
                 else
                     model.ReplyYn = true;
+
+                model.KakaosendYn = dto.sendYn; // 카카오 API 전송여부
                 model.CreateDt = ThisDate;
                 model.CreateUser = dto.name;  // 작성자
                 model.UpdateDt = ThisDate;
@@ -281,9 +285,9 @@ namespace FamTec.Server.Services.Voc.Hub
                     {
                         switch (i)
                         {
-                            case 0: model.Image1 = newFileName[i]; break;
-                            case 1: model.Image2 = newFileName[i]; break;
-                            case 2: model.Image3 = newFileName[i]; break;
+                            case 0: model.Image1 = newFileName[i]; break; // 새로운 파일명칭 이름만 저장
+                            case 1: model.Image2 = newFileName[i]; break; // 새로운 파일명칭 이름만 저장
+                            case 2: model.Image3 = newFileName[i]; break; // 새로운 파일명칭 이름만 저장
                             default: break;
                         }
                     }
@@ -296,12 +300,13 @@ namespace FamTec.Server.Services.Voc.Hub
                     {
                         // BlackList Check
                         BlacklistTb? BlackListTB;
-                        if (!String.IsNullOrWhiteSpace(dto.phoneNumber)) 
+                        if (!String.IsNullOrEmpty(dto.phoneNumber))  // 전화번호 자체가 없으면 API 전송이 안됨.
                         {
                             BlackListTB = await BlackListInfoRepository.GetBlackListInfo(dto.phoneNumber).ConfigureAwait(false);
                             if(BlackListTB is not null) // 블랙리스트임.
                             {
                                 // 그냥 DB에 저장만 
+                                model.ReplyYn = false; // 댓글달때 API 전송 안하기 위함.
                                 var result = await VocInfoRepository.AddAsync(model).ConfigureAwait(false);
                                 if (result is null)
                                     return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
@@ -310,19 +315,24 @@ namespace FamTec.Server.Services.Voc.Hub
                             }
                             else
                             {
-                                // 카카오 API + DB저장
+                                // DB 저장
                                 var result = await VocInfoRepository.AddAsync(model).ConfigureAwait(false);
                                 if (result is null)
                                     return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                                 else
                                 {
+                                    resultseq = result.Id;
+                                    
+                                    // 전화번호가 있어야 API 전송함.
                                     var PlaceTB = await PlaceInfoRepository.GetBuildingPlace(result.BuildingTbId).ConfigureAwait(false);
+                                    if (PlaceTB is null)
+                                        return new ResponseUnit<AddVocReturnDTO?>() { message = "존재하지 않는 건물입니다.", data = null, code = 401 };
 
                                     string Title = model.Title.Length > 8 ? model.Title.Substring(0, 8) + "..." : model.Title;
                                     string url = $"https://sws.s-tec.co.kr/m/voc/select/{result.Code}";
 
                                     // 카카오 API 전송 (보낸 USER 휴대폰번호에 전송)
-                                    AddKakaoLogDTO? ApiSendResult = await KakaoService.AddVocAnswer(Title, model.Code, ThisDate, model.Phone, url, PlaceTB.Tel);
+                                    AddKakaoLogDTO? ApiSendResult = await KakaoService.AddVocAnswer(Title, model.Code, ThisDate, dto.phoneNumber, url, PlaceTB.Tel);
                                     if (ApiSendResult is not null)
                                     {
                                         // 카카오 메시지 성공 - 벤더사에 넘어가면 여기탐.
@@ -344,8 +354,6 @@ namespace FamTec.Server.Services.Voc.Hub
                                         var LogTBResult = await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
                                         if (LogTBResult is null)
                                             return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-
-                                        resultseq = result.Id;
                                     }
                                     else
                                     {
@@ -368,8 +376,6 @@ namespace FamTec.Server.Services.Voc.Hub
                                         var LogTBResult = await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
                                         if (LogTBResult is null)
                                             return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-
-                                        resultseq = result.Id;
                                     }
                                 }
                             }
@@ -417,7 +423,6 @@ namespace FamTec.Server.Services.Voc.Hub
                 await HubContext.Clients.Group($"{dto.placeId}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다").ConfigureAwait(false);
                 // 민원 상태변경 알림 - 대쉬보드
                 await HubContext.Clients.Group($"{dto.placeId}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
-
 
                 // return
                 return new ResponseUnit<AddVocReturnDTO?>()

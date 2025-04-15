@@ -146,6 +146,22 @@ namespace FamTec.Server.Controllers.Hubs
                     }
                 }
 
+                ResponseUnit<AddVocReturnDTO?> model = await HubService.AddVocServiceV2(dto, files).ConfigureAwait(false);
+                if (model is null)
+                    return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+
+#endif
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return NoContent();
+                else if (model.code == 401)
+                    return Unauthorized();
+                else
+                    return BadRequest();
 
 
             }

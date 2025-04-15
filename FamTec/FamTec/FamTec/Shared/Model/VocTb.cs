@@ -131,6 +131,12 @@ public partial class VocTb
     public string? Image3 { get; set; }
 
     /// <summary>
+    /// 카카오API 전송 유무
+    /// </summary>
+    [Column("KAKAOSEND_YN")]
+    public bool KakaosendYn { get; set; }
+
+    /// <summary>
     /// 건물 인덱스
     /// </summary>
     [Column("BUILDING_TB_ID", TypeName = "int(11)")]

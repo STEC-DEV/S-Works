@@ -1,4 +1,6 @@
-﻿using FamTec.Shared.Model;
+﻿using System;
+using System.Collections.Generic;
+using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Server.Databases;
@@ -84,7 +86,7 @@ public partial class WorksContext : DbContext
               .Build();
 
         string? ConnStr = configuration.GetConnectionString("DefaultConnection");
-        if (!String.IsNullOrWhiteSpace(ConnStr))
+        if (!string.IsNullOrWhiteSpace(ConnStr))
         {
             optionsBuilder.UseMySql(ConnStr, ServerVersion.Parse("10.11.7-mariadb"),
                 mySqlOption =>
@@ -905,6 +907,7 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.Image1).HasComment("이미지");
             entity.Property(e => e.Image2).HasComment("이미지");
             entity.Property(e => e.Image3).HasComment("이미지");
+            entity.Property(e => e.KakaosendYn).HasComment("카카오API 전송 유무");
             entity.Property(e => e.Phone).HasComment("전화번호");
             entity.Property(e => e.ReplyYn).HasComment("답변회신여부");
             entity.Property(e => e.Status).HasComment("민원처리상태");

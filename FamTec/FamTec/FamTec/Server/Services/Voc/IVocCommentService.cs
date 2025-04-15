@@ -7,10 +7,15 @@ namespace FamTec.Server.Services.Voc
     public interface IVocCommentService
     {
         /// <summary>
-        /// 민원 댓글 추가
+        /// 민원 댓글 추가 - Ver2
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="dto"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<AddVocCommentDTOV2?>> AddVocCommentServiceV2(HttpContext context, AddVocCommentDTOV2 dto, List<IFormFile> files);
+
+
+        /// <summary>
+        /// 민원 댓글 추가 [Regacy]
+        /// </summary>
         /// <returns></returns>
         public Task<ResponseUnit<AddVocCommentDTO?>> AddVocCommentService(HttpContext context, AddVocCommentDTO dto, List<IFormFile> files);
 
