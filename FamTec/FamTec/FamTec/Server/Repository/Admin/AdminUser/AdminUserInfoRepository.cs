@@ -3,6 +3,7 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
+using FamTec.Shared.Server.DTO.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
@@ -32,9 +33,63 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         }
 
         /// <summary>
+        /// 해당 사업장에 해당하는 전체 관리자들 리턴
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async Task<List<PlaceUserDTO>> GetAdminPlaceList(int placeid)
+        {
+            try
+            {
+                IQueryable<PlaceUserDTO> adminUsers =
+                    from adp in context.AdminPlaceTbs
+                    join ad in context.AdminTbs
+                        on adp.AdminTbId equals ad.Id
+                    join ut in context.UsersTbs
+                        on ad.UserTbId equals ut.Id
+                    where adp.PlaceTbId == 1
+                    select new PlaceUserDTO
+                    {
+                        userIdx = ut.Id,
+                        userName = ut.Name
+                    };
+
+
+
+                IQueryable<PlaceUserDTO> Users = context.UsersTbs
+                    .Where(ut => ut.PlaceTbId == 1)
+                    .Select(ut => new PlaceUserDTO
+                    {
+                        userIdx = ut.Id,
+                        userName = ut.Name
+                    });
+
+                if(adminUsers is null)
+                {
+                    return await Users.ToListAsync();
+                }
+
+                if(Users is null)
+                {
+                    return await adminUsers.ToListAsync();
+                }
+
+                IQueryable<PlaceUserDTO> combined = adminUsers.Union(Users);
+                return await combined.ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return null;
+            }
+        }
+
+        /// <summary>
         /// 관리자 추가
         /// </summary>
-        /// <param name="model"></param>
         /// <returns></returns>
         public async Task<AdminTb?> AddAdminUserInfo(AdminTb model)
         {
@@ -935,5 +990,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             return false;
         }
 
+        
     }
 }

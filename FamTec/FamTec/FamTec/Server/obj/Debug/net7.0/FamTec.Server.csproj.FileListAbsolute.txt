@@ -12,7 +12,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Blaz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\BlazorDebugProxy\Newtonsoft.Json.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FamTec.Server.staticwebassets.runtime.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FamTec.Server.staticwebassets.endpoints.json
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\ExcelForm\건물정보(양식).xlsx
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\ExcelForm\사용자정보(양식).xlsx
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\GuideForm\S-Works_관리자설명서_1.3_KO_241211.pdf
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\GuideForm\S-Works_관리자설명서_KO_SWS.pdf

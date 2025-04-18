@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using FamTec.Server.Hubs;
+using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
@@ -13,6 +14,8 @@ using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.IdentityModel.Logging;
+using System.Linq;
 
 namespace FamTec.Server.Services.Voc
 {
@@ -27,7 +30,7 @@ namespace FamTec.Server.Services.Voc
 
         private readonly IBlackListInfoRepository BlackListInfoRepository;
         private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
-
+        private readonly IAdminUserInfoRepository AdminUserInfoRepository;
         private readonly IKakaoService KakaoService;
 
         private readonly IPlaceInfoRepository PlaceInfoRepository;
@@ -47,6 +50,7 @@ namespace FamTec.Server.Services.Voc
             IBuildingInfoRepository _buildinginforepository,
             IAlarmInfoRepository _alarminforepository,
             IUserInfoRepository _userinforepository,
+            IAdminUserInfoRepository _adminuserinforepository,
             IPlaceInfoRepository _placeinforepository,
             IBlackListInfoRepository _blacklistinforepository,
             IKakaoLogInfoRepository _kakaologinforepository,
@@ -62,6 +66,8 @@ namespace FamTec.Server.Services.Voc
             this.BuildingInfoRepository = _buildinginforepository;
             this.AlarmInfoRepository = _alarminforepository;
             this.UserInfoRepository = _userinforepository;
+            this.AdminUserInfoRepository = _adminuserinforepository;
+
             this.PlaceInfoRepository = _placeinforepository;
             this.BlackListInfoRepository = _blacklistinforepository;
             this.KakaoLogInfoRepository = _kakaologinforepository;
@@ -74,6 +80,243 @@ namespace FamTec.Server.Services.Voc
             this.FileService = _fileservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+        }
+
+        /// <summary>
+        /// 엑셀 데이터 IMPORT
+        /// </summary>
+        /// <param name="importdata"></param>
+        /// <returns></returns>
+        public async Task<ResponseList<ImportVocData>?> ImportVocServiceV2(HttpContext context, List<ImportVocData> importdata)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<ImportVocData>() { message = "인증되지 않는 사용자입니다.", data = null, code = 401 };
+
+                string? placeId = Convert.ToString(context.Items["PlaceIdx"]);
+                if(String.IsNullOrWhiteSpace(placeId))
+                    return new ResponseList<ImportVocData>() { message = "인증되지 않는 사용자입니다.", data = null, code = 401 };
+
+                // 일단 들어오면 모든 실패유무를 false로 만들고 시작한다. 
+                importdata.ForEach(m => m.failYn = false); 
+
+                // 조건검색 [1]
+                // 1. 해당 사업장에 넘어온 유저 인덱스가 있는지 검사.
+                // 사용자+관리자 해서 아에없으면 바로 Return
+                var PlaceUserList = await AdminUserInfoRepository.GetAdminPlaceList(Convert.ToInt32(placeId));
+                if (PlaceUserList is null)
+                {
+                    importdata.ForEach(m => m.failYn = true);
+                    return new ResponseList<ImportVocData>() { message = "해당 사업장에 사용자가 존재하지 않습니다.", data = importdata, code = 401 };
+                }
+
+                // 조건검색 [1] - 2 넘어온 Excel이랑 비교해서 없는값이 있으면 해당값 false 치고 return
+                List<int> dbUserIdx = PlaceUserList.Select(x => x.userIdx).ToList();
+
+                // 2) Excel(importdata) 중 DB에 없는 userIdx를 가진 항목만 추출
+                var missingItems = importdata
+                    .Where(item => !dbUserIdx.Contains(item.userIdx))
+                    .ToList();
+
+                // 4) 하나라도 있으면 바로 리턴
+                if (missingItems.Any())
+                {
+                    // 3) 해당 항목들에 failYn = true 표시
+                    missingItems.ForEach(item => item.failYn = true);
+
+                    return new ResponseList<ImportVocData>
+                    {
+                        message = "해당 사업장에 없는 사용자ID가 존재합니다.",
+                        data = importdata,  // importdata 안의 해당 항목들이 이미 failYn=true
+                        code = 204
+                    };
+                }
+
+                // 조건검색 [2] 해당 사업장에 넘어온 건물 인덱스가 있는지 검사 없으면 return
+                // 건물이 일단 Null이면 Rutn
+                // 넘어온 Excel이랑 비교해서 없는값이 있으면 해당값 false 치고 return
+                var BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeId));
+                if (BuildingList is null)
+                {
+                    importdata.ForEach(m => m.failYn = true);
+                    return new ResponseList<ImportVocData>() { message = "해당 사업장에 건물이 존재하지 않습니다.", data = null, code = 401 };
+                }
+
+                List<int>dbBuildingIdx = BuildingList.Select(x => x.Id).ToList();
+                // 2) Excel(importdata) 중 DB에 없는 userIdx를 가진 항목만 추출
+                var missingBuildingItem = importdata
+                    .Where(item => !dbBuildingIdx.Contains(item.buildingIdx))
+                    .ToList();
+
+                // 4) 하나라도 있으면 바로 리턴
+                if (missingBuildingItem.Any())
+                {
+                    // 3) 해당 항목들에 failYn = true 표시
+                    missingBuildingItem.ForEach(item => item.failYn = true);
+
+                    return new ResponseList<ImportVocData>
+                    {
+                        message = "해당 사업장에 없는 건물ID가 존재합니다.",
+                        data = importdata,  // importdata 안의 해당 항목들이 이미 failYn=true
+                        code = 204
+                    };
+                }
+
+                // 민원인 필수값 검사
+                var ItemCheck = importdata.Where(m => m.createUser is null).ToList();
+                if(ItemCheck.Any())
+                {
+                    ItemCheck.ForEach(m => m.failYn = true);
+
+                    return new ResponseList<ImportVocData>
+                    {
+                        message = "민원인 항목은 필수값입니다.",
+                        data = importdata,
+                        code = 204
+                    };
+                }
+
+                
+                // [조건 검색 (3)]
+                // 처리완료인데 처리시간이 없는 항목이 있음.
+                // return 하고 fail 처리해서 알려줘야함.
+                // 이 ForEach 는 원본 importdata 안의 객체를 수정합니다.
+                ItemCheck = importdata.Where(m => m.status == "처리완료" && m.completeDT == null).ToList();
+                if (ItemCheck.Any())
+                {
+                    ItemCheck.ForEach(m => m.failYn = true);
+
+                    return new ResponseList<ImportVocData>
+                    {
+                        message = "처리완료인데 처리시간이 없는 항목이 있습니다.",
+                        data = importdata,   // importdata 안의 해당 항목들이 failYn=true 로 변경된 상태
+                        code = 204
+                    };
+                }
+
+                // 민원 발생시간 없으면 return
+                ItemCheck = importdata.Where(m => m.createDT == null).ToList();
+                if(ItemCheck.Any())
+                {
+                    ItemCheck.ForEach(m => m.failYn = true);
+
+                    return new ResponseList<ImportVocData>
+                    {
+                        message = "민원 발생일시가 없는 항목이 있습니다.",
+                        data = importdata,
+                        code = 204
+                    };
+                }
+
+                // [조건 검색 (4)]
+                // 처리완료가 아닌데 완료시간이 있는 항목이 있음.
+                // return 하고 fail 처리해서 알려줘야함.
+                ItemCheck = importdata.Where(m => m.status != "처리완료" && m.completeDT != null).ToList();
+                if(ItemCheck.Any())
+                {
+                    ItemCheck.ForEach(m => m.failYn = true);
+
+                    return new ResponseList<ImportVocData>
+                    {
+                        message = "처리완료가 아닌데 완료시간이 있는 항목이 있습니다.",
+                        data = importdata,
+                        code = 204
+                    };
+                }
+
+                // [조건 검색 (5)]
+                // 민원의 제목은 필수값인데 없는 항목이 있음.
+                // return 하고 fail 처리해서 알려줘야함.
+                ItemCheck = importdata.Where(m => m.title is null).ToList();
+                if(ItemCheck.Any())
+                {
+                    ItemCheck.ForEach(m => m.failYn = true);
+                    return new ResponseList<ImportVocData>
+                    {
+                        message = "민원의 제목은 필수입력값입니다.",
+                        data = importdata,
+                        code = 204
+                    };
+                }
+
+                // [조건 검색 (6)]
+                // 민원의 내용은 필수값인데 없는 항목이 있음.
+                // return 하고 fail 처리해서 알려줘야함.
+                ItemCheck = importdata.Where(m => m.contents is null).ToList();
+                if(ItemCheck.Any())
+                {
+                    ItemCheck.ForEach(m => m.failYn = true);
+                    return new ResponseList<ImportVocData>
+                    {
+                        message = "민원의 내용은 필수입력값입니다.",
+                        data = importdata,
+                        code = 204
+                    };
+                }
+
+                List<ConvertVocData> ConvertList = new List<ConvertVocData>();
+                foreach(var item in importdata)
+                {
+                    ConvertVocData model = new ConvertVocData();
+                    model.title = item.title; // 민원의 제목
+                    model.contents = item.contents; // 민원의 내용
+                    model.createUser = item.createUser; // 민원 작성자
+                    int type = 0;
+                    switch(item.type)
+                    {
+                        case "미분류": type = 0; break;
+                        case "기계": type = 1; break;
+                        case "전기": type = 2; break;
+                        case "승강": type = 3; break;
+                        case "소방": type = 4; break;
+                        case "건축": type = 5; break;
+                        case "통신": type = 6; break;
+                        case "미화": type = 7; break;
+                        case "보안": type = 8; break;
+                        default: type = 0; break;
+                    }
+                    model.type = type; // 민원의 종류
+                    model.phone = item.phone; // 전화번호
+
+                    int status = 0;
+                    switch(item.status)
+                    {
+                        case "미처리": status = 0; break;
+                        case "처리중": status = 1; break;
+                        case "처리완료": status = 2; break;
+                        default: status = 2; break;
+                    }
+                    model.status = status; // 민원 처리상태
+                    model.createDT = item.createDT!.Value; // 민원 발생일
+                    model.completeDT = item.completeDT; // 민원 완료시간
+                    model.completeContents = item.completeContents; // 민원 처리내용
+                    model.buildingIdx = item.buildingIdx;
+                    model.userIdx = item.userIdx;
+                    model.updateUser = PlaceUserList.Where(m => m.userIdx == item.userIdx).FirstOrDefault().userName;
+                }
+
+                // 이 검증이 끝나면 --> UpdateUser 때문에 바꿔서 Repo 단으로 넘겨서
+                // 한글로 된 내용 인덱스로 바꿔야되면 바꾸고
+                /* 
+                    미처리가 아닌 이상
+                    VOC 테이블에 넣고 걔 인덱스를 Comment 에 넣어야하니
+                    1건 1건 이렇게 넣고
+                    Transaction 걸고
+                    SaveChanged 해야할듯
+                 */
+
+                return new ResponseList<ImportVocData>() { message = "요청이 정상처리되었습니다.", data = importdata, code = 200 };
+
+            }
+            catch (Exception ex) 
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<ImportVocData>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
         }
 
         /// <summary>
@@ -100,6 +343,14 @@ namespace FamTec.Server.Services.Voc
                 var ws = workbook.Worksheet(1); // 건물정보 Sheet
 
                 var BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(PlaceId));
+                if (BuildingList is null || BuildingList.Count == 0)
+                    return null;
+
+                
+                var UserList = await AdminUserInfoRepository.GetAdminPlaceList(Convert.ToInt32(PlaceId));
+                //var UserList = await UserInfoRepository.GetPlaceUserList(Convert.ToInt32(PlaceId));
+                if (UserList is null || UserList.Count == 0)
+                    return null;
 
                 for (int i = 0; i < BuildingList.Count; i++)
                 {
@@ -118,6 +369,25 @@ namespace FamTec.Server.Services.Voc
                     cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // 중앙정렬
                 }
 
+             
+
+                var ws2 = workbook.Worksheet(2); // 관리자정보 Sheet
+                for (int i = 0; i < UserList.Count; i++)
+                {
+                    ws2.Cell(i + 3, 1).Value = UserList[i].userIdx;
+                    IXLCell cell = ws2.Cell(i + 3, 1);
+                    cell.Style.Font.FontName = "맑은 고딕"; // 셀의 문자의 글꼴을 설정
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙 정렬
+                    cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // 중앙정렬
+
+                    ws2.Cell(i + 3, 2).Value = UserList[i].userName ?? null;
+                    cell = ws2.Cell(i + 3, 2);
+                    cell.Style.Font.FontName = "맑은 고딕";
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙 정렬
+                    cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // 중앙정렬
+                }
                 using var ms = new MemoryStream();
                 workbook.SaveAs(ms);
                 return ms.ToArray();
@@ -1174,6 +1444,6 @@ namespace FamTec.Server.Services.Voc
             }
         }
 
- 
+  
     }
 }

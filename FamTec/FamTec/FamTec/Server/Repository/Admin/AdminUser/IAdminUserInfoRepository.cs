@@ -2,6 +2,7 @@
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
+using FamTec.Shared.Server.DTO.User;
 
 namespace FamTec.Server.Repository.Admin.AdminUser
 {
@@ -13,6 +14,13 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// <param name="model"></param>
         /// <returns></returns>
         Task<AdminTb?> AddAdminUserInfo(AdminTb model);
+
+        /// <summary>
+        /// 해당 사업장에 해당하는 전체 관리자들 조회
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        Task<List<PlaceUserDTO>> GetAdminPlaceList(int placeid);
 
         /// <summary>
         /// 해당 사업장 관리자로 선택가능한 사업장 리스트 출력

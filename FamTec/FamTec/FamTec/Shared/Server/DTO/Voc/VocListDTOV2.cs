@@ -58,13 +58,10 @@
         public string? phone { get; set; }
 
         /// <summary>
-        /// 전화번호가 있어서 카카오 알림톡 받는다고 표시했을 경우
+        /// 여기서 이제 체크박스 해야할듯
         /// </summary>
         public bool replyYn { get; set; }
 
-        /// <summary>
-        /// 체크박스를 통해 알림톡 받는다고 한 경우
-        /// </summary>
-        public bool sendYn { get; set; }
+
     }
 }

@@ -353,6 +353,7 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.Content).HasComment("댓글내용");
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
+            entity.Property(e => e.KakaosendYn).HasComment("카카오API 전송 유무");
             entity.Property(e => e.Status).HasComment("처리상태");
 
             entity.HasOne(d => d.UserTb).WithMany(p => p.CommentTbs)
@@ -907,7 +908,6 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.Image1).HasComment("이미지");
             entity.Property(e => e.Image2).HasComment("이미지");
             entity.Property(e => e.Image3).HasComment("이미지");
-            entity.Property(e => e.KakaosendYn).HasComment("카카오API 전송 유무");
             entity.Property(e => e.Phone).HasComment("전화번호");
             entity.Property(e => e.ReplyYn).HasComment("답변회신여부");
             entity.Property(e => e.Status).HasComment("민원처리상태");
@@ -930,6 +930,7 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

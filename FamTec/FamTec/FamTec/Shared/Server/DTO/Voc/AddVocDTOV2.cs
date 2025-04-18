@@ -58,6 +58,6 @@ namespace FamTec.Shared.Server.DTO.Voc
         /// 알림톡 발송할건지 여부
         /// Default - false
         /// </summary>
-        public bool sendYn { get; set; } = false; 
+        public bool replyYn { get; set; } = false; 
     }
 }

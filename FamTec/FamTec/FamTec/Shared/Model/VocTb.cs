@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
@@ -129,12 +130,6 @@ public partial class VocTb
     /// </summary>
     [StringLength(255)]
     public string? Image3 { get; set; }
-
-    /// <summary>
-    /// 카카오API 전송 유무
-    /// </summary>
-    [Column("KAKAOSEND_YN")]
-    public bool KakaosendYn { get; set; }
 
     /// <summary>
     /// 건물 인덱스

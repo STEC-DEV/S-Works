@@ -17,7 +17,6 @@ namespace FamTec.Server.Controllers.Voc
     {
         private readonly IVocService VocService;
         private readonly ILogService LogService;
-        private readonly IFileService FileService;
         private readonly ICommService CommService;
 
         private readonly ConsoleLogService<VocController> CreateBuilderLogger;
@@ -25,15 +24,52 @@ namespace FamTec.Server.Controllers.Voc
         public VocController(IVocService _vocservice,
             ILogService _logservice,
             ConsoleLogService<VocController> _createbuilderlogger,
-            ICommService _commservice,
-            IFileService _fileservice)
+            ICommService _commservice)
         {
             this.VocService = _vocservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
 
             this.CommService = _commservice;
-            this.FileService = _fileservice;
+        }
+
+        /// <summary>
+        /// 민원 IMPORT
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/v1/ImportVocData")]
+        public async Task<IActionResult> ImportVocData([FromBody] List<ImportVocData> dto)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return Unauthorized();
+
+                var model = await VocService.ImportVocServiceV2(HttpContext, dto).ConfigureAwait(false);
+                
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else if (model.code == 401)
+                    return Unauthorized();
+                else
+                    return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
         }
 
         /// <summary>

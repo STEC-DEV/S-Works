@@ -82,5 +82,11 @@ namespace FamTec.Server.Repository.Voc
         /// <returns></returns>
         Task<VocDaysStatusCountDTO?> GetDashBoardDaysStatusData(DateTime NowDate,int placeid);
 
+        /// <summary>
+        /// VOC 엑셀 데이터 IMPORT
+        /// </summary>
+        /// <returns></returns>
+        Task<int> ImportVocData(List<ConvertVocData> vocData);
+
     }
 }

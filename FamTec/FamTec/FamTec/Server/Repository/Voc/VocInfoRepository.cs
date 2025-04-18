@@ -1,28 +1,115 @@
-﻿using FamTec.Client.Pages.Normal.Building.BulidingAdd;
-using FamTec.Server.Databases;
+﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
+using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Voc
 {
     public class VocInfoRepository : IVocInfoRepository
     {
         private readonly WorksContext context;
-        
+
+        private IKakaoService KakaoService;
         private ILogService LogService;
         private ConsoleLogService<VocInfoRepository> CreateBuilderLogger;
 
         public VocInfoRepository(WorksContext _context,
+            IKakaoService _kakaoservice,
             ILogService _logservice,
             ConsoleLogService<VocInfoRepository> _createbuilderlogger)
         {
             this.context = _context;
+            this.KakaoService = _kakaoservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+        }
+
+        /// <summary>
+        /// VOC 엑셀 데이터 IMPORT
+        /// </summary>
+        /// <returns></returns>
+        public async Task<int> ImportVocData(List<ConvertVocData> vocData)
+        {
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                // 강제로 디버깅 포인트 잡음
+                Debugger.Break();
+#endif
+                DateTime ThisDate = DateTime.Now;
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
+                {
+                    try
+                    {
+                        foreach(var item in vocData)
+                        {
+                            string randomCode = KakaoService.RandomVerifyAuthCode();
+                           
+
+                            var VocModel = new VocTb();
+                            VocModel.Code = randomCode;
+                            VocModel.Title = item.title;
+                            VocModel.Content = item.contents;
+                            VocModel.Division = 1; // 밀어넣는건 무조껀 웹에서 해야함.
+                            VocModel.Type = item.type;
+                            VocModel.Phone = item.phone; // 전화번호
+                            VocModel.Status = item.status;
+                            VocModel.ReplyYn = false;
+                            VocModel.CompleteDt = item.completeDT;
+                            VocModel.CreateDt = item.createDT;
+                            if(item.status == 2)
+                            {
+                                // 차이를 TimeSpan 으로 계산
+                                TimeSpan span = VocModel.CompleteDt.Value - VocModel.CreateDt;
+
+                                // 1) 전체 차이를 분 단위로 환산한 뒤 정수로
+                                int totalMinutes = (int)span.TotalMinutes;
+
+                                // 2) 시, 분, 초 각각 분리해서 보고 싶다면
+                                int hours = span.Hours;    // 0~23
+                                int minutes = span.Minutes;  // 0~59
+                                int seconds = span.Seconds;  // 0~59
+                                VocModel.DurationDt = $"{hours}:{minutes}:{seconds}";
+                            }
+                            //VocModel.CreateUser = VocModel.CreateUser;
+                            VocModel.UpdateDt = ThisDate;
+                            //VocModel.UpdateUser = VocModel.UpdateUser;
+                            //VocModel.KakaosendYn = false;
+
+                            var AddResult = await context.VocTbs.AddAsync(VocModel);
+                            await context.SaveChangesAsync();
+
+                            if(item.status != 0)
+                            {
+                                var CommentModel = new CommentTb();
+                                CommentModel.Content = item.completeContents;
+                                CommentModel.Status = item.status;
+                                CommentModel.CreateDt = item.completeDT!.Value;
+                                //CommentModel.CreateUser = 
+                            }
+                        }
+
+                        return 0;
+                    }
+                    catch (Exception ex)
+                    {
+                        LogService.LogMessage(ex.ToString());
+#if DEBUG
+                        CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                        throw;
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -479,7 +566,6 @@ namespace FamTec.Server.Repository.Voc
                                                  phone = VocTB.Phone,
                                                  durationDT = VocTB.DurationDt, // 소요시간
                                                  replyYn = VocTB.ReplyYn,
-                                                 sendYn = VocTB.KakaosendYn
                                              }).OrderByDescending(m => m.createDT)
                         .ToList();
 
@@ -602,7 +688,6 @@ namespace FamTec.Server.Repository.Voc
                                                  phone = VocTB.Phone,
                                                  durationDT = VocTB.DurationDt, // 소요시간
                                                  replyYn = VocTB.ReplyYn,
-                                                 sendYn = VocTB.KakaosendYn
                                              }).OrderByDescending(m => m.createDT)
                                             .ToList();
 
@@ -777,6 +862,6 @@ namespace FamTec.Server.Repository.Voc
             }
         }
 
-   
+       
     }
 }

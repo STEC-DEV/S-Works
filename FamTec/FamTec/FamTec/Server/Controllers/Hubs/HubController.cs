@@ -154,16 +154,16 @@ namespace FamTec.Server.Controllers.Hubs
                 CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
 
 #endif
-                if (model.code == 200)
+                if (model.code == 200) // OK
                     return Ok(model);
-                else if (model.code == 204)
+                else if (model.code == 204) // 내용잘못됨
                     return NoContent();
-                else if (model.code == 401)
+                else if (model.code == 401) // 해약된 사업장.
                     return Unauthorized();
-                else
-                    return BadRequest();
-
-
+                else if (model.code == 501) // 클라이언트가 재시도 해야함.
+                    return Ok(model);
+                else // 완전 서버에러
+                    return Problem("서버에서 처리하지 못함", statusCode: 500);
             }
             catch(Exception ex)
             {

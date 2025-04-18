@@ -3187,7 +3187,7 @@
         "IsRequired": false
       },
       {
-        "Name": "sendYn",
+        "Name": "replyYn",
         "Type": "System.Boolean",
         "IsRequired": false
       },
@@ -6385,6 +6385,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "ImportVocData",
+    "RelativePath": "api/Voc/sign/v1/ImportVocData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Voc.ImportVocData, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

@@ -8,6 +8,13 @@ namespace FamTec.Server.Services.Voc
     public interface IVocService
     {
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="importdata"></param>
+        /// <returns></returns>
+        public Task<ResponseList<ImportVocData>?> ImportVocServiceV2(HttpContext context, List<ImportVocData> importdata);
+
+        /// <summary>
         /// VOC 엑셀 양식 다운로드
         /// </summary>
         /// <returns></returns>

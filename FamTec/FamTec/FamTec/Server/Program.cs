@@ -80,6 +80,7 @@ using Microsoft.Extensions.Options;
 using System.Data;
 using MySqlConnector;
 using FamTec.Server.Repository.DapperTemp;
+using FamTec.Server.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -208,7 +209,6 @@ builder.Services.AddTransient<IContractService, ContractService>();
 builder.Services.AddTransient<IEnergyService, EnergyService>();
 builder.Services.AddTransient<IUseMaintenenceService, UseMaintenenceService>();
 builder.Services.AddTransient<ICommService, CommService>();
-
 
 builder.Services.AddTransient(typeof(ConsoleLogService<>));
 builder.Services.AddSingleton<WorksSetting>();

@@ -432,16 +432,7 @@ namespace FamTec.Server.Services
             #endregion
         }
 
-        /// <summary>
-        /// 랜덤코드 생성
-        /// </summary>
-        /// <returns></returns>
-        public string RandomCode()
-        {
-            RandomGenerator generator = new RandomGenerator();
-            string randomPassword = generator.RandomPassword();
-            return randomPassword;
-        }
+    
 
         /// <summary>
         /// 랜덤 인증코드 생성
@@ -594,6 +585,34 @@ namespace FamTec.Server.Services
             #endregion
         }
 
+        /// <summary>
+        /// 랜덤코드 생성
+        /// </summary>
+        /// <returns></returns>
+        public string RandomCode()
+        {
+            RandomGenerator generator = new RandomGenerator();
+            string randomPassword = generator.RandomPassword();
+            return randomPassword;
+        }
+
+        private string ToBase26(long value)
+        {
+
+            if (value <= 0) return "A";
+
+            var sb = new StringBuilder();
+            while (value > 0)
+            {
+                // value % 26 범위를 A–Z(0→A, 25→Z)로 매핑
+                int idx = (int)(value % 26);
+                sb.Insert(0, (char)('A' + idx));
+                value /= 26;
+            }
+            return sb.ToString();
+        }
+
+
         private class RandomGenerator
         {
             private readonly Random _random = new Random();
@@ -634,8 +653,8 @@ namespace FamTec.Server.Services
 
                 return VertifyBuilder.ToString();
             }
-                        
-
+            
+          
             public string RandomPassword()
             {
                 var passwordBuilder = new StringBuilder();
