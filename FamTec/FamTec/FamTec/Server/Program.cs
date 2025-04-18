@@ -81,6 +81,8 @@ using System.Data;
 using MySqlConnector;
 using FamTec.Server.Repository.DapperTemp;
 using FamTec.Server.Helpers;
+using StackExchange.Redis;
+using FamTec.Server.Services.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -129,6 +131,27 @@ builder.Services.AddResponseCompression(opts =>
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             "application/pdf",
         }).Except(new[] { "text/html" });
+});
+#endregion
+
+#region 카카오톡 전송 휴대폰 인증코드 [Redis] V2
+//builder.Services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisServer")));
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    // 1) IConfiguration 을 꺼내서 커넥션 문자열 읽기
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var redisConnStr = configuration.GetConnectionString("RedisServer");
+
+    // 2) ConfigurationOptions 로 파싱 (+ allowAdmin 옵션 켜기)
+    var options = ConfigurationOptions.Parse(redisConnStr, true);
+
+    // 3) 원하는 동작 방식으로 옵션 조정
+    options.AbortOnConnectFail = false; // 초기 연결 실패에도 예외를 던지지 않고 내부 재시도
+    options.ConnectRetry = 3;    // 재접속 시도 횟수
+    options.ConnectTimeout = 5000; // ms 단위, 각 연결 시도 최대 대기 시간
+
+    // 4) 옵션을 이용해 ConnectionMultiplexer 생성
+    return ConnectionMultiplexer.Connect(options);
 });
 #endregion
 
@@ -213,9 +236,13 @@ builder.Services.AddTransient<ICommService, CommService>();
 builder.Services.AddTransient(typeof(ConsoleLogService<>));
 builder.Services.AddSingleton<WorksSetting>();
 
-//메모리 캐시 사용
+//메모리 캐시 사용 - Regacy [곧 삭제해야함]
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<AuthCodeService>();
+
+builder.Services.AddScoped<IRedisService, RedisService>();
+
+
 #endregion
 
 builder.Services.AddControllersWithViews();

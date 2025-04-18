@@ -101,7 +101,7 @@
                 lock (LogLock)
                 {
                     using (var fs = new FileStream(filepath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
-                    using (StreamWriter writer = new StreamWriter(filepath))
+                    using (StreamWriter writer = new StreamWriter(fs))
                     {
                         System.Diagnostics.StackTrace objStackTrace = new System.Diagnostics.StackTrace(new System.Diagnostics.StackFrame(1));
                         var s = objStackTrace.ToString(); // 호출한 함수 위치

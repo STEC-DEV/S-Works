@@ -7,6 +7,7 @@ using FamTec.Server.Repository.KakaoLog;
 using FamTec.Server.Repository.Place;
 using FamTec.Server.Repository.User;
 using FamTec.Server.Repository.Voc;
+using FamTec.Server.Services.Redis;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
@@ -14,6 +15,7 @@ using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
 
 namespace FamTec.Server.Services.Voc.Hub
 {
@@ -41,6 +43,8 @@ namespace FamTec.Server.Services.Voc.Hub
         private string? VocFileFolderPath;
         private string? VocCommentFileFolderPath;
 
+        private readonly IRedisService RedisService;
+
         public HubService(IVocInfoRepository _vocinforepository,
             IVocCommentRepository _voccommentrepository,
             IPlaceInfoRepository _placeinforepository,
@@ -53,6 +57,7 @@ namespace FamTec.Server.Services.Voc.Hub
             IKakaoService _kakaoservice,
             IFileService _fileservice,
             ILogService _logservice,
+            IRedisService _redisservice,
             ConsoleLogService<HubService> _createbuilderlogger,
             AuthCodeService _authcodeservice)
         {
@@ -72,6 +77,8 @@ namespace FamTec.Server.Services.Voc.Hub
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
             this.AuthCodeService = _authcodeservice;
+
+            this.RedisService = _redisservice;
         }
 
         /// <summary>
@@ -99,8 +106,11 @@ namespace FamTec.Server.Services.Voc.Hub
 
                 DateTime ThisDate = DateTime.Now;
 
-                // 랜덬코드 발급
-                string randomCode = KakaoService.RandomVerifyAuthCode();
+                // 랜덬코드 발급 - Redis로 변경
+                string randomCode = await RedisService.SetCodeAsync(PhoneNumber);
+
+                // 기존 Regacy
+                //string randomCode = KakaoService.RandomVerifyAuthCode();
 
                 // 카카도 API 전송
                 bool SendResult = await KakaoService.AddVerifyAuthCodeAnser(buildingtb.Name, PhoneNumber, randomCode);
@@ -108,8 +118,9 @@ namespace FamTec.Server.Services.Voc.Hub
                 // 인증코드 메모리 저장
                 if (SendResult)
                 {
-                    bool result = await AuthCodeService.SaveOrUpdateAuthCode(PhoneNumber, randomCode);
-                    return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = result, code = 200 };
+                    //bool result = await AuthCodeService.SaveOrUpdateAuthCode(PhoneNumber, randomCode); // Memory Cache 사용
+                    //return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = result, code = 200 }; // Memory Cache 사용
+                    return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 }; // Redis 사용
                 }
                 else
                 {
@@ -144,7 +155,8 @@ namespace FamTec.Server.Services.Voc.Hub
                         return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 }
 
-                bool result = await AuthCodeService.CheckVerifyAuthCode(PhoneNumber, AuthCode);
+                //bool result = await AuthCodeService.CheckVerifyAuthCode(PhoneNumber, AuthCode); // Memory Cache 사용
+                bool result = await RedisService.GetValidateCodeAsync(PhoneNumber, AuthCode); // Redis 사용
                 if(result)
                 {
                     return new ResponseUnit<bool>() { message = "인증 성공하였습니다.", data = true, code = 200 };
