@@ -1,11 +1,14 @@
 ﻿using FamTec.Server.Databases;
+using FamTec.Server.Helpers;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Voc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
+using System.Data.SqlClient;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Voc
@@ -45,18 +48,26 @@ namespace FamTec.Server.Repository.Voc
                 // 강제로 디버깅 포인트 잡음
                 Debugger.Break();
 #endif
-                DateTime ThisDate = DateTime.Now;
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
+                await using var transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false);
+
+                try
                 {
-                    try
+                    DateTime ThisDate = DateTime.Now;
+
+                    foreach (var item in vocData)
                     {
-                        foreach(var item in vocData)
+                        // RandomCode 최대 재시도
+                        const int MaxAttempts = 3;
+                        int attempt = 0;
+
+                        VocTb SaveResult = null!;
+
+                        while(true)
                         {
-                            string randomCode = KakaoService.RandomVerifyAuthCode();
-                           
+                            attempt++;
 
                             var VocModel = new VocTb();
-                            VocModel.Code = randomCode;
+                            VocModel.Code = UniqueCodeHelpers.RandomCode();
                             VocModel.Title = item.title;
                             VocModel.Content = item.contents;
                             VocModel.Division = 1; // 밀어넣는건 무조껀 웹에서 해야함.
@@ -66,50 +77,90 @@ namespace FamTec.Server.Repository.Voc
                             VocModel.ReplyYn = false;
                             VocModel.CompleteDt = item.completeDT;
                             VocModel.CreateDt = item.createDT;
-                            if(item.status == 2)
+                            if (item.status == 2)
                             {
-                                // 차이를 TimeSpan 으로 계산
-                                TimeSpan span = VocModel.CompleteDt.Value - VocModel.CreateDt;
-
-                                // 1) 전체 차이를 분 단위로 환산한 뒤 정수로
-                                int totalMinutes = (int)span.TotalMinutes;
-
-                                // 2) 시, 분, 초 각각 분리해서 보고 싶다면
-                                int hours = span.Hours;    // 0~23
-                                int minutes = span.Minutes;  // 0~59
-                                int seconds = span.Seconds;  // 0~59
-                                VocModel.DurationDt = $"{hours}:{minutes}:{seconds}";
+                                TimeSpan span = item.completeDT.Value - item.createDT;
+                                VocModel.DurationDt = span.ToString();
                             }
-                            //VocModel.CreateUser = VocModel.CreateUser;
+                            VocModel.CreateUser = item.createUser; // 민원작성자
                             VocModel.UpdateDt = ThisDate;
-                            //VocModel.UpdateUser = VocModel.UpdateUser;
-                            //VocModel.KakaosendYn = false;
+                            VocModel.UpdateUser = item.updateUser; // 담당자
+                            VocModel.BuildingTbId = item.buildingIdx; // 건물 ID
 
-                            var AddResult = await context.VocTbs.AddAsync(VocModel);
-                            await context.SaveChangesAsync();
-
-                            if(item.status != 0)
+                            try
                             {
-                                var CommentModel = new CommentTb();
-                                CommentModel.Content = item.completeContents;
-                                CommentModel.Status = item.status;
-                                CommentModel.CreateDt = item.completeDT!.Value;
-                                //CommentModel.CreateUser = 
+                                var AddResult = await context.VocTbs.AddAsync(VocModel).ConfigureAwait(false);
+                                await context.SaveChangesAsync().ConfigureAwait(false);
+
+                                // PK가 채워진 인스턴스를 보관
+                                SaveResult = VocModel;
+                                break;
                             }
+                            catch (DbUpdateException ex) when (IsUniqueViolation(ex) && attempt < MaxAttempts)
+                            {
+                                // 중복 키 -> 트래킹 초기화 후 재시도
+                                context.ChangeTracker.Clear();
+                                continue;
+                            }
+                            catch (DbUpdateException ex) when (IsUniqueViolation(ex))
+                            {
+                                // 최대 재시도 초과
+                                LogService.LogMessage(ex.ToString() + "접수번호 생성횟수 최대도달, 접수번호 생성에 실패했습니다.");
+#if DEBUG
+                                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                                return -1;
+                            }  
                         }
 
-                        return 0;
+                        if (item.status != 0)
+                        {
+                            var CommentModel = new CommentTb();
+                            CommentModel.Content = item.completeContents;
+                            CommentModel.Status = item.status;
+                            CommentModel.CreateDt = item.completeDT!.Value; // 미처리가 아니면 완료시간이 있어야함.
+                            CommentModel.CreateUser = item.updateUser; // createuser - 민원작성자 / updateuser - 담당자
+                            CommentModel.UpdateDt = item.completeDT!.Value;
+                            CommentModel.UpdateUser = item.updateUser; // 담당자
+                            CommentModel.KakaosendYn = false;
+                            CommentModel.VocTbId = SaveResult.Id;
+                            CommentModel.UserTbId = item.userIdx; // 유저
+
+                            var AddResult2 = await context.CommentTbs.AddAsync(CommentModel).ConfigureAwait(false);
+                            await context.SaveChangesAsync().ConfigureAwait(false);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        LogService.LogMessage(ex.ToString());
-#if DEBUG
-                        CreateBuilderLogger.ConsoleLog(ex);
-#endif
-                        throw;
-                    }
+
+                    await transaction.CommitAsync().ConfigureAwait(false);
+                    return 1;
                 }
-            });
+                catch (Exception ex)
+                {
+                    // 예외시 롤백
+                    await transaction.RollbackAsync().ConfigureAwait(false);
+
+                    LogService.LogMessage(ex.ToString());
+#if DEBUG
+                    CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                    return -2;
+                }
+                }
+            );
+        }
+
+        /// <summary>
+        /// MySQL Unique 제약 위반 검사
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsUniqueViolation(DbUpdateException ex)
+        {
+            if (ex.InnerException is MySqlException mysql && mysql.Number == 1062)
+                return true;
+            if (ex.InnerException is SqlException sql && (sql.Number == 2601 || sql.Number == 2627))
+                return true;
+            return false;
         }
 
         /// <summary>

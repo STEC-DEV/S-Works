@@ -68,6 +68,7 @@ namespace FamTec.Shared.Server.DTO.Voc
         /// <summary>
         /// 민원처리 담당자
         /// </summary>
-        public string updateUser { get; set; }
+        public string? updateUser { get; set; }
+
     }
 }

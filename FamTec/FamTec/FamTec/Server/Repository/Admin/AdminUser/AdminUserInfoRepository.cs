@@ -55,7 +55,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     };
 
 
-
                 IQueryable<PlaceUserDTO> Users = context.UsersTbs
                     .Where(ut => ut.PlaceTbId == 1)
                     .Select(ut => new PlaceUserDTO

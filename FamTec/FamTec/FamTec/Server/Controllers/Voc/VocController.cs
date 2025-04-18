@@ -59,6 +59,8 @@ namespace FamTec.Server.Controllers.Voc
                     return Ok(model);
                 else if (model.code == 401)
                     return Unauthorized();
+                else if (model.code == 404)
+                    return NotFound();
                 else
                     return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }

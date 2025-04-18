@@ -140,7 +140,7 @@ namespace FamTec.Server.Services.Voc
                 if (BuildingList is null)
                 {
                     importdata.ForEach(m => m.failYn = true);
-                    return new ResponseList<ImportVocData>() { message = "해당 사업장에 건물이 존재하지 않습니다.", data = null, code = 401 };
+                    return new ResponseList<ImportVocData>() { message = "해당 사업장에 건물이 존재하지 않습니다.", data = null, code = 404 };
                 }
 
                 List<int>dbBuildingIdx = BuildingList.Select(x => x.Id).ToList();
@@ -293,7 +293,9 @@ namespace FamTec.Server.Services.Voc
                     model.completeContents = item.completeContents; // 민원 처리내용
                     model.buildingIdx = item.buildingIdx;
                     model.userIdx = item.userIdx;
-                    model.updateUser = PlaceUserList.Where(m => m.userIdx == item.userIdx).FirstOrDefault().userName;
+                    model.updateUser = PlaceUserList .FirstOrDefault(m => m.userIdx == item.userIdx)?.userName ?? string.Empty;
+
+                    ConvertList.Add(model);
                 }
 
                 // 이 검증이 끝나면 --> UpdateUser 때문에 바꿔서 Repo 단으로 넘겨서
@@ -306,8 +308,13 @@ namespace FamTec.Server.Services.Voc
                     SaveChanged 해야할듯
                  */
 
-                return new ResponseList<ImportVocData>() { message = "요청이 정상처리되었습니다.", data = importdata, code = 200 };
-
+                var ImportDBResult = await VocInfoRepository.ImportVocData(ConvertList).ConfigureAwait(false);
+                if(ImportDBResult == 1)
+                    return new ResponseList<ImportVocData>() { message = "요청이 정상처리되었습니다.", data = importdata, code = 200 };
+                else if(ImportDBResult == -1)
+                    return new ResponseList<ImportVocData>() { message = "접수번호 생성에 실패했습니다. 잠시후 다시 시도해주세요", data = importdata, code = 200 };
+                else
+                    return new ResponseList<ImportVocData>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
             catch (Exception ex) 
             {
