@@ -36,16 +36,13 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.BuildingIdx is null)
                     return NoContent();
 
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                ResponseUnit<AddGroupInfoDTO> model = await GroupService.AddBuildingGroupInfoService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<AddGroupInfoDTO> model = await GroupService.AddBuildingGroupInfoService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -107,11 +104,7 @@ namespace FamTec.Server.Controllers.Building.Group
                     }
                 }
 
-
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<bool> model = await GroupService.AddBuildingGroupService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<bool> model = await GroupService.AddBuildingGroupService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -149,10 +142,7 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<GroupListDTO?> model = await GroupService.GetBuildingGroupListService(HttpContext, buildingid).ConfigureAwait(false);
+                ResponseList<GroupListDTO?> model = await GroupService.GetBuildingGroupListService(buildingid).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -188,16 +178,13 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.GroupId is null)
                     return NoContent();
 
                 if (String.IsNullOrWhiteSpace(dto.GroupName))
                     return NoContent();
 
-                ResponseUnit<bool?> model = await GroupService.UpdateGroupNameService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await GroupService.UpdateGroupNameService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -228,10 +215,7 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-                
-                ResponseUnit<bool?> model = await GroupService.DeleteGroupService(HttpContext, groupid).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await GroupService.DeleteGroupService(groupid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

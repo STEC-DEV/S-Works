@@ -13,6 +13,7 @@ namespace FamTec.Server.Services.Room
         private readonly IFloorInfoRepository FloorInfoRepository;
         private readonly IRoomInfoRepository RoomInfoRepository;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
         private readonly ILogService LogService;
         private readonly ConsoleLogService<RoomService> CreateBuilderLogger;
 
@@ -20,6 +21,7 @@ namespace FamTec.Server.Services.Room
             IBuildingInfoRepository _buildinginforepository,
             IFloorInfoRepository _floorinforepository,
             IRoomInfoRepository _roominforepository,
+            IHttpContextAccessor _httpcontextaccessor,
             ILogService _logService,
             ConsoleLogService<RoomService> _createbuilderlogger)
         {
@@ -27,6 +29,7 @@ namespace FamTec.Server.Services.Room
             this.FloorInfoRepository = _floorinforepository;
             this.RoomInfoRepository = _roominforepository;
 
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.LogService = _logService;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -36,10 +39,12 @@ namespace FamTec.Server.Services.Room
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<RoomDTO>> AddRoomService(HttpContext context, RoomDTO dto)
+        public async Task<ResponseUnit<RoomDTO>> AddRoomService(RoomDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (dto is null || context is null)
                     return new ResponseUnit<RoomDTO>() { message = "요청이 잘못되었습니다.", data = new RoomDTO(), code = 404 };
 
@@ -81,10 +86,12 @@ namespace FamTec.Server.Services.Room
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<RoomListDTO>> GetRoomListService(HttpContext context)
+        public async Task<ResponseList<RoomListDTO>> GetRoomListService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<RoomListDTO>() { message = "요청이 잘못되었습니다.", data = new List<RoomListDTO>(), code = 404 };
 
@@ -159,10 +166,12 @@ namespace FamTec.Server.Services.Room
         /// <param name="context"></param>
         /// <param name="roomid"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<string?>> GetRoomNameService(HttpContext context, int roomid)
+        public async Task<ResponseUnit<string?>> GetRoomNameService(int roomid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -191,10 +200,12 @@ namespace FamTec.Server.Services.Room
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateRoomService(HttpContext context, UpdateRoomDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateRoomService(UpdateRoomDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -236,10 +247,12 @@ namespace FamTec.Server.Services.Room
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteRoomService(HttpContext context, List<int> del)
+        public async Task<ResponseUnit<bool?>> DeleteRoomService(List<int> del)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (del is null || del is null)
@@ -293,10 +306,12 @@ namespace FamTec.Server.Services.Room
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<PlaceRoomListDTO>> GetPlaceAllGroupRoomInfo(HttpContext context)
+        public async Task<ResponseList<PlaceRoomListDTO>> GetPlaceAllGroupRoomInfo()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<PlaceRoomListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

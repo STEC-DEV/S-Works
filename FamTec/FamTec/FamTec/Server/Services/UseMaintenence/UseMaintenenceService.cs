@@ -16,14 +16,18 @@ namespace FamTec.Server.Services.UseMaintenence
 
         IHubContext<BroadcastHub> HubContext;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         public UseMaintenenceService(IUseMaintenenceInfoRepository _usemaintenenceinforepository,
             ILogService _logservice,
             IHubContext<BroadcastHub> _hubcontext,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<UseMaintenenceService> _createbuilderlogger)
         {
             this.UseMaintenenceInfoRepository = _usemaintenenceinforepository;
             this.LogService = _logservice;
             this.HubContext = _hubcontext;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -34,10 +38,12 @@ namespace FamTec.Server.Services.UseMaintenence
         /// <param name="usematerialid"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ResponseUnit<UseMaterialDetailDTO>> GetDetailUseMaterialService(HttpContext context, int usematerialid, int materialid, int roomid)
+        public async Task<ResponseUnit<UseMaterialDetailDTO>> GetDetailUseMaterialService(int usematerialid, int materialid, int roomid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -80,10 +86,12 @@ namespace FamTec.Server.Services.UseMaintenence
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateDetailUseMaterialService(HttpContext context, UpdateMaintenanceMaterialDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateDetailUseMaterialService(UpdateMaintenanceMaterialDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -187,10 +195,12 @@ namespace FamTec.Server.Services.UseMaintenence
             }
         }
 
-        public async Task<ResponseUnit<bool?>> UpdateUseMaintanceService(HttpContext context, UpdateMaintancematerialDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateUseMaintanceService(UpdateMaintancematerialDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

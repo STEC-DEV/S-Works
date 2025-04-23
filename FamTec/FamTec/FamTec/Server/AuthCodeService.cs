@@ -3,6 +3,9 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace FamTec.Server
 {
+    /// <summary>
+    /// [Regacy] - 카카오 인증코드 발급 [삭제예정]
+    /// </summary>
     public class AuthCodeService
     {
         private readonly IMemoryCache MemoryCache;

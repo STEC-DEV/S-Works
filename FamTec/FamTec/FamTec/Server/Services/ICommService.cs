@@ -14,6 +14,6 @@
         /// </summary>
         /// <param name="userAgent"></param>
         /// <returns></returns>
-        public bool MobileConnectCheck(HttpContext context);
+        public bool MobileConnectCheck();
     }
 }

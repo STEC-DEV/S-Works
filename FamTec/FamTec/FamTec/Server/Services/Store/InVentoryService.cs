@@ -21,6 +21,7 @@ namespace FamTec.Server.Services.Store
         private readonly ILogService LogService;
         private readonly ConsoleLogService<InVentoryService> CreateBuilderLogger;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
         IHubContext<BroadcastHub> HubContext;
 
         public InVentoryService(IInventoryInfoRepository _inventoryinforepository,
@@ -28,6 +29,7 @@ namespace FamTec.Server.Services.Store
             ILogService _logservice,
             IMaterialInfoRepository _materialinforepository,
             IHubContext<BroadcastHub> _hubcontext,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<InVentoryService> _createbuilderlogger)
         {
             this.InventoryInfoRepository = _inventoryinforepository;
@@ -35,6 +37,7 @@ namespace FamTec.Server.Services.Store
             this.MaterialInfoRepository = _materialinforepository;
             this.LogService = _logservice;
             this.HubContext = _hubcontext;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -44,10 +47,12 @@ namespace FamTec.Server.Services.Store
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<InOutListDTO?>> GetDashBoardInOutListData(HttpContext context)
+        public async Task<ResponseUnit<InOutListDTO?>> GetDashBoardInOutListData()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<InOutListDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -84,10 +89,12 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<int?>> AddInStoreService(HttpContext context, List<InOutInventoryDTO> dto)
+        public async Task<ResponseUnit<int?>> AddInStoreService( List<InOutInventoryDTO> dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = 0, code = 404 };
 
@@ -132,10 +139,12 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<FailResult?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto)
+        public async Task<ResponseUnit<FailResult?>> OutInventoryService(List<InOutInventoryDTO> dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
@@ -193,10 +202,12 @@ namespace FamTec.Server.Services.Store
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<int?>> GetPlaceInOutCountService(HttpContext context)
+        public async Task<ResponseUnit<int?>> GetPlaceInOutCountService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -222,10 +233,12 @@ namespace FamTec.Server.Services.Store
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<InOutHistoryListDTO>> GetInOutHistoryService(HttpContext context)
+        public async Task<ResponseList<InOutHistoryListDTO>> GetInOutHistoryService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<InOutHistoryListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -257,10 +270,12 @@ namespace FamTec.Server.Services.Store
         /// <param name="pagenum"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public async Task<ResponseList<InOutHistoryListDTO>> GetInoutPageNationHistoryService(HttpContext context, int pagenum, int pagesize)
+        public async Task<ResponseList<InOutHistoryListDTO>> GetInoutPageNationHistoryService(int pagenum, int pagesize)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<InOutHistoryListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -293,10 +308,12 @@ namespace FamTec.Server.Services.Store
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public async Task<ResponseList<PeriodicDTO>> PeriodicInventoryRecordService(HttpContext context, List<int> materialid, DateTime startDate, DateTime endDate)
+        public async Task<ResponseList<PeriodicDTO>> PeriodicInventoryRecordService(List<int> materialid, DateTime startDate, DateTime endDate)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<PeriodicDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
            
@@ -378,11 +395,13 @@ namespace FamTec.Server.Services.Store
         /// <param name="materialid"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaterialHistory>> GetPlaceInventoryRecordService(HttpContext context, List<int> materialid, bool type)
+        public async Task<ResponseList<MaterialHistory>> GetPlaceInventoryRecordService(List<int> materialid, bool type)
         {
             try
             {
-                if(context is null || materialid is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null || materialid is null)
                     return new ResponseList<MaterialHistory>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
@@ -415,10 +434,12 @@ namespace FamTec.Server.Services.Store
         /// <param name="MaterialId"></param>
         /// <param name="RoomId"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<InOutLocationDTO>> GetMaterialRoomInventoryNumService(HttpContext context, int MaterialId, int RoomId)
+        public async Task<ResponseUnit<InOutLocationDTO>> GetMaterialRoomInventoryNumService(int MaterialId, int RoomId)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<InOutLocationDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -448,11 +469,13 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="MaterialId"></param>
         /// <returns></returns>
-        public async Task<ResponseList<InOutLocationDTO>> GetMaterialRoomNumService(HttpContext context, int MaterialId, int buildingid)
+        public async Task<ResponseList<InOutLocationDTO>> GetMaterialRoomNumService(int MaterialId, int buildingid)
         {
             try
             {
-                if(context is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null)
                     return new ResponseList<InOutLocationDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
@@ -483,10 +506,12 @@ namespace FamTec.Server.Services.Store
         /// <param name="materialid"></param>
         /// <param name="outcount"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<InOutInventoryDTO>> AddOutStoreList(HttpContext context, int roomid, int materialid, int outcount)
+        public async Task<ResponseUnit<InOutInventoryDTO>> AddOutStoreList(int roomid, int materialid, int outcount)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<InOutInventoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -516,10 +541,12 @@ namespace FamTec.Server.Services.Store
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaterialWeekCountDTO>?> GetInoutDashBoardDataService(HttpContext context)
+        public async Task<ResponseList<MaterialWeekCountDTO>?> GetInoutDashBoardDataService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<MaterialWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -574,11 +601,13 @@ namespace FamTec.Server.Services.Store
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<InventoryAmountDTO>?> GetDashBoardInvenAmountData(HttpContext context, List<int> MaterialIdx)
+        public async Task<ResponseList<InventoryAmountDTO>?> GetDashBoardInvenAmountData(List<int> MaterialIdx)
         {
             try
             {
-                if(context is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null)
                     return new ResponseList<InventoryAmountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);

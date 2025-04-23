@@ -142,10 +142,9 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
     var configuration = sp.GetRequiredService<IConfiguration>();
     var redisConnStr = configuration.GetConnectionString("RedisServer");
 
-    // 2) ConfigurationOptions 로 파싱 (+ allowAdmin 옵션 켜기)
-    var options = ConfigurationOptions.Parse(redisConnStr, true);
-
-    // 3) 원하는 동작 방식으로 옵션 조정
+    // 2) ConfigurationOptions 로 파싱 (+ allowAdmin 옵션 끄기)
+    var options = ConfigurationOptions.Parse(redisConnStr, false);
+    options.Password = "stecdev1234!"; // Redis 비밀번호
     options.AbortOnConnectFail = false; // 초기 연결 실패에도 예외를 던지지 않고 내부 재시도
     options.ConnectRetry = 3;    // 재접속 시도 횟수
     options.ConnectTimeout = 5000; // ms 단위, 각 연결 시도 최대 대기 시간
@@ -154,6 +153,9 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
     return ConnectionMultiplexer.Connect(options);
 });
 #endregion
+
+builder.Services.AddHttpContextAccessor();
+
 
 #region 의존성 주입
 // Add services to the container. - Repository
@@ -338,9 +340,7 @@ if (!String.IsNullOrWhiteSpace(connectionString))
 else
     // 예외를 던져 프로그램이 시작되지 않도록 함.
     throw new InvalidOperationException("Connection string 'DefaultConnection' is null or empty.");
-
 #endregion
-
 
 #region SIGNAL R 등록
 builder.Services.AddSignalR().AddHubOptions<BroadcastHub>(options =>

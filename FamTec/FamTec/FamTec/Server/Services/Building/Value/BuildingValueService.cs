@@ -14,28 +14,34 @@ namespace FamTec.Server.Services.Building.Value
         private readonly ILogService LogService;
         private readonly ConsoleLogService<BuildingValueService> CreateBuilderLogger;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         public BuildingValueService(IBuildingItemValueInfoRepository _buildingitemvalueinforepository,
             IBuildingItemKeyInfoRepository _buildingitemkeyinforepository,
             ILogService _logservice,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<BuildingValueService> _createbuilderlogger)
         {
             this.BuildingItemValueInfoRepository = _buildingitemvalueinforepository;
             this.BuildingItemKeyInfoRepository = _buildingitemkeyinforepository;
-            
+
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-        public async Task<ResponseUnit<AddValueDTO>> AddValueService(HttpContext context, AddValueDTO dto)
+        public async Task<ResponseUnit<AddValueDTO>> AddValueService(AddValueDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
-                    return new ResponseUnit<AddValueDTO>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
+                    return new ResponseUnit<AddValueDTO>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 400 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<AddValueDTO>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
+                    return new ResponseUnit<AddValueDTO>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 400 };
 
                 DateTime ThisTime = DateTime.Now;
 
@@ -73,10 +79,12 @@ namespace FamTec.Server.Services.Building.Value
             }
         }
 
-        public async Task<ResponseUnit<UpdateValueDTO>> UpdateValueService(HttpContext context, UpdateValueDTO dto)
+        public async Task<ResponseUnit<UpdateValueDTO>> UpdateValueService(UpdateValueDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<UpdateValueDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
@@ -112,10 +120,12 @@ namespace FamTec.Server.Services.Building.Value
             }
         }
 
-        public async Task<ResponseUnit<bool?>> DeleteValueService(HttpContext context, int valueid)
+        public async Task<ResponseUnit<bool?>> DeleteValueService(int valueid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 

@@ -1,5 +1,4 @@
 ﻿using FamTec.Server.Middleware;
-using FamTec.Server.Repository.DapperTemp;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Admin.Account;
 using FamTec.Server.Services.Admin.Place;
@@ -9,7 +8,6 @@ using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Login;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace FamTec.Server.Controllers.Login
 {
@@ -21,11 +19,8 @@ namespace FamTec.Server.Controllers.Login
         private readonly IAdminAccountService AdminAccountService;
         private readonly IAdminPlaceService AdminPlaceService;
         private readonly IUserService UserService;
-                
         private readonly ILogService LogService;
         private readonly ConsoleLogService<LoginController> CreateBuilderLogger;
-
-        //private readonly IDapperTempRepository DapperTemp;
 
         public LoginController(IAdminAccountService _adminaccountservice,
             IAdminPlaceService _adminplaceservice,
@@ -40,21 +35,7 @@ namespace FamTec.Server.Controllers.Login
             
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
-
-            //this.DapperTemp = _dappertemp;
         }
-
-        // Dapper 사용 예제
-        /*
-        [HttpGet]
-        [Route("temp")]
-        public async Task<IActionResult> Temp()
-        {
-            await DapperTemp.SelectUser();
-
-            return Ok("Asdfasdf");
-        }
-        */
 
         /// <summary>
         /// 관리자 화면 로그인 [OK]
@@ -182,31 +163,6 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
-                //var forwardedFor = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
-                //if (!string.IsNullOrEmpty(forwardedFor))
-                //{
-                //    var ipAddress = forwardedFor.Split(',').FirstOrDefault();
-                //    Console.WriteLine(ipAddress);
-                //}
-                //else
-                //{
-                //    var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-                //    Console.WriteLine(ipAddress);
-                //}
-
-
-                /*
-                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-
-                // X-Forwarded-For 헤더가 있을 경우 이를 우선적으로 사용
-                var forwardedFor = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
-                if (!string.IsNullOrEmpty(forwardedFor))
-                {
-                    ipAddress = forwardedFor.Split(',').FirstOrDefault();
-                }
-                Console.WriteLine(ipAddress);
-                */
-
                 if (String.IsNullOrWhiteSpace(dto.UserID))
                     return NoContent();
 
@@ -252,10 +208,7 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksList(HttpContext).ConfigureAwait(false);
+                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksList().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -279,6 +232,7 @@ namespace FamTec.Server.Controllers.Login
            
         }
 
+
         /// <summary>
         /// 관리자들만 접근가능
         /// </summary>
@@ -291,10 +245,7 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<string?> model = await UserService.LoginSelectPlaceService(HttpContext, placeid).ConfigureAwait(false);
+                ResponseUnit<string?> model = await UserService.LoginSelectPlaceService(placeid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -317,7 +268,289 @@ namespace FamTec.Server.Controllers.Login
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
-        
+
+
+        ///
+        /// -------------------- V2
+        ///
+
+        /// <summary>
+        /// 웹 로그인 - V2 [Redis 캐시]
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("v2/Web/Login")]
+        public async Task<IActionResult> WebLoginV2([FromBody] LoginDTO dto)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(dto.UserID))
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.UserPassword))
+                    return NoContent();
+
+                ResponseUnit<TokenDTOV2>? model = await UserService.WebUserLoginService(dto).ConfigureAwait(false);
+
+                if (model is null)
+                    return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
+                    return Ok(model); // 유저
+                else if (model.code == 201) // 관리자 로그인했을 경우 사업장 선택화면으로 이동해야함.
+                    return Ok(model);
+                else if (model.code == 403)
+                    return Ok(model);
+                else if (model.code == 404) // 아이디-비밀번호가 틀렸을경우
+                    return Ok(model);
+                else
+                    return Ok(model); // 유저
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 관리자들만 접근가능
+        /// - 웹용 사업장 선택 토큰 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "SystemManager,Master,Manager")]
+        [HttpGet]
+        [Route("sign/v2/Web/UserSelectPlace")]
+        public async Task<IActionResult> WebSelectPlaceV2([FromQuery] int placeid, [FromQuery]string sessionId)
+        {
+            try
+            {
+                if (placeid is 0)
+                    return BadRequest();
+                
+                if (String.IsNullOrWhiteSpace(sessionId))
+                    return BadRequest();
+
+                var model = await UserService.WebLoginSelectPlaceService(placeid, sessionId).ConfigureAwait(false);
+
+                if (model is null)
+                    return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if(model.code == 403)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 토큰 재발급
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("v2/Web/UserRefreshToken")]
+        public async Task<IActionResult> WebRefreshTokenV2([FromBody]RefreshTokenDTOV2 dto)
+        {
+            try
+            {
+                var model = await UserService.WebLoginRefreshTokenService(dto).ConfigureAwait(false);
+                if (model is null)
+                    return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 403)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 로그아웃
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("sign/v2/Web/Logout")]
+        public async Task<IActionResult> WebLogOutV2([FromBody]LogoutDTO dto)
+        {
+            try
+            {
+                var model = await UserService.WebLogoutService(dto).ConfigureAwait(false);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 403)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// QR 로그인 - V2
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("v2/Web/QRLogin")]
+        public async Task<IActionResult> WebQRLoginV2([FromBody] QRLoginDTO dto)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(dto.UserId))
+                    return NoContent();
+                if (String.IsNullOrWhiteSpace(dto.UserPassword))
+                    return NoContent();
+
+                var model = await UserService.WebQRLoginService(dto).ConfigureAwait(false);
+
+                if (model is null)
+                    return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 201)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else if (model.code == 403)
+                    return Ok(model);
+                else
+                    return BadRequest();
+
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        [HttpPost]
+        [Route("v2/web/SettingLogin")]
+        public async Task<IActionResult> SettingLoginV2([FromBody] LoginDTO dto)
+        {
+            try
+            {
+                /* 필수값 검사 */
+                if (String.IsNullOrWhiteSpace(dto.UserID))
+                    return NoContent();
+                if (String.IsNullOrWhiteSpace(dto.UserPassword))
+                    return NoContent();
+
+                var model = await AdminAccountService.WebAdminLoginService(dto).ConfigureAwait(false);
+
+                if (model is null)
+                    return BadRequest(model);
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 402)
+                    return Ok(model);
+                else if (model.code == 403)
+                    return Ok(model);
+                else
+                    return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 토큰 재발급
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("v2/Web/SettingRefreshToken")]
+        public async Task<IActionResult> WebRefreshTokenV2([FromBody] RefreshTokenSettingDTOV2 dto)
+        {
+            try
+            {
+                var model = await AdminAccountService.WebAdminLoginRefreshTokenService(dto).ConfigureAwait(false);
+                if (model is null)
+                    return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 403)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
 
     }
 }

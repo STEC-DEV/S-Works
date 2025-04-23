@@ -9,14 +9,18 @@ namespace FamTec.Server.Services.Admin.Department
     {
         private readonly IDepartmentInfoRepository DepartmentInfoRepository;
         private readonly ILogService LogService;
+
+        private readonly IHttpContextAccessor HttpContextAccessor;
         private readonly ConsoleLogService<DepartmentService> CreateBuilderLogger;
 
         public DepartmentService(IDepartmentInfoRepository _departmentinforepository,
             ILogService _logservice,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<DepartmentService> _createbuilderlogger)
         {
             this.DepartmentInfoRepository = _departmentinforepository;
             this.LogService = _logservice;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -26,11 +30,13 @@ namespace FamTec.Server.Services.Admin.Department
         /// <param name="dto"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddDepartmentDTO>> AddDepartmentService(HttpContext context, AddDepartmentDTO dto)
+        public async Task<ResponseUnit<AddDepartmentDTO>> AddDepartmentService(AddDepartmentDTO dto)
         {
             try
             {
-                if(context is null || dto is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null || dto is null)
                     return new ResponseUnit<AddDepartmentDTO> { message = "잘못된 요청입니다..", data = null, code = 404 };
                 
                 string? Creater = Convert.ToString(context.Items["Name"]);
@@ -159,10 +165,12 @@ namespace FamTec.Server.Services.Admin.Department
         /// <param name="index"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteDepartmentService(HttpContext context, List<int> departmentidx)
+        public async Task<ResponseUnit<bool?>> DeleteDepartmentService(List<int> departmentidx)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || departmentidx is null || !departmentidx.Any())
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 
@@ -215,11 +223,13 @@ namespace FamTec.Server.Services.Admin.Department
         /// <param name="dto"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<DepartmentDTO>> UpdateDepartmentService(HttpContext context,DepartmentDTO dto)
+        public async Task<ResponseUnit<DepartmentDTO>> UpdateDepartmentService(DepartmentDTO dto)
         {
             try
             {
-                if(dto is null || context is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (dto is null || context is null)
                     return new ResponseUnit<DepartmentDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? updater = Convert.ToString(context.Items["Name"]);

@@ -47,22 +47,10 @@ namespace FamTec.Server.Controllers.Meter.Energy
         {
             try
             {
-                //{
-                //    "MeterID":1,
-                //    "MeterDate":"2024-09-13",
-                //    "Amount1":400,
-                //    "Amount2":600,
-                //    "Amount3":1500,
-                //    "TotalAmount":2100
-                //}
-
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.MeterID is 0)
                     return NoContent();
 
-                ResponseUnit<AddEnergyDTO>? model = await EnergyService.AddEnergyService(HttpContext, dto);
+                ResponseUnit<AddEnergyDTO>? model = await EnergyService.AddEnergyService(dto);
                 if (model is null)
                     return BadRequest();
 

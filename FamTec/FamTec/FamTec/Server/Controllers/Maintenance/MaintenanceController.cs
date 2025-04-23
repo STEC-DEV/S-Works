@@ -53,10 +53,7 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<MaintenanceDaysDTO>? model = await MaintanceService.GetMaintenanceDaysList(HttpContext).ConfigureAwait(false);
+                ResponseList<MaintenanceDaysDTO>? model = await MaintanceService.GetMaintenanceDaysList().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -91,10 +88,7 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<MaintanceYearPriceDTO>? model = await MaintanceService.GetMaintenanceYearPriceList(HttpContext);
+                ResponseList<MaintanceYearPriceDTO>? model = await MaintanceService.GetMaintenanceYearPriceList();
                 if (model == null)
                     return BadRequest();
 
@@ -130,10 +124,7 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<MaintanceWeekCount>? model = await MaintanceService.GetMaintanceDashBoardDataService(HttpContext);
+                ResponseList<MaintanceWeekCount>? model = await MaintanceService.GetMaintanceDashBoardDataService();
 
                 if (model == null)
                     return BadRequest();
@@ -168,9 +159,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.MaintanceID is 0)
                     return NoContent();
 
@@ -185,7 +173,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     }
                 }
 
-                ResponseUnit<bool?> model = await UseMaintenenceService.UpdateUseMaintanceService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await UseMaintenenceService.UpdateUseMaintanceService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -224,9 +212,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.MaintanceID is 0)
                     return NoContent();
 
@@ -253,7 +238,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     return BadRequest();
                 }
 
-                ResponseUnit<FailResult?> model = await MaintanceService.AddSupMaintanceService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<FailResult?> model = await MaintanceService.AddSupMaintanceService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -317,7 +302,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     }
                 }
 
-                ResponseUnit<bool?> model = await MaintanceService.UpdateMaintenanceService(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await MaintanceService.UpdateMaintenanceService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -347,9 +332,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (id is 0)
                     return BadRequest();
 
@@ -373,7 +355,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     }
                 }
 
-                ResponseUnit<bool?> model = await MaintanceService.AddMaintanceImageService(HttpContext, id, files).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await MaintanceService.AddMaintanceImageService(id, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -408,9 +390,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
@@ -440,7 +419,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     }
                 }
 
-                ResponseUnit<FailResult?> model = await MaintanceService.AddMaintanceService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<FailResult?> model = await MaintanceService.AddMaintanceService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -480,10 +459,7 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<MaintanceListDTO> model = await MaintanceService.GetMaintanceHistoryService(HttpContext, facilityid).ConfigureAwait(false);
+                ResponseList<MaintanceListDTO> model = await MaintanceService.GetMaintanceHistoryService(facilityid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -513,13 +489,10 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 // 모바일 여부
-                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+                bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<DetailMaintanceDTO?> model = await MaintanceService.GetDetailService(HttpContext, Maintanceid, isMobile).ConfigureAwait(false);
+                ResponseUnit<DetailMaintanceDTO?> model = await MaintanceService.GetDetailService(Maintanceid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -554,13 +527,10 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.MaintanceID is null || !dto.MaintanceID.Any())
                     return NoContent();
 
-                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceRecordService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceRecordService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -597,16 +567,13 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-                
                 if (delInfo.MaintanceID is 0)
                     return NoContent();
                 if(!delInfo.UseMaintenenceIDs.Any())
                     return NoContent();
 
 
-                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceStoreRecordService(HttpContext, delInfo).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceStoreRecordService(delInfo).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -646,9 +613,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (category is null || !category.Any())
                     return NoContent();
 
@@ -657,7 +621,7 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 category.ForEach(s => s = s.Trim());
 
-                ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHistoryList(HttpContext, StartDate, EndDate, category, type).ConfigureAwait(false);
+                ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHistoryList(StartDate, EndDate, category, type).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -695,9 +659,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (category is null || !category.Any())
                     return NoContent();
 
@@ -706,7 +667,7 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 category.ForEach(s => s = s.Trim());
 
-                ResponseList<AllMaintanceHistoryDTO>? model = await MaintanceService.GetAllHistoryList(HttpContext, category, type).ConfigureAwait(false);
+                ResponseList<AllMaintanceHistoryDTO>? model = await MaintanceService.GetAllHistoryList(category, type).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -739,9 +700,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (searchType == 0) // 월간
                 {
                     if (String.IsNullOrWhiteSpace(searchdate))
@@ -767,7 +725,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     CreateBuilderLogger.ConsoleText("월간조회");
 #endif
                     // 월간 Service API 호출
-                    ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetMonthHistoryList(HttpContext, searchdate, category, type);
+                    ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetMonthHistoryList(searchdate, category, type);
 
                     if (model is null)
                         return BadRequest();
@@ -789,7 +747,7 @@ namespace FamTec.Server.Controllers.Maintenance
 #endif
 
                     // 기간 Service API 호출
-                    ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHistoryList(HttpContext, StartDate!.Value, EndDate!.Value, category, type).ConfigureAwait(false);
+                    ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHistoryList(StartDate!.Value, EndDate!.Value, category, type).ConfigureAwait(false);
 
                     if (model is null)
                         return BadRequest();

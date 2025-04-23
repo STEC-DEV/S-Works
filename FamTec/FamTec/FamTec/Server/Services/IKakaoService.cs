@@ -58,6 +58,6 @@ namespace FamTec.Server.Services
         /// <param name="StartDate"></param>
         /// <param name="limit_day"></param>
         /// <returns></returns>
-        public Task<ResponseList<KaKaoSenderResult>?> KakaoSenderResult(HttpContext context, int page, int pagesize, DateTime StartDate, int limit_day);
+        public Task<ResponseList<KaKaoSenderResult>?> KakaoSenderResult(int page, int pagesize, DateTime StartDate, int limit_day);
     }
 }

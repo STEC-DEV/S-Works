@@ -40,10 +40,7 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                byte[]? ExcelForm = await MachineFacilityService.DownloadMachineFacilityForm(HttpContext);
+                byte[]? ExcelForm = await MachineFacilityService.DownloadMachineFacilityForm();
 
                 if (ExcelForm is not null)
                     return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "기계설비정보(양식).xlsx");
@@ -67,9 +64,6 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (files is null)
                     return NoContent();
 
@@ -93,7 +87,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (files.Length > Common.MEGABYTE_10)
                     return Ok(new ResponseUnit<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
 
-                ResponseUnit<bool> model = await MachineFacilityService.ImportMachineFacilityService(HttpContext, files);
+                ResponseUnit<bool> model = await MachineFacilityService.ImportMachineFacilityService(files);
                 if (model is null)
                     return BadRequest();
 
@@ -129,9 +123,6 @@ namespace FamTec.Server.Controllers.Facility
                 //dto.Unit = "개";
                 //dto.RoomTbId = 10;
 
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.Category))
                     return NoContent();
 
@@ -161,7 +152,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<FacilityDTO> model = await MachineFacilityService.AddMachineFacilityService(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<FacilityDTO> model = await MachineFacilityService.AddMachineFacilityService(dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -192,10 +183,7 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<FacilityListDTO>? model = await MachineFacilityService.GetMachineFacilityListService(HttpContext).ConfigureAwait(false);
+                ResponseList<FacilityListDTO>? model = await MachineFacilityService.GetMachineFacilityListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -226,13 +214,10 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 // 모바일 여부
-                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+                bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<FacilityDetailDTO> model = await MachineFacilityService.GetMachineDetailFacilityService(HttpContext, facilityid, isMobile).ConfigureAwait(false);
+                ResponseUnit<FacilityDetailDTO> model = await MachineFacilityService.GetMachineDetailFacilityService(facilityid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -269,9 +254,6 @@ namespace FamTec.Server.Controllers.Facility
                 //dto.Type = "형식1";
                 //dto.RoomTbId = 10;
 
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.ID is null)
                     return NoContent();
 
@@ -304,7 +286,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<bool?> model = await MachineFacilityService.UpdateMachineFacilityService(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await MachineFacilityService.UpdateMachineFacilityService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -345,7 +327,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await MachineFacilityService.DeleteMachineFacilityService(HttpContext, delIdx).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await MachineFacilityService.DeleteMachineFacilityService(delIdx).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();

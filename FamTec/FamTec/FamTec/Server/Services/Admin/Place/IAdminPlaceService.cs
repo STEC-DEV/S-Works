@@ -12,7 +12,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<byte[]?> DownloadAdminGuidForm(HttpContext context);
+        public Task<byte[]?> DownloadAdminGuidForm();
 
         /// <summary>
         /// 사업장에 포함되어있지 않은 관리자 리스트 조회
@@ -20,7 +20,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="placeid">사업장 ID</param>
         /// <returns></returns>
-        public Task<ResponseList<ManagerListDTO>> NotContainManagerList(HttpContext context, int placeid);
+        public Task<ResponseList<ManagerListDTO>> NotContainManagerList(int placeid);
 
         /// <summary>
         /// 해당 관리자가 가지고 있지 않은 사업장 List 조회
@@ -28,7 +28,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="adminid">관리자 ID</param>
         /// <returns></returns>
-        public Task<ResponseList<AdminPlaceDTO>> NotContainPlaceList(HttpContext context, int adminid);
+        public Task<ResponseList<AdminPlaceDTO>> NotContainPlaceList(int adminid);
 
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<AdminPlaceDTO>> GetMyWorksList(HttpContext context);
+        public Task<ResponseList<AdminPlaceDTO>> GetMyWorksList();
 
         /// <summary>
         /// 전체 사업장 조회
@@ -52,7 +52,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="context">JWT 토큰</param>
         /// <returns>ResponseList<AllPlaceDTO></returns>
-        public Task<ResponseList<AllPlaceDTO>> GetAllWorksService(HttpContext context);
+        public Task<ResponseList<AllPlaceDTO>> GetAllWorksService();
 
         /// <summary>
         /// 관리자정보 전체 조회
@@ -66,7 +66,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="dto">사업장 추가 DTO</param>
         /// <returns>추가된 사업장ID</returns>
-        public Task<ResponseUnit<int?>> AddPlaceService(HttpContext context, AddPlaceDTO dto);
+        public Task<ResponseUnit<int?>> AddPlaceService(AddPlaceDTO dto);
 
         /// <summary>
         /// 사업장 정보 수정
@@ -74,7 +74,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<ResponseUnit<UpdatePlaceDTO>> UpdatePlaceService(HttpContext context, UpdatePlaceDTO dto);
+        Task<ResponseUnit<UpdatePlaceDTO>> UpdatePlaceService(UpdatePlaceDTO dto);
 
         /// <summary>
         /// 사업장 번호로 사업장 모델 반환
@@ -88,21 +88,21 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="context">JWT 토큰</param>
         /// <param name="placemanager">추가할 관리자 정보 DTO</param>
-        public Task<ResponseUnit<bool?>> AddPlaceManagerService(HttpContext context, AddPlaceManagerDTO<ManagerListDTO> placemanager);
+        public Task<ResponseUnit<bool?>> AddPlaceManagerService(AddPlaceManagerDTO<ManagerListDTO> placemanager);
 
         /// <summary>
         /// 관리자생성후 사업장 추가 서비스
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> AddManagerPlaceSerivce(HttpContext context, AddManagerPlaceDTO dto);
+        public Task<ResponseUnit<bool?>> AddManagerPlaceSerivce(AddManagerPlaceDTO dto);
 
         /// <summary>
         /// 사업장에 할당된 관리자 삭제
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> DeleteManagerPlaceService(HttpContext context, AddPlaceManagerDTO<ManagerListDTO> dto);
+        public Task<ResponseUnit<bool?>> DeleteManagerPlaceService(AddPlaceManagerDTO<ManagerListDTO> dto);
 
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="placeidx">삭제할 사업장 인덱스</param>
         /// <returns>TRUE & FALSE</returns>
-        public Task<ResponseUnit<bool?>> DeletePlaceService(HttpContext context, List<int> placeidx);
+        public Task<ResponseUnit<bool?>> DeletePlaceService(List<int> placeidx);
 
         /// <summary>
         /// 사업장 이름 조회
@@ -128,6 +128,6 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> UpdatePlaceManagerService(HttpContext context, UpdatePlaceManagerDTO dto);
+        public Task<ResponseUnit<bool?>> UpdatePlaceManagerService(UpdatePlaceManagerDTO dto);
     }
 }

@@ -16,10 +16,13 @@ namespace FamTec.Server.Services.Facility.Group
         private readonly ILogService LogService;
         private readonly ConsoleLogService<FacilityGroupService> CreateBuilderLogger;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         public FacilityGroupService(IFacilityGroupItemInfoRepository _facilitygroupiteminforepository,
             IFacilityItemKeyInfoRepository _facilityitemkeyinforepository,
             IFacilityItemValueInfoRepository _facilityitemvalueinforepository,
             ILogService _logservice,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<FacilityGroupService> _createbuilderlogger)
         {
             this.FacilityGroupItemInfoRepository = _facilitygroupiteminforepository;
@@ -27,6 +30,7 @@ namespace FamTec.Server.Services.Facility.Group
             this.FacilityItemValueInfoRepository = _facilityitemvalueinforepository;
 
             this.LogService = _logservice;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -36,10 +40,12 @@ namespace FamTec.Server.Services.Facility.Group
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> AddFacilityGroupKeyValueService(HttpContext context, List<AddGroupDTO> dto)
+        public async Task<ResponseUnit<bool>> AddFacilityGroupKeyValueService(List<AddGroupDTO> dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -75,10 +81,12 @@ namespace FamTec.Server.Services.Facility.Group
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddGroupDTO>> AddFacilityGroupService(HttpContext context, AddGroupDTO dto)
+        public async Task<ResponseUnit<AddGroupDTO>> AddFacilityGroupService(AddGroupDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<AddGroupDTO>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
 
@@ -162,10 +170,12 @@ namespace FamTec.Server.Services.Facility.Group
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddGroupInfoDTO>> AddFacilityGroupInfoService(HttpContext context, AddGroupInfoDTO dto)
+        public async Task<ResponseUnit<AddGroupInfoDTO>> AddFacilityGroupInfoService(AddGroupInfoDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<AddGroupInfoDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -201,10 +211,12 @@ namespace FamTec.Server.Services.Facility.Group
             }
         }
 
-        public async Task<ResponseList<GroupListDTO>> GetFacilityGroupListService(HttpContext context, int facilityid)
+        public async Task<ResponseList<GroupListDTO>> GetFacilityGroupListService(int facilityid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<GroupListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                 
@@ -275,10 +287,12 @@ namespace FamTec.Server.Services.Facility.Group
             }
         }
 
-        public async Task<ResponseUnit<bool?>> UpdateGroupNameService(HttpContext context, UpdateGroupDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateGroupNameService(UpdateGroupDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -330,10 +344,12 @@ namespace FamTec.Server.Services.Facility.Group
         /// <param name="context"></param>
         /// <param name="groupid"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteGroupService(HttpContext context, int groupid)
+        public async Task<ResponseUnit<bool?>> DeleteGroupService(int groupid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                 

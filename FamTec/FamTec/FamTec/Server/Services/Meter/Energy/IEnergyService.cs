@@ -11,7 +11,7 @@ namespace FamTec.Server.Services.Meter.Energy
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<AddEnergyDTO>> AddEnergyService(HttpContext context, AddEnergyDTO dto);
+        public Task<ResponseUnit<AddEnergyDTO>> AddEnergyService(AddEnergyDTO dto);
 
   
 

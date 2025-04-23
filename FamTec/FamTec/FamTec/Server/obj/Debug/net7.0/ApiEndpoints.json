@@ -3140,6 +3140,32 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
+    "Method": "AddAuthCode",
+    "RelativePath": "api/Hub/v2/AddAuthCode",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PlaceId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "BuildingId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PhoneNumber",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
     "Method": "AddVocV2",
     "RelativePath": "api/Hub/v2/AddVoc",
     "HttpMethod": "POST",
@@ -3194,6 +3220,27 @@
       {
         "Name": "files",
         "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
+    "Method": "GetVerifyAuthCode",
+    "RelativePath": "api/Hub/v2/GetVerifyAuthCode",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PhoneNumber",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "AuthCode",
+        "Type": "System.String",
         "IsRequired": false
       }
     ],
@@ -3706,6 +3753,123 @@
         "Name": "placeid",
         "Type": "System.Int32",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
+    "Method": "WebLogOutV2",
+    "RelativePath": "api/Login/sign/v2/Web/Logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Login.LogoutDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
+    "Method": "WebSelectPlaceV2",
+    "RelativePath": "api/Login/sign/v2/Web/UserSelectPlace",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "placeid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "sessionId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
+    "Method": "WebLoginV2",
+    "RelativePath": "api/Login/v2/Web/Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Login.LoginDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
+    "Method": "WebQRLoginV2",
+    "RelativePath": "api/Login/v2/Web/QRLogin",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Login.QRLoginDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
+    "Method": "SettingLoginV2",
+    "RelativePath": "api/Login/v2/web/SettingLogin",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Login.LoginDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
+    "Method": "WebRefreshTokenV2",
+    "RelativePath": "api/Login/v2/Web/SettingRefreshToken",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Login.RefreshTokenSettingDTOV2",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
+    "Method": "WebRefreshTokenV2",
+    "RelativePath": "api/Login/v2/Web/UserRefreshToken",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Login.RefreshTokenDTOV2",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

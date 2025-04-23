@@ -1,20 +1,26 @@
-﻿namespace FamTec.Shared.Server.DTO.Login
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using System.ComponentModel.DataAnnotations;
+
+namespace FamTec.Shared.Server.DTO.Login
 {
     public class QRLoginDTO
     {
         /// <summary>
         /// 사용자 로그인ID
         /// </summary>
-        public string? UserId { get; set; }
+        [Required]
+        public string? UserId { get; set; } = null!;
 
         /// <summary>
         /// 사용자 로그인PW
         /// </summary>
-        public string? UserPassword { get; set; }
+        [Required]
+        public string? UserPassword { get; set; } = null!;
 
         /// <summary>
         /// 사업장ID
         /// </summary>
+        [Required]
         public int placeid { get; set; }
     }
 }

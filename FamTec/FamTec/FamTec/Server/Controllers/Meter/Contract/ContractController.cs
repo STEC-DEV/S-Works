@@ -40,13 +40,10 @@ namespace FamTec.Server.Controllers.Meter.Contract
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                ResponseUnit<AddContractDTO> model = await ContractService.AddContractService(HttpContext, dto);
+                ResponseUnit<AddContractDTO> model = await ContractService.AddContractService(dto);
                 if (model is null)
                     return BadRequest();
 
@@ -82,10 +79,7 @@ namespace FamTec.Server.Controllers.Meter.Contract
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<ContractDTO>? model = await ContractService.GetAllContractListService(HttpContext);
+                ResponseList<ContractDTO>? model = await ContractService.GetAllContractListService();
                 if (model is null)
                     return BadRequest();
 

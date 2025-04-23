@@ -16,41 +16,6 @@ namespace FamTec.Server.Services
         }
 
         /// <summary>
-        /// 이미지 등록
-        /// </summary>
-        /// <param name="folderpath"></param>
-        /// <param name="files"></param>
-        /// <returns></returns>
-        public async Task<bool?> AddImageFile(string newFileName,
-            string folderpath, IFormFile files,
-            [CallerMemberName] string membername = "",
-            [CallerFilePath] string sourceFilePath = "",
-            [CallerLineNumber] int sourceLineNumber = 0)
-        {
-            try
-            {
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"\n[INFO] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
-#endif
-                string filePath = Path.Combine(folderpath, newFileName);
-
-                using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                {
-                    await files.CopyToAsync(fileStream).ConfigureAwait(false);
-                    return true;
-                }
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
-#endif
-                return null;
-            }
-        }
-
-        /// <summary>
         /// 이미지 비율 축소 등록
         /// </summary>
         /// <param name="newFileName"></param>

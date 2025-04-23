@@ -49,7 +49,7 @@ namespace FamTec.Server.Controllers.Building
             try
             {
                 
-                byte[]? fileBytes = await BuildingService.DownloadBuildingForm(HttpContext);
+                byte[]? fileBytes = await BuildingService.DownloadBuildingForm();
 
                 if (fileBytes is not null)
                     return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "건물정보(양식).xlsx");
@@ -73,9 +73,6 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (files is null)
                     return NoContent();
 
@@ -99,7 +96,7 @@ namespace FamTec.Server.Controllers.Building
                 if (files.Length > Common.MEGABYTE_10)
                     return Ok(new ResponseUnit<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
 
-                ResponseUnit<bool> model = await BuildingService.ImportBuildingService(HttpContext, files);
+                ResponseUnit<bool> model = await BuildingService.ImportBuildingService(files);
                 if (model is null)
                     return BadRequest();
 
@@ -133,13 +130,10 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (materialid is 0)
                     return NoContent();
 
-                ResponseList<PlaceBuildingNameDTO>? model = await BuildingService.GetPlaceAvailableBuildingList(HttpContext, materialid).ConfigureAwait(false);
+                ResponseList<PlaceBuildingNameDTO>? model = await BuildingService.GetPlaceAvailableBuildingList(materialid).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -170,10 +164,7 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<int?> model = await BuildingService.TotalBuildingCount(HttpContext).ConfigureAwait(false);
+                ResponseUnit<int?> model = await BuildingService.TotalBuildingCount().ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -208,10 +199,7 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-                
-                ResponseList<BuildinglistDTO> model = await BuildingService.GetBuilidngListService(HttpContext).ConfigureAwait(false);
+                ResponseList<BuildinglistDTO> model = await BuildingService.GetBuilidngListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -248,10 +236,7 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<BuildinglistDTO> model = await BuildingService.GetBuildingListPageService(HttpContext, skip, take).ConfigureAwait(false);
+                ResponseList<BuildinglistDTO> model = await BuildingService.GetBuildingListPageService(skip, take).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -286,10 +271,7 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<PlaceBuildingNameDTO> model = await BuildingService.GetPlaceBuildingNameService(HttpContext).ConfigureAwait(false);
+                ResponseList<PlaceBuildingNameDTO> model = await BuildingService.GetPlaceBuildingNameService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -320,10 +302,7 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<PlaceBuildingListDTO> model = await BuildingService.GetPlaceBuildingService(HttpContext).ConfigureAwait(false);
+                ResponseList<PlaceBuildingListDTO> model = await BuildingService.GetPlaceBuildingService().ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -359,9 +338,6 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
@@ -385,7 +361,7 @@ namespace FamTec.Server.Controllers.Building
                     }
                 }
 
-                ResponseUnit<AddBuildingDTO> model = await BuildingService.AddBuildingService(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<AddBuildingDTO> model = await BuildingService.AddBuildingService(dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -421,12 +397,9 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
+                bool isMobile = CommService.MobileConnectCheck();
 
-                bool isMobile = CommService.MobileConnectCheck(HttpContext);
-
-                ResponseUnit<DetailBuildingDTO> model = await BuildingService.GetDetailBuildingService(HttpContext, buildingid, isMobile).ConfigureAwait(false);
+                ResponseUnit<DetailBuildingDTO> model = await BuildingService.GetDetailBuildingService(buildingid, isMobile).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -458,16 +431,13 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (buildingidx is null)
                     return NoContent();
                 
                 if(buildingidx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await BuildingService.DeleteBuildingService(HttpContext, buildingidx).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await BuildingService.DeleteBuildingService(buildingidx).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -498,9 +468,6 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.ID is null)
                     return NoContent();
 
@@ -527,7 +494,7 @@ namespace FamTec.Server.Controllers.Building
                     }
                 }
 
-                ResponseUnit<bool?> model = await BuildingService.UpdateBuildingService(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await BuildingService.UpdateBuildingService(dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

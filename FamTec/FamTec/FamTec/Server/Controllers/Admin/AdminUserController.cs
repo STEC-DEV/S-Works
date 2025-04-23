@@ -52,9 +52,6 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-                
                 // * ID 필수
                 if (String.IsNullOrWhiteSpace(dto.UserId)) 
                     return NoContent();
@@ -90,7 +87,7 @@ namespace FamTec.Server.Controllers.Admin
                 dto.UserId = CommService.getRemoveWhiteSpace(dto.UserId);
                 dto.Password = CommService.getRemoveWhiteSpace(dto.Password);
 
-                ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -128,10 +125,7 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+                bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseUnit<DManagerDTO>? model = await AdminAccountService.DetailAdminService(adminid, isMobile).ConfigureAwait(false);
 
@@ -169,10 +163,7 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<bool?> model = await AdminPlaceService.AddManagerPlaceSerivce(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await AdminPlaceService.AddManagerPlaceSerivce(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -208,16 +199,13 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (adminidx is null)
                     return NoContent();
                 
                 if (adminidx.Count == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await AdminAccountService.DeleteAdminService(HttpContext, adminidx).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await AdminAccountService.DeleteAdminService(adminidx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -255,9 +243,6 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (adminid is 0)
                     return NoContent();
 
@@ -281,7 +266,7 @@ namespace FamTec.Server.Controllers.Admin
                     }
                 }
 
-                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminImageService(HttpContext, adminid, files).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminImageService(adminid, files).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -318,10 +303,6 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
-
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.AdminIndex is null)
                     return NoContent();
                 
@@ -340,7 +321,7 @@ namespace FamTec.Server.Controllers.Admin
                 dto.UserId = CommService.getRemoveWhiteSpace(dto.UserId);
                 dto.Password = CommService.getRemoveWhiteSpace(dto.Password);
 
-                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -377,9 +358,6 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if(String.IsNullOrWhiteSpace(userid))
                     return BadRequest();
 

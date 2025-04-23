@@ -17,17 +17,21 @@ namespace FamTec.Server.Services.Building.Key
         private readonly ILogService LogService;
         private readonly ConsoleLogService<BuildingKeyService> CreateBuilderLogger;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         public BuildingKeyService(
             IBuildingGroupItemInfoRepository _buildinggroupiteminforepository,
             IBuildingItemKeyInfoRepository _buildingItemkeyinforepository,
             IBuildingItemValueInfoRepository _buildingitemvalueinforepository,
             ILogService _logservice,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<BuildingKeyService> _createbuilderlogger)
         {
             this.BuildingGroupItemInfoRepository = _buildinggroupiteminforepository;
             this.BuildingItemKeyInfoRepository = _buildingItemkeyinforepository;
             this.BuildingItemValueInfoRepository = _buildingitemvalueinforepository;
-            
+
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -38,10 +42,12 @@ namespace FamTec.Server.Services.Building.Key
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddKeyDTO>> AddKeyService(HttpContext context, AddKeyDTO dto)
+        public async Task<ResponseUnit<AddKeyDTO>> AddKeyService(AddKeyDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
@@ -108,10 +114,12 @@ namespace FamTec.Server.Services.Building.Key
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<UpdateKeyDTO>> UpdateKeyService(HttpContext context, UpdateKeyDTO dto)
+        public async Task<ResponseUnit<UpdateKeyDTO>> UpdateKeyService(UpdateKeyDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
                 
@@ -143,10 +151,12 @@ namespace FamTec.Server.Services.Building.Key
             }
         }
 
-        public async Task<ResponseUnit<bool?>> DeleteKeyListService(HttpContext context, List<int> KeyId)
+        public async Task<ResponseUnit<bool?>> DeleteKeyListService(List<int> KeyId)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
@@ -173,10 +183,12 @@ namespace FamTec.Server.Services.Building.Key
             }
         }
 
-        public async Task<ResponseUnit<bool?>> DeleteKeyService(HttpContext context, int KeyId)
+        public async Task<ResponseUnit<bool?>> DeleteKeyService(int KeyId)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 

@@ -11,14 +11,6 @@ namespace FamTec.Server.Services
         public string SetNewFileName(string useridx, IFormFile files, [CallerMemberName] string membername = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
 
         /// <summary>
-        /// 이미지 등록
-        /// </summary>
-        /// <param name="folderpath">이미지 등록할 폴더경로</param>
-        /// <param name="files">파일 원본</param>
-        /// <returns></returns>
-        public Task<bool?> AddImageFile(string newFileName, string folderpath, IFormFile files, [CallerMemberName] string membername = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
-
-        /// <summary>
         /// 이미지 비율축소 등록
         /// </summary>
         /// <param name="newFileName"></param>

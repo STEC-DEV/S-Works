@@ -17,21 +17,27 @@ namespace FamTec.Server.Services
         private readonly ILogService LogService;
         private readonly ConsoleLogService<KakaoService> CreateBuilderLogger;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         public KakaoService(ILogService _logservice,
             IHttpClientFactory _httpclientfactory,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<KakaoService> _createbuilderlogger)
         {
             this.LogService = _logservice;
             this.HttpClientFactory = _httpclientfactory;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
 
         // 카카오 메시지결과 테스트
-        public async Task<ResponseList<KaKaoSenderResult>?> KakaoSenderResult(HttpContext context,int page, int pagesize, DateTime StartDate, int limit_day)
+        public async Task<ResponseList<KaKaoSenderResult>?> KakaoSenderResult(int page, int pagesize, DateTime StartDate, int limit_day)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<KaKaoSenderResult>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

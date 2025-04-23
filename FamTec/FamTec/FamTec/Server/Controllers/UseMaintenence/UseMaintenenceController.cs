@@ -43,16 +43,13 @@ namespace FamTec.Server.Controllers.UseMaintenence
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (materialid is 0)
                     return NoContent();
                 
                 if (roomid is 0)
                     return NoContent();
 
-                ResponseUnit<UseMaterialDetailDTO>? model = await UseMaintenenceService.GetDetailUseMaterialService(HttpContext, useid, materialid, roomid).ConfigureAwait(false);
+                ResponseUnit<UseMaterialDetailDTO>? model = await UseMaintenenceService.GetDetailUseMaterialService(useid, materialid, roomid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -88,16 +85,13 @@ namespace FamTec.Server.Controllers.UseMaintenence
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.MaintanceID is 0)
                     return NoContent();
 
                 if (dto.UseMaintanceID is 0)
                     return NoContent();
                 
-                ResponseUnit<bool?> model = await UseMaintenenceService.UpdateDetailUseMaterialService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await UseMaintenenceService.UpdateDetailUseMaterialService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

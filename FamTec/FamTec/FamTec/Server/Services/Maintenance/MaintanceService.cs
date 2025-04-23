@@ -27,6 +27,7 @@ namespace FamTec.Server.Services.Maintenance
         private DirectoryInfo? di;
 
         IHubContext<BroadcastHub> HubContext;
+        private readonly IHttpContextAccessor HttpContextAccessor;
 
         public MaintanceService(IMaintanceRepository _maintancerepository,
             IFacilityInfoRepository _facilityinforepository,
@@ -34,6 +35,7 @@ namespace FamTec.Server.Services.Maintenance
             IFileService _fileservice,
             ILogService _logservice,
             IHubContext<BroadcastHub> _hubcontext,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<MaintanceService> _createbuilderlogger)
         {
             this.MaintanceRepository = _maintancerepository;
@@ -43,6 +45,7 @@ namespace FamTec.Server.Services.Maintenance
             this.FileService = _fileservice;
             this.LogService = _logservice;
             this.HubContext = _hubcontext;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -51,10 +54,12 @@ namespace FamTec.Server.Services.Maintenance
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaintenanceDaysDTO>?> GetMaintenanceDaysList(HttpContext context)
+        public async Task<ResponseList<MaintenanceDaysDTO>?> GetMaintenanceDaysList()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<MaintenanceDaysDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -84,10 +89,12 @@ namespace FamTec.Server.Services.Maintenance
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaintanceYearPriceDTO>?> GetMaintenanceYearPriceList(HttpContext context)
+        public async Task<ResponseList<MaintanceYearPriceDTO>?> GetMaintenanceYearPriceList()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<MaintanceYearPriceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -120,7 +127,7 @@ namespace FamTec.Server.Services.Maintenance
             }
         }
 
-        public async Task<ResponseList<MaintanceWeekCount>?> GetMaintanceDashBoardDataService(HttpContext context)
+        public async Task<ResponseList<MaintanceWeekCount>?> GetMaintanceDashBoardDataService()
         {
             try
             {
@@ -152,6 +159,8 @@ namespace FamTec.Server.Services.Maintenance
                 DateTime EndOfWeek = startOfWeek.AddDays(7);
                 */
                 #endregion
+
+                var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
                     return new ResponseList<MaintanceWeekCount>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -201,11 +210,13 @@ namespace FamTec.Server.Services.Maintenance
             }
         }
 
-        public async Task<ResponseUnit<bool?>> AddMaintanceImageService(HttpContext context, int id, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> AddMaintanceImageService(int id, IFormFile? files)
         {
             try
             {
-                if(context is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
@@ -236,10 +247,12 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<FailResult?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto)
+        public async Task<ResponseUnit<FailResult?>> AddMaintanceService(AddMaintenanceDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -324,10 +337,12 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<FailResult?>> AddSupMaintanceService(HttpContext context, AddMaintanceMaterialDTO dto)
+        public async Task<ResponseUnit<FailResult?>> AddSupMaintanceService(AddMaintanceMaterialDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -381,10 +396,12 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteMaintenanceStoreRecordService(HttpContext context, DeleteMaintanceDTO dto)
+        public async Task<ResponseUnit<bool?>> DeleteMaintenanceStoreRecordService(DeleteMaintanceDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
@@ -429,10 +446,12 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteMaintenanceRecordService(HttpContext context, DeleteMaintanceDTO2 dto)
+        public async Task<ResponseUnit<bool?>> DeleteMaintenanceRecordService(DeleteMaintanceDTO2 dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
@@ -479,10 +498,12 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="facilityid"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaintanceListDTO>> GetMaintanceHistoryService(HttpContext context, int facilityid)
+        public async Task<ResponseList<MaintanceListDTO>> GetMaintanceHistoryService(int facilityid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<MaintanceListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -523,10 +544,12 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="category"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaintanceHistoryDTO>?> GetDateHistoryList(HttpContext context, DateTime StartDate, DateTime EndDate, List<string> category, List<int> type)
+        public async Task<ResponseList<MaintanceHistoryDTO>?> GetDateHistoryList(DateTime StartDate, DateTime EndDate, List<string> category, List<int> type)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -590,10 +613,12 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="category"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaintanceHistoryDTO>?> GetMonthHistoryList(HttpContext context, string searchdate, List<string> category, List<int> type)
+        public async Task<ResponseList<MaintanceHistoryDTO>?> GetMonthHistoryList(string searchdate, List<string> category, List<int> type)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -672,10 +697,12 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="category"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<ResponseList<AllMaintanceHistoryDTO>?> GetAllHistoryList(HttpContext context, List<string> category, List<int> type)
+        public async Task<ResponseList<AllMaintanceHistoryDTO>?> GetAllHistoryList(List<string> category, List<int> type)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<AllMaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -738,10 +765,12 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="MaintanceID"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<DetailMaintanceDTO?>> GetDetailService(HttpContext context, int MaintanceID, bool isMobile)
+        public async Task<ResponseUnit<DetailMaintanceDTO?>> GetDetailService(int MaintanceID, bool isMobile)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<DetailMaintanceDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -774,7 +803,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateMaintenanceService(HttpContext context, UpdateMaintenanceDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateMaintenanceService(UpdateMaintenanceDTO dto, IFormFile? files)
         {
             try
             {
@@ -785,6 +814,8 @@ namespace FamTec.Server.Services.Maintenance
                 // 수정실패 시 돌려놓을 FormFile
                 IFormFile? AddTemp = default;
                 string RemoveTemp = String.Empty;
+
+                var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };

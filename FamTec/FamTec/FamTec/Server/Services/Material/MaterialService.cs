@@ -32,6 +32,8 @@ namespace FamTec.Server.Services.Material
         private DirectoryInfo? di;
         private string? MaterialFileFolderPath;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         public MaterialService(IMaterialInfoRepository _materialinforepository,
             IInventoryInfoRepository _inventoryinforepository,
             IRoomInfoRepository _roominforepository,
@@ -40,6 +42,7 @@ namespace FamTec.Server.Services.Material
             IFileService _fileservice,
             ILogService _logservice,
             IHubContext<BroadcastHub> _hubcontext,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<MaterialService> _createbuilderlogger)
         {
             this.MaterialInfoRepository = _materialinforepository;
@@ -51,6 +54,7 @@ namespace FamTec.Server.Services.Material
             this.HubContext = _hubcontext;
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -59,10 +63,12 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<ShowMaterialIdxDTO>?> GetMaterialIndexService(HttpContext context)
+        public async Task<ResponseList<ShowMaterialIdxDTO>?> GetMaterialIndexService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<ShowMaterialIdxDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -91,10 +97,15 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="MaterialList"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> SetDashBoardMaterialService(HttpContext context, List<int>? MaterialIdx)
+        public async Task<ResponseUnit<bool>> SetDashBoardMaterialService(List<int>? MaterialIdx)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 400 };
+
                 if (MaterialIdx is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -134,10 +145,12 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaterialCountDTO>?> GetMaterialCountService(HttpContext context)
+        public async Task<ResponseList<MaterialCountDTO>?> GetMaterialCountService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<MaterialCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -272,10 +285,14 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<byte[]?> DownloadMaterialForm(HttpContext context)
+        public async Task<byte[]?> DownloadMaterialForm()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+                if (context is null)
+                    return null;
+
                 string? PlaceId = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(PlaceId))
                     return null;
@@ -329,10 +346,12 @@ namespace FamTec.Server.Services.Material
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> ImportMaterialService(HttpContext context, IFormFile? file)
+        public async Task<ResponseUnit<bool>> ImportMaterialService(IFormFile? file)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -508,10 +527,12 @@ namespace FamTec.Server.Services.Material
         /// <param name="dto"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddMaterialDTO>> AddMaterialService(HttpContext context, AddMaterialDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<AddMaterialDTO>> AddMaterialService(AddMaterialDTO dto, IFormFile? files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<AddMaterialDTO>() { message = "잘못된 요청입니다.", data = new AddMaterialDTO(), code = 404 };
 
@@ -596,10 +617,12 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaterialListDTO>> GetPlaceMaterialListService(HttpContext context, bool isMobile)
+        public async Task<ResponseList<MaterialListDTO>> GetPlaceMaterialListService(bool isMobile)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<MaterialListDTO>() { message = "잘못된 요청입니다.", data = new List<MaterialListDTO>(), code = 404 };
 
@@ -743,10 +766,12 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaterialSearchListDTO>> GetAllPlaecMaterialSearchService(HttpContext context)
+        public async Task<ResponseList<MaterialSearchListDTO>> GetAllPlaecMaterialSearchService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<MaterialSearchListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -784,10 +809,12 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<int?>> GetPlaceMaterialCountService(HttpContext context)
+        public async Task<ResponseUnit<int?>> GetPlaceMaterialCountService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -816,10 +843,12 @@ namespace FamTec.Server.Services.Material
         /// <param name="pagenumber"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaterialListDTO>> GetPlaceMaterialPageNationListService(HttpContext context, int pagenumber, int pagesize)
+        public async Task<ResponseList<MaterialListDTO>> GetPlaceMaterialPageNationListService(int pagenumber, int pagesize)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<MaterialListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -869,10 +898,12 @@ namespace FamTec.Server.Services.Material
         /// <param name="materialid"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ResponseUnit<DetailMaterialDTO>> GetDetailMaterialService(HttpContext context, int materialid, bool isMobile)
+        public async Task<ResponseUnit<DetailMaterialDTO>> GetDetailMaterialService(int materialid, bool isMobile)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
 
@@ -1023,7 +1054,7 @@ namespace FamTec.Server.Services.Material
         /// <param name="dto"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ResponseUnit<bool?>> UpdateMaterialService(HttpContext context, UpdateMaterialDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateMaterialService(UpdateMaterialDTO dto, IFormFile? files)
         {
             try
             {
@@ -1034,6 +1065,8 @@ namespace FamTec.Server.Services.Material
                 // 수정실패 시 돌려놓을 FormFile
                 IFormFile? AddTemp = default;
                 string RemoveTemp = String.Empty;
+
+                var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -1186,10 +1219,12 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteMaterialService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteMaterialService(List<int> delIdx)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || delIdx is null || !delIdx.Any())
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -1252,10 +1287,12 @@ namespace FamTec.Server.Services.Material
         /// <param name="context"></param>
         /// <param name="searchData"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaterialSearchListDTO>> GetMaterialSearchService(HttpContext context, string searchData)
+        public async Task<ResponseList<MaterialSearchListDTO>> GetMaterialSearchService(string searchData)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<MaterialSearchListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

@@ -21,6 +21,8 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
         private readonly IFileService FileService;
         private readonly ConsoleLogService<ElectronicFacilityService> CreateBuilderLogger;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         private DirectoryInfo? di;
         private string? ElectronicFileFolderPath;
 
@@ -31,6 +33,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
            IRoomInfoRepository _roominforepository,
            IFileService _fileservice,
            ILogService _logService,
+           IHttpContextAccessor _httpcontextaccessor,
            ConsoleLogService<ElectronicFacilityService> _createbuilderlogger)
         {
             this.FacilityInfoRepository = _facilityinforepository;
@@ -40,6 +43,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
 
             this.FileService = _fileservice;
             this.LogService = _logService;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -153,10 +157,14 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<byte[]?> DownloadElectronicFacilityForm(HttpContext context)
+        public async Task<byte[]?> DownloadElectronicFacilityForm()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+                if (context is null)
+                    return null;
+
                 string? PlaceId = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(PlaceId))
                     return null;
@@ -213,10 +221,12 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> ImportElectronicFacilityService(HttpContext context, IFormFile? file)
+        public async Task<ResponseUnit<bool>> ImportElectronicFacilityService(IFormFile? file)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -398,10 +408,12 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
         /// <param name="dto"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<FacilityDTO>> AddElectronicFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddElectronicFacilityService(FacilityDTO dto, IFormFile? files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
@@ -498,10 +510,12 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<FacilityListDTO>> GetElectronicFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetElectronicFacilityListService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<FacilityListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -536,10 +550,12 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
         /// <param name="context"></param>
         /// <param name="facilityId"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<FacilityDetailDTO>> GetElectronicDetailFacilityService(HttpContext context, int facilityId, bool isMobile)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetElectronicDetailFacilityService(int facilityId, bool isMobile)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -689,10 +705,12 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
             }
         }
 
-        public async Task<ResponseUnit<bool?>> UpdateElectronicFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateElectronicFacilityService(FacilityDTO dto, IFormFile? files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 // 파일처리 준비
                 string? NewFileName = String.Empty;
                 string? deleteFileName = String.Empty;
@@ -849,10 +867,12 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
             }
         }
 
-        public async Task<ResponseUnit<bool?>> DeleteElectronicFacilityService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteElectronicFacilityService(List<int> delIdx)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || delIdx is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

@@ -4,11 +4,14 @@
     {
         private readonly ILogService LogService;
         private readonly ConsoleLogService<CommService> CreateBuilderLogger;
+        private readonly IHttpContextAccessor HttpContextAccessor;
 
         public CommService(ILogService _logservice,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<CommService> _createbuilderlogger)
         {
             this.LogService = _logservice;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -33,10 +36,12 @@
         /// </summary>
         /// <param name="userAgent"></param>
         /// <returns></returns>
-        public bool MobileConnectCheck(HttpContext context)
+        public bool MobileConnectCheck()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 // 모바일 여부
                 bool isMobile = false;
 

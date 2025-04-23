@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.User;
+using FamTec.Server.Services.Redis;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
@@ -23,6 +24,10 @@ namespace FamTec.Server.Services.Admin.Account
         private readonly IConfiguration Configuration;
         private readonly ILogService LogService;
 
+        private readonly IRedisService RedisService;
+
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         private readonly ConsoleLogService<AdminAccountService> CreateBuilderLogger;
         DirectoryInfo? di;
 
@@ -32,6 +37,8 @@ namespace FamTec.Server.Services.Admin.Account
             IFileService _fileservice,
             IConfiguration _configuration,
             ILogService _logservice,
+            IRedisService _redisservice,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<AdminAccountService> _createbuilderlogger)
         {
             this.UserInfoRepository = _userinfoRepository;
@@ -41,6 +48,8 @@ namespace FamTec.Server.Services.Admin.Account
             this.FileService = _fileservice;
             this.Configuration = _configuration;
             this.LogService = _logservice;
+            this.RedisService = _redisservice;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -51,12 +60,14 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="adminid"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateAdminImageService(HttpContext context, int adminid, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateAdminImageService(int adminid, IFormFile? files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
 
                 bool? ImageAddResult = await AdminUserInfoRepository.UpdateAdminImageInfo(adminid, files).ConfigureAwait(false);
 
@@ -83,10 +94,15 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateAdminService(HttpContext context, UpdateManagerDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateAdminService(UpdateManagerDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
+
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
 
@@ -207,10 +223,14 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="dto"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<int?>> AdminRegisterService(HttpContext context, AddManagerDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<int?>> AdminRegisterService(AddManagerDTO dto, IFormFile? files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+                if (context is null)
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
+
                 string? useridx = Convert.ToString(context.Items["UserIdx"]);
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? UserType = Convert.ToString(context.Items["Role"]);
@@ -335,11 +355,15 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="context"></param>
         /// <param name="useridx"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteAdminService(HttpContext context, List<int> adminidx)
+        public async Task<ResponseUnit<bool?>> DeleteAdminService(List<int> adminidx)
         {
             try
             {
-                if(context is null)
+                var context = HttpContextAccessor.HttpContext;
+                if (context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
+
+                if (context is null)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
@@ -551,6 +575,196 @@ namespace FamTec.Server.Services.Admin.Account
             }
         }
 
-   
+        /// <summary>
+        /// [웹] - 관리자 화면 액세스 토큰 발급 서비스 (V2)
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<TokenDTOV2>?> WebAdminLoginService(LoginDTO dto)
+        {
+            try
+            {
+                if (dto is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+
+                if(String.IsNullOrWhiteSpace(dto.UserID) || String.IsNullOrWhiteSpace(dto.UserPassword))
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+
+                var userTB = await UserInfoRepository.GetUserInfo(dto.UserID, dto.UserPassword).ConfigureAwait(false);
+
+                if (userTB is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+
+                if (userTB.AdminYn != true)
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+
+                var adminTB = await AdminUserInfoRepository.GetAdminUserInfo(userTB.Id).ConfigureAwait(false);
+                if(adminTB is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+
+                if(String.IsNullOrWhiteSpace(adminTB.Type))
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+
+                var departmentTB = await DepartmentInfoRepository.GetDeleteDepartmentInfo(adminTB.DepartmentTbId).ConfigureAwait(false);
+                if(adminTB is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+
+                List<Claim> authClaims = new List<Claim>
+                {
+                    new Claim("UserIdx",userTB.Id.ToString()),
+                    new Claim("Name", userTB.Name.ToString()),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim("UserType", "ADMIN"),
+                    new Claim("AdminIdx", adminTB.Id.ToString()),
+                    new Claim("DepartIdx", adminTB.DepartmentTbId.ToString()),
+                    new Claim("DepartmentName", departmentTB.Name.ToString())
+                };
+
+                switch(adminTB.Type.Trim())
+                {
+                    case "시스템관리자":
+                        authClaims.Add(new Claim("Role", "시스템관리자"));
+                        authClaims.Add(new Claim(ClaimTypes.Role, "SystemManager"));
+                        break;
+                    case "마스터":
+                        authClaims.Add(new Claim("Role", "마스터"));
+                        authClaims.Add(new Claim(ClaimTypes.Role, "Master"));
+                        break;
+                    case "매니저":
+                        authClaims.Add(new Claim("Role", "매니저"));
+                        authClaims.Add(new Claim(ClaimTypes.Role, "Manager"));
+                        break;
+                }
+
+                // JWT 인증 페이로드 사인 비밀키
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+
+                var token = new JwtSecurityToken(
+                    issuer: Configuration["JWT:Issuer"],
+                    audience: Configuration["JWT:Audience"],
+                    expires: DateTime.Now.AddHours(3),
+                    claims: authClaims,
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                var SetRedisCache = await RedisService.SetWebSettingpageAccessAsync(userTB.Id, accessToken);
+                if (SetRedisCache is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+
+                var (access, refresh, sessionId) = SetRedisCache.Value;
+
+                var returnToken = new TokenDTOV2
+                {
+                    accessToken = access,
+                    refreshToken = refresh,
+                    sessionId = sessionId
+                };
+                return new ResponseUnit<TokenDTOV2>() { message = "로그인 성공(관리자)", data = returnToken, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// [웹] - 관리자 화면 재발급 토큰 서비스 (V2)
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ResponseUnit<TokenDTOV2>?> WebAdminLoginRefreshTokenService(RefreshTokenSettingDTOV2 dto)
+        {
+            try
+            {
+                if (dto is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if (String.IsNullOrWhiteSpace(dto.userIdx) || String.IsNullOrWhiteSpace(dto.refreshToken) || String.IsNullOrWhiteSpace(dto.sessionId))
+                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                var userTB = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(dto.userIdx)).ConfigureAwait(false);
+
+                if (userTB is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+
+                if (userTB.AdminYn != true)
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+
+                var adminTB = await AdminUserInfoRepository.GetAdminUserInfo(userTB.Id).ConfigureAwait(false);
+                if (adminTB is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+
+                if (String.IsNullOrWhiteSpace(adminTB.Type))
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+
+                var departmentTB = await DepartmentInfoRepository.GetDeleteDepartmentInfo(adminTB.DepartmentTbId).ConfigureAwait(false);
+                if (adminTB is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+
+                List<Claim> authClaims = new List<Claim>
+                {
+                    new Claim("UserIdx",userTB.Id.ToString()),
+                    new Claim("Name", userTB.Name.ToString()),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim("UserType", "ADMIN"),
+                    new Claim("AdminIdx", adminTB.Id.ToString()),
+                    new Claim("DepartIdx", adminTB.DepartmentTbId.ToString()),
+                    new Claim("DepartmentName", departmentTB.Name.ToString())
+                };
+
+                switch (adminTB.Type.Trim())
+                {
+                    case "시스템관리자":
+                        authClaims.Add(new Claim("Role", "시스템관리자"));
+                        authClaims.Add(new Claim(ClaimTypes.Role, "SystemManager"));
+                        break;
+                    case "마스터":
+                        authClaims.Add(new Claim("Role", "마스터"));
+                        authClaims.Add(new Claim(ClaimTypes.Role, "Master"));
+                        break;
+                    case "매니저":
+                        authClaims.Add(new Claim("Role", "매니저"));
+                        authClaims.Add(new Claim(ClaimTypes.Role, "Manager"));
+                        break;
+                }
+
+                // JWT 인증 페이로드 사인 비밀키
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+
+                var token = new JwtSecurityToken(
+                    issuer: Configuration["JWT:Issuer"],
+                    audience: Configuration["JWT:Audience"],
+                    expires: DateTime.Now.AddHours(3),
+                    claims: authClaims,
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                string newAccessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                var newRefreshToken = await RedisService.WebRotateSettingpageRefreshTokenAsync(userTB.Id, dto.refreshToken, dto.sessionId);
+                if (String.IsNullOrWhiteSpace(newRefreshToken))
+                    return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+
+                var returnDto = new TokenDTOV2
+                {
+                    accessToken = newAccessToken,
+                    refreshToken = newRefreshToken,
+                    sessionId = dto.sessionId
+                };
+
+                return new ResponseUnit<TokenDTOV2>() { message = "요청이 정상 처리되었습니다.", data = returnDto, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
     }
 }

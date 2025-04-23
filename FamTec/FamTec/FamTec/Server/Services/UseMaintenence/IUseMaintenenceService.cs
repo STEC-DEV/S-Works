@@ -12,7 +12,7 @@ namespace FamTec.Server.Services.UseMaintenence
         /// <param name="context"></param>
         /// <param name="usematerialid"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<UseMaterialDetailDTO>> GetDetailUseMaterialService(HttpContext context, int usematerialid, int materialid, int roomid);
+        public Task<ResponseUnit<UseMaterialDetailDTO>> GetDetailUseMaterialService(int usematerialid, int materialid, int roomid);
 
         /// <summary>
         /// 사용자재 수정 서비스 - 추가출고 / 입고처리
@@ -20,7 +20,7 @@ namespace FamTec.Server.Services.UseMaintenence
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> UpdateDetailUseMaterialService(HttpContext context, UpdateMaintenanceMaterialDTO dto);
+        public Task<ResponseUnit<bool?>> UpdateDetailUseMaterialService(UpdateMaintenanceMaterialDTO dto);
 
         /// <summary>
         /// 사용자재 수정 서비스 - 추가출고 / 입고 / 생출고 / 삭제 로직처리
@@ -28,6 +28,6 @@ namespace FamTec.Server.Services.UseMaintenence
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> UpdateUseMaintanceService(HttpContext context, UpdateMaintancematerialDTO dto);
+        public Task<ResponseUnit<bool?>> UpdateUseMaintanceService(UpdateMaintancematerialDTO dto);
     }
 }

@@ -10,7 +10,7 @@ namespace FamTec.Server.Services.Admin.Department
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<AddDepartmentDTO>> AddDepartmentService(HttpContext context, AddDepartmentDTO dto);
+        public Task<ResponseUnit<AddDepartmentDTO>> AddDepartmentService(AddDepartmentDTO dto);
 
         /// <summary>
         /// 부서전체조회
@@ -29,14 +29,14 @@ namespace FamTec.Server.Services.Admin.Department
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> DeleteDepartmentService(HttpContext context, List<int> index);
+        public Task<ResponseUnit<bool?>> DeleteDepartmentService(List<int> index);
 
         /// <summary>
         /// 부서수정
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<DepartmentDTO>> UpdateDepartmentService(HttpContext context, DepartmentDTO dto);
+        public Task<ResponseUnit<DepartmentDTO>> UpdateDepartmentService(DepartmentDTO dto);
 
     }
 }

@@ -1,9 +1,12 @@
 ﻿using ClosedXML.Excel;
+using DevExpress.Emf;
+using FamTec.Client.Pages.Normal.User.UserAdd;
 using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.Place;
 using FamTec.Server.Repository.User;
+using FamTec.Server.Services.Redis;
 using FamTec.Shared.Client.DTO.Normal.Users;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
@@ -16,6 +19,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace FamTec.Server.Services.User
@@ -34,6 +38,9 @@ namespace FamTec.Server.Services.User
         private readonly ConsoleLogService<UserService> CreateBuilderLogger;
 
         private readonly IWebHostEnvironment WebHostEnvironment;
+        private readonly IRedisService RedisService;
+
+        private readonly IHttpContextAccessor HttpContextAccessor;
 
         DirectoryInfo? di;
         string? PlaceFileFolderPath = String.Empty;
@@ -47,6 +54,8 @@ namespace FamTec.Server.Services.User
             ILogService _logservice,
             IDepartmentInfoRepository _departmentinforepository,
             ConsoleLogService<UserService> _createbuilderlogger,
+            IRedisService _redisservice,
+            IHttpContextAccessor _httpcontextAccessor,
             IWebHostEnvironment _webhostenvironment)
         {
             this.UserInfoRepository = _userinforepository;
@@ -60,6 +69,9 @@ namespace FamTec.Server.Services.User
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
 
+            this.HttpContextAccessor = _httpcontextAccessor;
+            this.RedisService = _redisservice;
+
             this.WebHostEnvironment = _webhostenvironment;
         }
 
@@ -68,7 +80,7 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<byte[]?> DownloadUserGuidForm(HttpContext context)
+        public async Task<byte[]?> DownloadUserGuidForm()
         {
             try
             {
@@ -97,8 +109,7 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<byte[]?> DownloadUserForm(HttpContext context)
+        public async Task<byte[]?> DownloadUserForm()
         {
             try
             {
@@ -128,12 +139,14 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> ImportUserService(HttpContext context, IFormFile? file)
+        public async Task<ResponseUnit<bool>> ImportUserService(IFormFile? file)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 400 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
@@ -750,10 +763,12 @@ namespace FamTec.Server.Services.User
             
         }
 
-        public async Task<ResponseUnit<string?>> LoginSelectPlaceService(HttpContext context, int placeid)
+        public async Task<ResponseUnit<string?>> LoginSelectPlaceService(int placeid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if(context is null)
                     return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -1166,10 +1181,12 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async Task<ResponseList<ListUser>> GetPlaceUserList(HttpContext context)
+        public async Task<ResponseList<ListUser>> GetPlaceUserList()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<ListUser>() { message = "잘못된 요청입니다.", data = new List<ListUser>(), code = 404 };
 
@@ -1220,10 +1237,12 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<UsersDTO>> AddUserService(HttpContext context, UsersDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<UsersDTO>> AddUserService(UsersDTO dto, IFormFile? files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
@@ -1334,10 +1353,12 @@ namespace FamTec.Server.Services.User
         }
 
 
-        public async Task<ResponseUnit<UsersDTO>> GetUserDetails(HttpContext context, int id, bool isMobile)
+        public async Task<ResponseUnit<UsersDTO>> GetUserDetails(int id, bool isMobile)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
@@ -1516,10 +1537,12 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteUserService(HttpContext context, List<int> del)
+        public async Task<ResponseUnit<bool?>> DeleteUserService(List<int> del)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -1559,7 +1582,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<UsersDTO>> UpdateUserService(HttpContext context, UsersDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<UsersDTO>> UpdateUserService(UsersDTO dto, IFormFile? files)
         {
             try
             {
@@ -1570,6 +1593,8 @@ namespace FamTec.Server.Services.User
                 // 수정실패 시 돌려놓을 FormFile
                 IFormFile? AddTemp = default;
                 string RemoveTemp = String.Empty;
+
+                var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
@@ -1748,10 +1773,12 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<PlacePermissionDTO?>> GetMenuPermService(HttpContext context)
+        public async Task<ResponseUnit<PlacePermissionDTO?>> GetMenuPermService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<PlacePermissionDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -1792,6 +1819,981 @@ namespace FamTec.Server.Services.User
             }
         }
 
+        /// <summary>
+        /// 웹[일반 유저] 로그인 서비스
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<TokenDTOV2>?> WebUserLoginService(LoginDTO dto)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(dto.UserID) || String.IsNullOrWhiteSpace(dto.UserPassword))
+                    return new ResponseUnit<TokenDTOV2>() { message = "필수항목을 확인해주세요.", data = null, code = 404 };
 
+                var UserTB = await UserInfoRepository.GetUserInfo(dto.UserID, dto.UserPassword).ConfigureAwait(false);
+                if (UserTB is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 404 };
+
+                bool AdminYn = UserTB.AdminYn;
+                if(AdminYn) // 관리자
+                {
+                    // 관리자는 사업장 Select를 해야하므로 사업장 뺸 AccessToken을 반환해준다.
+                    // - Select 후 사업장 합친 Token을 AccessToken에 담아 보내주면됨.
+
+                    var AdminTB = await AdminUserInfoRepository.GetAdminUserInfo(UserTB.Id).ConfigureAwait(false);
+                    if (AdminTB is null || String.IsNullOrWhiteSpace(AdminTB.Type))
+                        return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                    var authClaims = new List<Claim>
+                    {
+                        new Claim("UserIdx", UserTB.Id.ToString()), // UserID
+                        new Claim("Name", UserTB.Name!.ToString()), // UserName
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim("AlarmYN",UserTB.AlarmYn.ToString()), // 알람 받을지 여부
+                        new Claim("AdminYN",UserTB.AdminYn.ToString()), // 관리자 여부
+                        new Claim("UserType", "ADMIN"), // 사용자 타입
+                        new Claim("AdminIdx", AdminTB.Id.ToString()) // 관리자 인덱스
+                    };
+
+                    string? adminType = AdminTB.Type switch
+                    {
+                        "시스템관리자" => "SystemManager",
+                        "마스터" => "Master",
+                        "매니저" => "Manager",
+                        _ => null
+                    };
+
+                    if (String.IsNullOrWhiteSpace(adminType))
+                        return new ResponseUnit<TokenDTOV2>() { message = "관리자 권한이 없습니다.", data = null, code = 403 };
+
+                    authClaims.Add(new Claim("Role", AdminTB.Type));
+                    authClaims.Add(new Claim(ClaimTypes.Role, adminType));
+
+                    /*
+                     * 메뉴 접근권한
+                     */
+                    var userPermissions = new JObject
+                    {
+                        { "UserPerm_Basic", UserTB.PermBasic.ToString()}, // 기본정보 권한
+                        { "UserPerm_Machine", UserTB.PermMachine.ToString()}, // 기계관리 권한
+                        { "UserPerm_Elec", UserTB.PermElec.ToString()}, // 전기관리 권한
+                        { "UserPerm_Lift", UserTB.PermLift.ToString()}, // 승강관리 권한
+                        { "UserPerm_Fire", UserTB.PermFire.ToString()}, // 소방관리 권한
+                        { "UserPerm_Construct", UserTB.PermConstruct.ToString()}, // 건축관리 권한
+                        { "UserPerm_Network", UserTB.PermNetwork.ToString()}, // 통신관리 권한
+                        { "UserPerm_Beauty", UserTB.PermBeauty.ToString()}, // 미화 권한
+                        { "UserPerm_Security", UserTB.PermSecurity.ToString()}, // 보안 권한
+                        { "UserPerm_Material", UserTB.PermMaterial.ToString()}, // 자재관리 권한
+                        { "UserPerm_Energy", UserTB.PermEnergy.ToString()}, // 에너지관리 권한
+                        { "UserPerm_User", UserTB.PermUser.ToString()}, // 사용자 관리 권한
+                        { "UserPerm_Voc", UserTB.PermVoc.ToString()} // 민원관리 권한
+                    };
+                    authClaims.Add(new Claim("UserPerms", JsonConvert.SerializeObject(userPermissions)));
+
+                    /*
+                     * Voc 권한
+                     */
+                    var vocPermissions = new JObject
+                    {
+                        { "VocMachine", UserTB.VocMachine.ToString()}, // 기계민원 권한
+                        { "VocElec", UserTB.VocElec.ToString()}, // 전기민원 권한
+                        { "VocLift", UserTB.VocLift.ToString()}, // 승강민원 권한
+                        { "VocFire", UserTB.VocFire.ToString()}, // 소방민원 권한
+                        { "VocConstruct", UserTB.VocConstruct.ToString()}, // 건축민원 권한
+                        { "VocNetwork", UserTB.VocNetwork.ToString()}, // 통신민원 권한
+                        {"VocBeauty", UserTB.VocBeauty.ToString()}, // 미화민원 권한
+                        { "VocSecurity", UserTB.VocSecurity.ToString()}, // 보안민원 권한
+                        { "VocDefault", UserTB.VocEtc.ToString()} // 기타민원 권한
+                    };
+                    authClaims.Add(new Claim("VocPerms", JsonConvert.SerializeObject(vocPermissions)));
+
+                    // JWT 인증 페이로드 사인 비밀키
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+
+                    JwtSecurityToken token = new JwtSecurityToken(
+                        issuer: Configuration["JWT:Issuer"],
+                        audience: Configuration["JWT:Audience"],
+                        expires: DateTime.Now.AddHours(3),
+                        claims: authClaims,
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                    string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                    var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken);
+                    if (SetRedisCache is null)
+                        return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+
+                    var (access, refresh, sessionId) = SetRedisCache.Value;
+
+                    var returnToken = new TokenDTOV2
+                    {
+                        accessToken = access,
+                        refreshToken = refresh,
+                        sessionId = sessionId
+                    };
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 성공(관리자)", data = returnToken, code = 200 };
+                }
+                else // 일반유저
+                {
+                    var PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(UserTB.PlaceTbId!.Value).ConfigureAwait(false);
+                    if (PlaceTB is null)
+                        return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                    /*
+                        해약된 사업장 로그인 안됨
+                        Status(계약상태) true : 계약 / false : 해약
+                     */
+                    if (PlaceTB.Status == false)
+                        return new ResponseUnit<TokenDTOV2>() { message = "해약된 사업장은 접속이 불가능합니다.", data = null, code = 403 };
+
+                    /*
+                     * 기초정보
+                     */
+                    var authClaims = new List<Claim>
+                    {
+                        new Claim("UserIdx", UserTB.Id.ToString()), // UserID
+                        new Claim("Name", UserTB.Name!.ToString()), // UserName
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim("AlarmYN", UserTB.AlarmYn!.ToString()), // 알람 받을지 여부
+                        new Claim("UserType", "User"),
+                        new Claim("Role", "User"),
+                        new Claim(ClaimTypes.Role, "User"),
+                        new Claim("PlaceIdx", PlaceTB.Id!.ToString()), // 사업장 인덱스
+                        new Claim("PlaceName", PlaceTB.Name!.ToString()), // 사업장 명칭
+                        new Claim("PlaceCreateDT", PlaceTB.CreateDt.ToString("yyyy-MM-dd")) // 사업장 생성일
+                    };
+
+                    /* 
+                     * 메뉴 접근권한 
+                     */
+                    var userPermissions = new JObject
+                    {
+                        { "UserPerm_Basic", UserTB.PermBasic.ToString()}, // 기본정보 권한
+                        { "UserPerm_Machine", UserTB.PermMachine.ToString()}, // 기계관리 권한
+                        { "UserPerm_Elec", UserTB.PermElec.ToString()}, // 전기관리 권한
+                        { "UserPerm_Lift", UserTB.PermLift.ToString()}, // 승강관리 권한
+                        { "UserPerm_Fire", UserTB.PermFire.ToString()}, // 소방관리 권한
+                        { "UserPerm_Construct", UserTB.PermConstruct.ToString()}, // 건축관리 권한
+                        { "UserPerm_Network", UserTB.PermNetwork.ToString()}, // 통신관리 권한
+                        { "UserPerm_Beauty", UserTB.PermBeauty.ToString()}, // 미화 권한
+                        { "UserPerm_Security", UserTB.PermSecurity.ToString()}, // 보안 권한
+                        { "UserPerm_Material", UserTB.PermMaterial.ToString()}, // 자재 권한
+                        { "UserPerm_Energy", UserTB.PermEnergy.ToString()}, // 에너지관리 권한
+                        { "UserPerm_User", UserTB.PermUser.ToString()}, // 사용자관리 권한
+                        { "UserPerm_Voc", UserTB.PermVoc.ToString()}, // 민원관리 권한
+                    };
+                    authClaims.Add(new Claim("UserPerms", JsonConvert.SerializeObject(userPermissions)));
+
+                    /*
+                     * Voc 권한
+                     */
+                    var vocPermissions = new JObject
+                    {
+                        { "VocMachine", UserTB.VocMachine.ToString()}, // 기계민원 처리권한
+                        { "VocElec", UserTB.VocElec.ToString()}, // 전기민원 처리권한
+                        { "VocLift", UserTB.VocLift.ToString()}, // 승강민원 처리권한
+                        { "VocFire", UserTB.VocFire.ToString()}, // 소방민원 처리권한
+                        { "VocConstruct", UserTB.VocConstruct.ToString()}, // 건축민원 처리권한
+                        { "VocNetwork", UserTB.VocNetwork.ToString()}, // 통신민원 처리권한
+                        { "VocBeauty", UserTB.VocBeauty.ToString()}, // 미화민원 처리권한
+                        {"VocSecurity", UserTB.VocSecurity.ToString()}, // 보안민원 처리권한
+                        { "VocDefault", UserTB.VocEtc.ToString()} // 기타민원 처리권한
+                    };
+                    authClaims.Add(new Claim("VocPerms", JsonConvert.SerializeObject(vocPermissions)));
+
+                    /*
+                     * 사업장 권한
+                     */
+                    var placePermissions = new JObject
+                    {
+                        { "PlacePerm_Machine", PlaceTB.PermMachine.ToString()}, // 사업장 기계메뉴 권한
+                        { "PlacePerm_Elec", PlaceTB.PermElec.ToString()}, // 사업장 전기메뉴 권한
+                        { "PlacePerm_Lift", PlaceTB.PermLift.ToString()}, // 사업장 승강메뉴 권한
+                        { "PlacePerm_Fire", PlaceTB.PermFire.ToString()}, // 사업장 소방메뉴 권한
+                        { "PlacePerm_Construct", PlaceTB.PermConstruct.ToString()}, // 사업장 건축메뉴 권한
+                        { "PlacePerm_Network", PlaceTB.PermNetwork.ToString()}, // 사업장 통신메뉴 권한
+                        { "PlacePerm_Beauty", PlaceTB.PermBeauty.ToString()}, // 사업장 미화메뉴 권한
+                        { "PlacePerm_Security", PlaceTB.PermSecurity.ToString()}, // 사업장 보안메뉴 권한
+                        { "PlacePerm_Material", PlaceTB.PermMaterial.ToString()}, // 사업장 자재메뉴 권한
+                        { "PlacePerm_Energy", PlaceTB.PermEnergy.ToString()}, // 사업장 에너지메뉴 권한
+                        { "PlacePerm_Voc", PlaceTB.PermVoc.ToString()} // 사업장 Voc 권한
+                    };
+
+                    authClaims.Add(new Claim("PlacePerms", JsonConvert.SerializeObject(placePermissions)));
+
+                    // JWT 인증 페이로드 사인 비밀키
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+
+                    JwtSecurityToken token = new JwtSecurityToken(
+                        issuer: Configuration["JWT:Issuer"],
+                        audience: Configuration["JWT:Audience"],
+                        expires: DateTime.Now.AddHours(3),
+                        claims: authClaims,
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                    string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+
+                    var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken);
+                    if (SetRedisCache is null)
+                        return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+
+                    var (access, refresh, sessionId) = SetRedisCache.Value;
+
+                    var returnToken = new TokenDTOV2
+                    {
+                        accessToken = access,
+                        refreshToken = refresh,
+                        sessionId = sessionId
+                    };
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 성공(유저)", data = returnToken, code = 200 };
+                }
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// [웹] - 관리자가 일반페이지 접속했을때 선택한 사업장 포함한 액세스 토큰 재생성
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<TokenDTOV2?>> WebLoginSelectPlaceService(int placeid, string sessionId)
+        {
+            try
+            {
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null)
+                    return new ResponseUnit<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                if (placeid is 0)
+                    return new ResponseUnit<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                if (String.IsNullOrWhiteSpace(sessionId))
+                    return new ResponseUnit<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                string? adminIdx = Convert.ToString(context.Items["AdminIdx"]);
+                if (String.IsNullOrWhiteSpace(adminIdx))
+                    return new ResponseUnit<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                var AdminPlaceTbList = await AdminPlaceInfoRepository.GetMyWorksList(Convert.ToInt32(adminIdx)).ConfigureAwait(false);
+                if (AdminPlaceTbList is null || !AdminPlaceTbList.Any())
+                    return new ResponseUnit<TokenDTOV2?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 403 };
+
+                AdminPlaceTb? SelectPlaceTB = AdminPlaceTbList.FirstOrDefault(m => m.PlaceTbId == placeid);
+                if (SelectPlaceTB is null)
+                    return new ResponseUnit<TokenDTOV2?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 403 };
+
+                PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(placeid).ConfigureAwait(false);
+                if (PlaceTB is null || PlaceTB.Name is null)
+                    return new ResponseUnit<TokenDTOV2?>() { message = "사업장이 존재하지 않습니다.", data = null, code = 404 };
+
+                /*
+                 * 해약된 사업장 로그인 못하게
+                 * Status(계약상태) true : 계약 / false : 해약
+                 */
+                if (PlaceTB.Status == false)
+                    return new ResponseUnit<TokenDTOV2?>() { message = "해약된 사업장은 접속이 불가능합니다.", data = null, code = 403 };
+
+                string? userIdx = context.Items["UserIdx"]?.ToString();
+                if(String.IsNullOrWhiteSpace(userIdx))
+                    return new ResponseUnit<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                /*
+                 * 기본 정보
+                 */
+                var authClaim = new List<Claim>
+                {
+                    new Claim("UserIdx", userIdx), // UserID
+                    new Claim("Name", context.Items["Name"]!.ToString()!), // UserName
+                    new Claim("jti", context.Items["jti"]!.ToString()!), // JTI
+                    new Claim("AlarmYN", context.Items["AlarmYN"]!.ToString()!), // 알람받을지 여부
+                    new Claim("AdminYN", context.Items["AdminYN"]!.ToString()!), // 관리자 여부
+                    new Claim("UserType", context.Items["AdminYN"]!.ToString()!), // 직책
+                    new Claim("AdminIdx", context.Items["UserType"]!.ToString()!), // 관리자 인덱스
+                    new Claim("PlaceIdx", PlaceTB.Id.ToString()), // 사업장 인덱스
+                    new Claim("PlaceName", PlaceTB.Name.ToString()), // 사업장 명
+                    new Claim("PlaceCreateDT", PlaceTB.CreateDt.ToString("yyyy-MM-dd")) // 사업장 생성일
+                };
+
+                var roleMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    { "시스템관리자", "SystemManager"},
+                    { "마스터", "Master"},
+                    { "매니저", "Manager"},
+                    { "SystemManager", "SystemManager"},
+                    { "Master", "Master"},
+                    { "Manager", "Manager"}
+                };
+                string role = Convert.ToString(context.Items["Role"]!.ToString()!);
+
+                if(role != null && roleMapping.TryGetValue(role, out var mappedRole))
+                {
+                    role = mappedRole;
+                }
+                else
+                {
+                    return new ResponseUnit<TokenDTOV2?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+
+                authClaim.Add(new Claim("Role", role));
+                authClaim.Add(new Claim(ClaimTypes.Role, role));
+
+                /*
+                 * 메뉴 접근권한
+                 */
+                var userPermissions = new JObject
+                {
+                    { "UserPerm_Basic", context.Items["UserPerm_Basic"]!.ToString()}, // 기본정보 권한
+                    { "UserPerm_Machine", context.Items["UserPerm_Machine"]!.ToString()}, // 기계관리 권한
+                    { "UserPerm_Elec", context.Items["UserPerm_Elec"]!.ToString()}, // 전기관리 권한
+                    { "UserPerm_Lift", context.Items["UserPerm_Lift"]!.ToString()}, // 승강관리 권한
+                    { "UserPerm_Fire", context.Items["UserPerm_Fire"]!.ToString()}, // 소방관리 권한
+                    { "UserPerm_Construct", context.Items["UserPerm_Construct"]!.ToString()}, // 건축관리 권한
+                    { "UserPerm_Network", context.Items["UserPerm_Network"]!.ToString()}, // 통신관리 권한
+                    { "UserPerm_Beauty", context.Items["UserPerm_Beauty"]!.ToString()}, // 미화 권한
+                    { "UserPerm_Security", context.Items["UserPerm_Security"]!.ToString()}, // 보안 권한
+                    { "UserPerm_Material", context.Items["UserPerm_Material"]!.ToString()}, // 자재관리 권한
+                    { "UserPerm_Energy", context.Items["UserPerm_Energy"]!.ToString()}, // 에너지관리 권한
+                    { "UserPerm_User", context.Items["UserPerm_User"]!.ToString()}, // 사용자 관리 권한
+                    { "UserPerm_Voc", context.Items["UserPerm_Voc"]!.ToString()} // 민원관리 권한
+                };
+                authClaim.Add(new Claim("UserPerms", JsonConvert.SerializeObject(userPermissions)));
+
+                /*
+                 * Voc 권한
+                 */
+                var vocPermissions = new JObject
+                {
+                    { "VocMachine", context.Items["VocMachine"]!.ToString()},
+                    { "VocElec", context.Items["VocElec"]!.ToString()},
+                    { "VocLift", context.Items["VocLift"]!.ToString()},
+                    { "VocFire", context.Items["VocFire"]!.ToString()},
+                    { "VocConstruct", context.Items["VocConstruct"]!.ToString()},
+                    { "VocNetwork", context.Items["VocNetwork"]!.ToString()},
+                    { "VocBeauty", context.Items["VocBeauty"]!.ToString()},
+                    { "VocSecurity", context.Items["VocSecurity"]!.ToString()},
+                    { "VocDefault", context.Items["VocDefault"]!.ToString()}
+                };
+                authClaim.Add(new Claim("VocPerms", JsonConvert.SerializeObject(vocPermissions)));
+
+                /*
+                 * 사업장 권한
+                 */
+                var placePermissions = new JObject
+                {
+                    { "PlacePerm_Machine", PlaceTB.PermMachine.ToString()},
+                    { "PlacePerm_Elec", PlaceTB.PermElec.ToString()},
+                    { "PlacePerm_Lift", PlaceTB.PermLift.ToString()},
+                    { "PlacePerm_Fire", PlaceTB.PermFire.ToString()},
+                    { "PlacePerm_Construct", PlaceTB.PermConstruct.ToString()},
+                    { "PlacePerm_Network", PlaceTB.PermNetwork.ToString()},
+                    { "PlacePerm_Beauty", PlaceTB.PermBeauty.ToString()},
+                    { "PlacePerm_Security", PlaceTB.PermSecurity.ToString()},
+                    { "PlacePerm_Material", PlaceTB.PermMaterial.ToString()},
+                    { "PlacePerm_Energy", PlaceTB.PermEnergy.ToString()},
+                    { "PlacePerm_Voc", PlaceTB.PermVoc.ToString()}
+                };
+                authClaim.Add(new Claim("PlacePerms", JsonConvert.SerializeObject(placePermissions)));
+
+                // JWT 인증 페이로드 사인 비밀키
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+
+                JwtSecurityToken token = new JwtSecurityToken(
+                    issuer: Configuration["JWT:Issuer"],
+                    audience: Configuration["JWT:Audience"],
+                    expires: DateTime.Now.AddHours(3),
+                    claims: authClaim,
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(Convert.ToInt32(userIdx), accessToken, sessionId);
+                if (SetRedisCache is null)
+                    return new ResponseUnit<TokenDTOV2?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                var (access, refresh, session) = SetRedisCache.Value;
+
+                var returnToken = new TokenDTOV2
+                {
+                    accessToken = access,
+                    refreshToken = refresh,
+                    sessionId = session
+                };
+
+                return new ResponseUnit<TokenDTOV2?>() { message = "로그인 성공(관리자)", data = returnToken, code = 200 };
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<TokenDTOV2?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// Refresh Token
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<TokenDTOV2>?> WebLoginRefreshTokenService(RefreshTokenDTOV2 dto)
+        {
+            try
+            {
+                if (dto is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if(String.IsNullOrWhiteSpace(dto.UserIdx) || String.IsNullOrWhiteSpace(dto.PlaceIdx) || String.IsNullOrWhiteSpace(dto.refreshToken) || String.IsNullOrWhiteSpace(dto.sessionId))
+                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                int userIdx = Convert.ToInt32(dto.UserIdx);
+                int placeIdx = Convert.ToInt32(dto.PlaceIdx);
+                string oldRefreshToken = dto.refreshToken;
+
+                var UserTB = await UserInfoRepository.GetUserIndexInfo(userIdx).ConfigureAwait(false);
+                if (UserTB is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                var PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(placeIdx).ConfigureAwait(false);
+                if(PlaceTB is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if (PlaceTB.Status == false)
+                    return new ResponseUnit<TokenDTOV2>() { message = "해약된 사업장은 접근불가능합니다.", data = null, code = 403 };
+
+                bool AdminYn = UserTB.AdminYn;
+                if (AdminYn) //관리자
+                {
+                    AdminTb? AdminTB = await AdminUserInfoRepository.GetAdminUserInfo(UserTB.Id).ConfigureAwait(false);
+                    if (AdminTB is null)
+                        return new ResponseUnit<TokenDTOV2>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 404 };
+
+                    /*
+                    * 기본정보
+                    */
+                    var authClaims = new List<Claim>
+                    {
+                        new Claim("UserIdx", UserTB.Id.ToString()), // UserID
+                        new Claim("Name", UserTB.Name.ToString()), // UserName
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim("AlarmYN", UserTB.AlarmYn.ToString()), // 알람 받을지 여부
+                        new Claim("AdminYN", UserTB.AdminYn.ToString()), // 관리자 여부
+                        new Claim("UserType", "ADMIN"), // 사용자 타입
+                        new Claim("AdminIdx", AdminTB.Id.ToString()), // 관리자 인덱스
+                        new Claim("PlaceIdx", PlaceTB.Id.ToString()), // 사업장 인덱스
+                        new Claim("PlaceName", PlaceTB.Name.ToString()), // 사업장 인덱스명
+                        new Claim("PlaceCreateDT", PlaceTB.CreateDt.ToString("yyyy-MM-dd")) // 사업장 생성일
+                    };
+
+                    string? adminType = AdminTB.Type switch
+                    {
+                        "시스템관리자" => "SystemManager",
+                        "마스터" => "Master",
+                        "매니저" => "Manager",
+                        _ => null
+                    };
+
+                    if (String.IsNullOrWhiteSpace(adminType))
+                        return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                    authClaims.Add(new Claim("Role", AdminTB.Type));
+                    authClaims.Add(new Claim(ClaimTypes.Role, adminType));
+
+                    /*
+                     * 메뉴 접근권한
+                     */
+                    var userPermissions = new JObject
+                    {
+                        { "UserPerm_Basic", UserTB.PermBasic.ToString()}, // 기본정보 권한
+                        { "UserPerm_Machine", UserTB.PermMachine.ToString()}, // 기계관리 권한
+                        { "UserPerm_Elec", UserTB.PermElec.ToString()}, // 전기관리 권한
+                        { "UserPerm_Lift", UserTB.PermLift.ToString()}, // 승강관리 권한
+                        { "UserPerm_Fire", UserTB.PermFire.ToString()}, // 소방관리 권한
+                        { "UserPerm_Construct", UserTB.PermConstruct.ToString()}, // 건축관리 권한
+                        { "UserPerm_Network", UserTB.PermNetwork.ToString()}, // 통신관리 권한
+                        { "UserPerm_Beauty", UserTB.PermBeauty.ToString()}, // 미화관리 권한
+                        { "UserPerm_Security", UserTB.PermSecurity.ToString()}, // 보안 권한
+                        { "UserPerm_Material", UserTB.PermMaterial.ToString()}, // 자재관리 권한
+                        { "UserPerm_Energy", UserTB.PermEnergy.ToString()}, // 에너지관리 권한
+                        { "UserPerm_User", UserTB.PermUser.ToString()}, // 사용자관리 권한
+                        { "UserPerm_Voc", UserTB.PermVoc.ToString()} // 민원관리 권한
+                    };
+                    authClaims.Add(new Claim("UserPerms", JsonConvert.SerializeObject(userPermissions)));
+
+                    /*
+                     * Voc 권한
+                     */
+                    var vocPermissions = new JObject
+                    {
+                        { "VocMachine", UserTB.VocMachine.ToString()}, // 기계민원 권한
+                        { "VocElec", UserTB.VocElec.ToString()}, // 전기민원 권한
+                        { "VocLift", UserTB.VocLift.ToString()}, // 승강민원 권한
+                        { "VocFire", UserTB.VocFire.ToString()}, // 소방민원 권한
+                        { "VocConstruct", UserTB.VocConstruct.ToString()}, // 건축민원 권한
+                        { "VocNetwork", UserTB.VocNetwork.ToString()}, // 통신민원 권한
+                        { "VocBeauty",UserTB.VocBeauty.ToString()}, // 미화민원 권한
+                        { "VocSecurity",UserTB.VocSecurity.ToString()}, // 보안민원 권한
+                        { "VocDefault", UserTB.VocEtc.ToString()}, // 기타민원 권한
+                    };
+                    authClaims.Add(new Claim("VocPerms", JsonConvert.SerializeObject(vocPermissions)));
+
+                    /*
+                     * 사업장 권한
+                     */
+                    var placePermissions = new JObject
+                    {
+                        { "PlacePerm_Machine", PlaceTB.PermMachine.ToString()},
+                        { "PlacePerm_Elec", PlaceTB.PermElec.ToString()},
+                        { "PlacePerm_Lift", PlaceTB.PermLift.ToString()},
+                        { "PlacePerm_Fire", PlaceTB.PermFire.ToString()},
+                        { "PlacePerm_Construct",PlaceTB.PermConstruct.ToString()},
+                        { "PlacePerm_Network", PlaceTB.PermNetwork.ToString()},
+                        { "PlacePerm_Beauty", PlaceTB.PermBeauty.ToString()},
+                        { "PlacePerm_Security", PlaceTB.PermSecurity.ToString()},
+                        { "PlacePerm_Material", PlaceTB.PermMaterial.ToString()},
+                        { "PlacePerm_Energy", PlaceTB.PermEnergy.ToString()},
+                        { "PlacePerm_Voc", PlaceTB.PermVoc.ToString()}
+                    };
+                    authClaims.Add(new Claim("PlacePerms", JsonConvert.SerializeObject(placePermissions)));
+
+                    // JWT 인증 페이로드 사인 비밀키
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+
+                    JwtSecurityToken token = new JwtSecurityToken(
+                        issuer: Configuration["JWT:Issuer"],
+                        audience: Configuration["JWT:Audience"],
+                        expires: DateTime.Now.AddHours(3),
+                        claims: authClaims,
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                    string newAccessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                    var newRefreshToken = await RedisService.WebRotateUserpageRefreshTokenAsync(userIdx, dto.refreshToken, dto.sessionId);
+                    if (String.IsNullOrWhiteSpace(newRefreshToken))
+                        return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+
+                    var returnDto = new TokenDTOV2
+                    {
+                        accessToken = newAccessToken,
+                        refreshToken = newRefreshToken,
+                        sessionId = dto.sessionId
+                    };
+                    return new ResponseUnit<TokenDTOV2>() { message = "요청이 정상 처리되었습니다.", data = returnDto, code = 200 };
+                }
+                else // 일반사용자
+                {
+                    var authClaims = new List<Claim>
+                    {
+                        new Claim("UserIdx", UserTB.Id.ToString()), // UserID
+                        new Claim("Name", UserTB.Name.ToString()), // UserName
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim("AlarmYN", UserTB.AlarmYn.ToString()), // 알람 받을지 여부
+                        new Claim("UserType", "User"),
+                        new Claim("Role", "User"),
+                        new Claim(ClaimTypes.Role, "User"),
+                        new Claim("PlaceIdx", PlaceTB.Id.ToString()), // 사업장 인덱스
+                        new Claim("PlaceName", PlaceTB.Name.ToString()), // 사업장 명칭
+                        new Claim("PlaceCreateDT", PlaceTB.CreateDt.ToString("yyyy-MM-dd")) // 사업장 생성일
+                    };
+
+                    /*
+                     * 메뉴 접근권한
+                     */
+                    var userPermissions = new JObject
+                    {
+                        { "UserPerm_Basic", UserTB.PermBasic.ToString()}, // 기본정보 권한
+                        { "UserPerm_Machine", UserTB.PermMachine.ToString()}, // 기계관리 권한
+                        { "UserPerm_Elec", UserTB.PermElec.ToString()}, // 전기관리 권한
+                        { "UserPerm_Lift", UserTB.PermLift.ToString()}, // 승강관리 권한
+                        { "UserPerm_Fire", UserTB.PermFire.ToString()}, // 소방관리 권한
+                        { "UserPerm_Construct", UserTB.PermConstruct.ToString()}, // 건축관리 권한
+                        { "UserPerm_Network", UserTB.PermNetwork.ToString()}, // 통신관리 권한
+                        { "UserPerm_Beauty", UserTB.PermBeauty.ToString()}, // 미화 권한
+                        { "UserPerm_Security", UserTB.PermSecurity.ToString()}, // 보안 권한
+                        { "UserPerm_Material", UserTB.PermMaterial.ToString()}, // 자재 권한
+                        { "UserPerm_Energy", UserTB.PermEnergy.ToString()}, // 에너지관리 권한
+                        { "UserPerm_User", UserTB.PermUser.ToString()}, // 사용자관리 권한
+                        { "UserPerm_Voc", UserTB.PermVoc.ToString()}
+                    };
+                    authClaims.Add(new Claim("UserPerms", JsonConvert.SerializeObject(userPermissions)));
+
+                    /*
+                     * Voc 권한
+                     */
+                    var vocPermissions = new JObject
+                    {
+                        { "VocMachine", UserTB.VocMachine.ToString()}, // 기계민원 처리권한
+                        { "VocElec", UserTB.VocElec.ToString()}, // 전기민원 처리권한
+                        { "VocLift", UserTB.VocLift.ToString()}, // 승강민원 처리권한
+                        { "VocFire", UserTB.VocFire.ToString()}, // 소방민원 처리권한
+                        { "VocConstruct", UserTB.VocConstruct.ToString()}, // 건축민원 처리권한
+                        { "VocNetwork", UserTB.VocNetwork.ToString()}, // 통신민원 처리권한
+                        { "VocBeauty", UserTB.VocBeauty.ToString()}, // 미화민원 처리권한
+                        { "VocSecurity", UserTB.VocSecurity.ToString()}, // 보안민원 처리권한
+                        { "VocDefault", UserTB.VocEtc.ToString()} // 기타민원 처리권한
+                    };
+                    authClaims.Add(new Claim("VocPerms", JsonConvert.SerializeObject(vocPermissions)));
+
+                    /*
+                     * 사업장 권한
+                     */
+                    var placePermissions = new JObject
+                    {
+                        { "PlacePerm_Machine", PlaceTB.PermMachine.ToString()}, // 사업장 기계메뉴 권한
+                        { "PlacePerm_Elec", PlaceTB.PermElec.ToString()}, // 사업장 전기메뉴 권한
+                        { "PlacePerm_Lift", PlaceTB.PermLift.ToString()}, // 사업장 승강메뉴 권한
+                        { "PlacePerm_Fire", PlaceTB.PermFire.ToString()}, // 사업장 소방메뉴 권한
+                        { "PlacePerm_Construct", PlaceTB.PermConstruct.ToString()}, // 사업장 건축메뉴 권한
+                        { "PlacePerm_Network", PlaceTB.PermNetwork.ToString()}, // 사업장 통신메뉴 권한
+                        { "PlacePerm_Beauty", PlaceTB.PermBeauty.ToString()}, // 사업장 미화메뉴 권한
+                        { "PlacePerm_Security", PlaceTB.PermSecurity.ToString()}, // 사업장 보안메뉴 권한
+                        { "PlacePerm_Material", PlaceTB.PermMachine.ToString()}, // 사업장 자재메뉴 권한
+                        { "PlacePerm_Energy", PlaceTB.PermEnergy.ToString()}, // 사업장 에너지메뉴 권한
+                        { "PlacePerm_Voc", PlaceTB.PermVoc.ToString()}, // 사업장 Voc 권한
+                    };
+                    authClaims.Add(new Claim("PlacePerms", JsonConvert.SerializeObject(placePermissions)));
+
+                    // JWT 인증 페이로드 사인 비밀키
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+
+                    JwtSecurityToken token = new JwtSecurityToken(
+                        issuer: Configuration["JWT:Issuer"],
+                        audience: Configuration["JWT:Audience"],
+                        expires: DateTime.Now.AddHours(3),
+                        claims: authClaims,
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                    string newAccessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                    var newRefreshToken = await RedisService.WebRotateUserpageRefreshTokenAsync(userIdx, dto.refreshToken, dto.sessionId);
+                    if (String.IsNullOrWhiteSpace(newRefreshToken))
+                        return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+
+                    var returnDto = new TokenDTOV2
+                    {
+                        accessToken = newAccessToken,
+                        refreshToken = newRefreshToken,
+                        sessionId = dto.sessionId
+                    };
+
+                    return new ResponseUnit<TokenDTOV2>() { message = "요청이 정상 처리되었습니다.", data = returnDto, code = 200 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 웹 QR 로그인 [V2]
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<TokenDTOV2>?> WebQRLoginService(QRLoginDTO dto)
+        {
+            try
+            {
+                if (dto is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if (dto.placeid == 0)
+                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if(String.IsNullOrWhiteSpace(dto.UserId) || String.IsNullOrWhiteSpace(dto.UserPassword))
+                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                var UserTB = await UserInfoRepository.GetUserInfo(dto.UserId, dto.UserPassword).ConfigureAwait(false);
+                if(UserTB is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 404 };
+
+                var PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(dto.placeid).ConfigureAwait(false);
+                if (PlaceTB is null)
+                    return new ResponseUnit<TokenDTOV2>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                if (PlaceTB.Status == false)
+                    return new ResponseUnit<TokenDTOV2>() { message = "해약된 사업장은 접속이 불가능합니다.", data = null, code = 403 };
+
+                if(UserTB.AdminYn)
+                {
+                    // 관리자
+                    AdminTb? AdminTB = await AdminUserInfoRepository.GetAdminUserInfo(UserTB.Id).ConfigureAwait(false);
+
+                    if (AdminTB is null)
+                        return new ResponseUnit<TokenDTOV2>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 404 };
+
+                    /*
+                     * 기본정보
+                     */
+                    var authClaims = new List<Claim>
+                    {
+                        new Claim("UserIdx", UserTB.Id.ToString()), // UserID
+                        new Claim("Name", UserTB.Name.ToString()), // UserName
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim("AlarmYN", UserTB.AlarmYn.ToString()), // 알람받을지 여부
+                        new Claim("AdminYN", UserTB.AdminYn.ToString()), // 관리자 여부
+                        new Claim("UserType","ADMIN"), // 사용자 타입
+                        new Claim("AdminIdx", AdminTB.Id.ToString()), // 관리자 인덱스
+                        new Claim("PlaceIdx", PlaceTB.Id.ToString()), // 사업장 인덱스
+                        new Claim("PlaceName", PlaceTB.Name.ToString()), // 사업장 인덱스명
+                        new Claim("PlaceCreateDT", PlaceTB.CreateDt.ToString("yyyy-MM-dd")) // 사업장 생성일
+                    };
+
+                    string? adminType = AdminTB.Type switch
+                    {
+                        "시스템관리자" => "SystemManager",
+                        "마스터" => "Master",
+                        "매니저" => "Manager",
+                        _ => null
+                    };
+
+                    if (String.IsNullOrWhiteSpace(adminType))
+                        return new ResponseUnit<TokenDTOV2>() { message = "관리자 권한이 없습니다.", data = null, code = 403 };
+
+                    authClaims.Add(new Claim("Role", AdminTB.Type));
+                    authClaims.Add(new Claim(ClaimTypes.Role, adminType));
+
+                    /*
+                     * 메뉴 접근권한
+                     */
+                    var userPermissions = new JObject
+                    {
+                        { "UserPerm_Basic", UserTB.PermBasic.ToString()}, // 기본정보 권한
+                        { "UserPerm_Machine", UserTB.PermMachine.ToString()}, // 기계관리 권한
+                        { "UserPerm_Elec", UserTB.PermElec.ToString()}, // 전기관리 권한
+                        { "UserPerm_Lift", UserTB.PermLift.ToString()}, // 승강관리 권한
+                        { "UserPerm_Fire", UserTB.PermFire.ToString()}, // 소방관리 권한
+                        { "UserPerm_Construct", UserTB.PermConstruct.ToString()}, // 건축관리 권한
+                        { "UserPerm_Network", UserTB.PermNetwork.ToString()}, // 통신관리 권한
+                        { "UserPerm_Beauty", UserTB.PermBeauty.ToString()}, // 미화관리 권한
+                        { "UserPerm_Security", UserTB.PermSecurity.ToString()}, // 보안 권한
+                        { "UserPerm_Material", UserTB.PermMaterial.ToString()}, // 자재관리 권한
+                        { "UserPerm_Energy", UserTB.PermEnergy.ToString()}, // 에너지관리 권한
+                        { "UserPerm_User", UserTB.PermUser.ToString()}, // 사용자관리 권한
+                        { "UserPerm_Voc", UserTB.PermVoc.ToString()} // 민원관리 권한
+                    };
+                    authClaims.Add(new Claim("UserPerms", JsonConvert.SerializeObject(userPermissions)));
+
+                    /*
+                     * 사업장 권한
+                     */
+                    var placePermissions = new JObject
+                    {
+                        { "PlacePerm_Machine", PlaceTB.PermMachine.ToString()},
+                        { "PlacePerm_Elec", PlaceTB.PermElec.ToString()},
+                        { "PlacePerm_Lift", PlaceTB.PermLift.ToString()},
+                        { "PlacePerm_Fire", PlaceTB.PermFire.ToString()},
+                        { "PlacePerm_Construct", PlaceTB.PermConstruct.ToString()},
+                        { "PlacePerm_Network", PlaceTB.PermNetwork.ToString()},
+                        { "PlacePerm_Beauty", PlaceTB.PermBeauty.ToString()},
+                        { "PlacePerm_Security", PlaceTB.PermSecurity.ToString()},
+                        { "PlacePerm_Material", PlaceTB.PermMaterial.ToString()},
+                        { "PlacePerm_Energy", PlaceTB.PermEnergy.ToString()},
+                        { "PlacePerm_Voc", PlaceTB.PermVoc.ToString()}
+                    };
+                    authClaims.Add(new Claim("PlacePerms", JsonConvert.SerializeObject(placePermissions)));
+
+                    // JWT 인증 페이로드 사인 비밀키
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+
+                    JwtSecurityToken token = new JwtSecurityToken(
+                        issuer: Configuration["JWT:Issuer"],
+                        audience: Configuration["JWT:Audience"],
+                        expires: DateTime.Now.AddHours(3),
+                        claims: authClaims,
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                    string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                    var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken);
+                    if (SetRedisCache is null)
+                        return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+
+                    var (access, refresh, session) = SetRedisCache.Value;
+
+                    var returnDto = new TokenDTOV2
+                    {
+                        accessToken = access,
+                        refreshToken = refresh,
+                        sessionId = session
+                    };
+
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 성공(관리자).", data = returnDto, code = 200 };
+                }
+                else
+                {
+                    // 일반유저
+                    /*
+                     * 기초 정보
+                     */
+                    var authClaims = new List<Claim>
+                    {
+                        new Claim("UserIdx", UserTB.Id.ToString()), // UserID
+                        new Claim("Name", UserTB.Name!.ToString()), // UserName
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim("AlarmYN",UserTB.AlarmYn.ToString()), // 알람 받을지 여부
+                        new Claim("UserType", "User"),
+                        new Claim("Role", "User"),
+                        new Claim(ClaimTypes.Role, "User"),
+                        new Claim("PlaceIdx", PlaceTB.Id.ToString()), // 사업장 인덱스
+                        new Claim("PlaceName", PlaceTB.Name.ToString()), // 사업장 명칭
+                        new Claim("PlaceCreateDT", PlaceTB.CreateDt.ToString("yyyy-MM-dd")) // 사업장 생성일
+                    };
+
+                    /*
+                     * 메뉴 접근권한
+                     */
+                    var userPermissions = new JObject
+                    {
+                        { "UserPerm_Basic", UserTB.PermBasic.ToString()}, // 기본정보 권한
+                        { "UserPerm_Machine", UserTB.PermMachine.ToString()}, // 기계관리 권한
+                        { "UserPerm_Elec", UserTB.PermElec.ToString()}, // 전기관리 권한
+                        { "UserPerm_Lift", UserTB.PermLift.ToString()}, // 승강관리 권한
+                        { "UserPerm_Fire", UserTB.PermFire.ToString()}, // 소방관리 권한
+                        { "UserPerm_Construct", UserTB.PermConstruct.ToString()}, // 건축관리 권한
+                        { "UserPerm_Network", UserTB.PermNetwork.ToString()}, // 통신관리 권한
+                        { "UserPerm_Beauty", UserTB.PermBeauty.ToString()}, // 미화 권한
+                        { "UserPerm_Security", UserTB.PermSecurity.ToString()}, // 보안 권한
+                        { "UserPerm_Material", UserTB.PermMaterial.ToString()}, // 자재 권한
+                        { "UserPerm_Energy", UserTB.PermEnergy.ToString()}, // 에너지관리 권한
+                        { "UserPerm_User", UserTB.PermUser.ToString()}, // 사용자관리 권한
+                        { "UserPerm_Voc", UserTB.PermVoc.ToString()} // 민원관리 권한
+                    };
+                    authClaims.Add(new Claim("UserPerms", JsonConvert.SerializeObject(userPermissions)));
+
+                    /*
+                     * Voc 권한
+                     */
+                    var vocPermissions = new JObject
+                    {
+                        { "VocMachine", UserTB.VocMachine.ToString()}, // 기계민원 처리권한
+                        { "VocElec", UserTB.VocElec.ToString()}, // 전기민원 처리권한
+                        { "VocLift", UserTB.VocLift.ToString()}, // 승강민원 처리권한
+                        { "VocFire", UserTB.VocFire.ToString()}, // 소방민원 처리권한
+                        { "VocConstruct", UserTB.VocConstruct.ToString()}, // 건축민원 처리권한
+                        { "VocNetwork", UserTB.VocNetwork.ToString()}, // 통신민원 처리권한
+                        { "VocBeauty", UserTB.VocBeauty.ToString()}, // 미화민원 처리권한
+                        { "VocSecurity", UserTB.VocSecurity.ToString()}, // 보안민원 처리권한
+                        { "VocDefault", UserTB.VocEtc.ToString()} // 기타민원 처리권한
+                    };
+                    authClaims.Add(new Claim("VocPerms", JsonConvert.SerializeObject(vocPermissions)));
+
+                    /*
+                     * 사업장 권한
+                     */
+                    var placePermissions = new JObject
+                    {
+                        { "PlacePerm_Machine", PlaceTB.PermMachine.ToString()}, // 사업장 기계메뉴 권한
+                        { "PlacePerm_Elec", PlaceTB.PermElec.ToString()}, // 사업장 전기메뉴 권한
+                        { "PlacePerm_Lift", PlaceTB.PermLift.ToString()}, // 사업장 승강메뉴 권한
+                        { "PlacePerm_Fire", PlaceTB.PermFire.ToString()}, // 사업장 소방메뉴 권한
+                        { "PlacePerm_Construct", PlaceTB.PermConstruct.ToString()}, // 사업장 건축메뉴 권한
+                        { "PlacePerm_Network", PlaceTB.PermNetwork.ToString()}, // 사업장 통신메뉴 권한
+                        { "PlacePerm_Beauty", PlaceTB.PermBeauty.ToString()}, // 사업장 미화메뉴 권한
+                        { "PlacePerm_Security", PlaceTB.PermSecurity.ToString()}, // 사업장 보안메뉴 권한
+                        { "PlacePerm_Material", PlaceTB.PermMaterial.ToString()}, // 사업장 자재메뉴 권한
+                        { "PlacePerm_Energy", PlaceTB.PermEnergy.ToString()}, // 사업장 에너지메뉴 권한
+                        { "PlacePerm_Voc", PlaceTB.PermVoc.ToString()} // 사업장 Voc 권한
+                    };
+                    authClaims.Add(new Claim("PlacePerms", JsonConvert.SerializeObject(placePermissions)));
+
+                    // JWT 인증 페이로드 사인 비밀키
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+
+                    JwtSecurityToken token = new JwtSecurityToken(
+                        issuer: Configuration["JWT:Issuer"],
+                        audience: Configuration["JWT:Audience"],
+                        expires: DateTime.Now.AddHours(3),
+                        claims: authClaims,
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                    string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+
+                    var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken);
+                    if (SetRedisCache is null)
+                        return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+
+                    var (access, refresh, session) = SetRedisCache.Value;
+
+                    var returnToken = new TokenDTOV2
+                    {
+                        accessToken = access,
+                        refreshToken = refresh,
+                        sessionId = session
+                    };
+                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 성공(유저)", data = returnToken, code = 200 };
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 웹 로그아웃
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<bool>> WebLogoutService(LogoutDTO dto)
+        {
+            try
+            {
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                if(dto is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                if (String.IsNullOrWhiteSpace(dto.sessionId))
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                string? userIdx = Convert.ToString(context.Items["UserIdx"]);
+                if (String.IsNullOrWhiteSpace(userIdx))
+                    return new ResponseUnit<bool>() { message = "요청이 잘못되었습니다.", data = false, code = 404 };
+
+                int userId = Convert.ToInt32(userIdx);
+
+                bool DelResult = await RedisService.DeleteRefreshTokenAsync(userId, dto.sessionId);
+                if (DelResult)
+                    return new ResponseUnit<bool>() { message = "로그아웃 되었습니다.", data = true, code = 200 };
+                else
+                    return new ResponseUnit<bool>() { message = "이미 로그아웃 처리된 아이디입니다.", data = true, code = 403 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+            }
+        }
     }
 }
+ 

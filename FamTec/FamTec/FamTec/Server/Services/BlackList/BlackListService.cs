@@ -9,15 +9,19 @@ namespace FamTec.Server.Services.BlackList
     {
         private readonly IBlackListInfoRepository BlackListInfoRepository;
         private readonly ILogService LogService;
+
+        private readonly IHttpContextAccessor HttpContextAccessor;
         private readonly ConsoleLogService<BlackListService> CreateBuilderLogger;
 
         public BlackListService(IBlackListInfoRepository _blacklistinforepository,
             ILogService _logservice,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<BlackListService> _createbuilderlogger
         )
         {
             this.BlackListInfoRepository = _blacklistinforepository;
-            
+
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
             this.LogService = _logservice;
         }
@@ -27,11 +31,13 @@ namespace FamTec.Server.Services.BlackList
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddBlackListDTO>> AddBlackList(HttpContext context, AddBlackListDTO dto)
+        public async Task<ResponseUnit<AddBlackListDTO>> AddBlackList(AddBlackListDTO dto)
         {
             try
             {
-                if(context is null || dto is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null || dto is null)
                     return new ResponseUnit<AddBlackListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
@@ -81,10 +87,12 @@ namespace FamTec.Server.Services.BlackList
         /// 블랙리스트 전체 조회
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseList<BlackListDTO>> GetAllBlackList(HttpContext context)
+        public async Task<ResponseList<BlackListDTO>> GetAllBlackList()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<BlackListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -119,10 +127,12 @@ namespace FamTec.Server.Services.BlackList
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<int?>> GetBlackListCountService(HttpContext context)
+        public async Task<ResponseUnit<int?>> GetBlackListCountService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<int?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -145,10 +155,12 @@ namespace FamTec.Server.Services.BlackList
         /// <param name="pagenumber"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public async Task<ResponseList<BlackListDTO>> GetAllBlackListPageNation(HttpContext context, int pagenumber, int pagesize)
+        public async Task<ResponseList<BlackListDTO>> GetAllBlackListPageNation(int pagenumber, int pagesize)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<BlackListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -183,10 +195,12 @@ namespace FamTec.Server.Services.BlackList
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateBlackList(HttpContext context, BlackListDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateBlackList(BlackListDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -229,10 +243,12 @@ namespace FamTec.Server.Services.BlackList
         /// <param name="delIdx"></param>
         /// <param name="deleter"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteBlackList(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteBlackList(List<int> delIdx)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (delIdx is null)

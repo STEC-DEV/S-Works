@@ -12,13 +12,16 @@ namespace FamTec.Server.Services.Meter
         private readonly IContractInfoRepository ContractInfoRepository;
 
         private ILogService LogService;
+        private readonly IHttpContextAccessor HttpContextAccessor;
 
         public MeterService(IMeterInfoRepository _meterinforepository, 
             IContractInfoRepository _contractinforepository,
+            IHttpContextAccessor _httpcontextaccessor,
             ILogService _logservice)
         {
             this.MeterInfoRepository = _meterinforepository;
             this.ContractInfoRepository = _contractinforepository;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.LogService = _logservice;
         }
 
@@ -28,10 +31,12 @@ namespace FamTec.Server.Services.Meter
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddMeterDTO>> AddMeterService(HttpContext context, AddMeterDTO dto)
+        public async Task<ResponseUnit<AddMeterDTO>> AddMeterService(AddMeterDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<AddMeterDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -76,10 +81,12 @@ namespace FamTec.Server.Services.Meter
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MeterDTO>> GetAllMeterListService(HttpContext context)
+        public async Task<ResponseList<MeterDTO>> GetAllMeterListService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<MeterDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

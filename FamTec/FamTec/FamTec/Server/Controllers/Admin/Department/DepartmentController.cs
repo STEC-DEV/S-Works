@@ -42,16 +42,13 @@ namespace FamTec.Server.Controllers.Admin.Department
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
                 if(dto.ManagerYN is null)
                     return NoContent();
 
-                ResponseUnit<AddDepartmentDTO>? model = await DepartmentService.AddDepartmentService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<AddDepartmentDTO>? model = await DepartmentService.AddDepartmentService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -88,9 +85,6 @@ namespace FamTec.Server.Controllers.Admin.Department
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 ResponseList<DepartmentDTO>? model = await DepartmentService.GetAllDepartmentService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest(model);
@@ -121,9 +115,6 @@ namespace FamTec.Server.Controllers.Admin.Department
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 ResponseList<DepartmentDTO>? model = await DepartmentService.ManageDepartmentService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
@@ -161,10 +152,7 @@ namespace FamTec.Server.Controllers.Admin.Department
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<bool?> model = await DepartmentService.DeleteDepartmentService(HttpContext, departmentidx).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await DepartmentService.DeleteDepartmentService(departmentidx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -202,9 +190,6 @@ namespace FamTec.Server.Controllers.Admin.Department
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.Id is null)
                     return NoContent();
                 if (String.IsNullOrWhiteSpace(dto.Name))
@@ -213,7 +198,7 @@ namespace FamTec.Server.Controllers.Admin.Department
                 if (dto.ManagerYN is null)
                     return NoContent();
 
-                ResponseUnit<DepartmentDTO>? model = await DepartmentService.UpdateDepartmentService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<DepartmentDTO>? model = await DepartmentService.UpdateDepartmentService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

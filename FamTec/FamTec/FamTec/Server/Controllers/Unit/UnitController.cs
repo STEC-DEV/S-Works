@@ -38,10 +38,7 @@ namespace FamTec.Server.Controllers.Unit
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<UnitsDTO> model = await UnitService.GetUnitList(HttpContext).ConfigureAwait(false);
+                ResponseList<UnitsDTO> model = await UnitService.GetUnitList().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -76,13 +73,10 @@ namespace FamTec.Server.Controllers.Unit
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.Unit))
                     return NoContent();
 
-                ResponseUnit<UnitsDTO>? model = await UnitService.AddUnitService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<UnitsDTO>? model = await UnitService.AddUnitService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -115,16 +109,13 @@ namespace FamTec.Server.Controllers.Unit
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (unitid is null)
                     return NoContent();
 
                 if (unitid.Count == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await UnitService.DeleteUnitService(HttpContext, unitid).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await UnitService.DeleteUnitService(unitid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -154,16 +145,13 @@ namespace FamTec.Server.Controllers.Unit
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.Id is null)
                     return NoContent();
 
                 if(String.IsNullOrWhiteSpace(dto.Unit))
                     return NoContent();
 
-                ResponseUnit<UnitsDTO> model = await UnitService.UpdateUnitService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<UnitsDTO> model = await UnitService.UpdateUnitService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

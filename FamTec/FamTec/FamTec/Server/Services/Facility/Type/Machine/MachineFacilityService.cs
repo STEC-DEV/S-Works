@@ -23,6 +23,8 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         private DirectoryInfo? di;
         private string? MachineFileFolderPath;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         public MachineFacilityService(
             IFacilityInfoRepository _facilityinforepository,
             IBuildingInfoRepository _buildinginforepository,
@@ -30,6 +32,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             IRoomInfoRepository _roominforepository,
             IFileService _fileservice,
             ILogService _logService,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<MachineFacilityService> _createbuilderlogger)
         {
             this.FacilityInfoRepository = _facilityinforepository;
@@ -39,6 +42,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
 
             this.FileService = _fileservice;
             this.LogService = _logService;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -151,11 +155,15 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         /// 기계설비 엑셀양식 다운로드
         /// </summary>
         /// <returns></returns>
-        public async Task<byte[]?> DownloadMachineFacilityForm(HttpContext context)
+        public async Task<byte[]?> DownloadMachineFacilityForm()
         {
             
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+                if (context is null)
+                    return null;
+
                 string? PlaceId = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(PlaceId))
                     return null;
@@ -211,10 +219,12 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> ImportMachineFacilityService(HttpContext context, IFormFile? file)
+        public async Task<ResponseUnit<bool>> ImportMachineFacilityService(IFormFile? file)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -393,10 +403,12 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<FacilityDTO>> AddMachineFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddMachineFacilityService(FacilityDTO dto, IFormFile? files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
@@ -494,10 +506,12 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<FacilityListDTO>> GetMachineFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetMachineFacilityListService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<FacilityListDTO>() { message = "요청이 잘못되었습니다.", data = new List<FacilityListDTO>(), code = 404 };
 
@@ -526,10 +540,12 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             }
         }
 
-        public async Task<ResponseUnit<FacilityDetailDTO>> GetMachineDetailFacilityService(HttpContext context, int facilityId, bool isMobile)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetMachineDetailFacilityService(int facilityId, bool isMobile)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
 
@@ -679,7 +695,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             }
         }
 
-        public async Task<ResponseUnit<bool?>> UpdateMachineFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateMachineFacilityService(FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -690,6 +706,8 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                 // 수정실패 시 돌려놓을 FormFile
                 IFormFile? AddTemp = default;
                 string RemoveTemp = String.Empty;
+
+                var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -840,10 +858,12 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             }
         }
 
-        public async Task<ResponseUnit<bool?>> DeleteMachineFacilityService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteMachineFacilityService(List<int> delIdx)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || delIdx is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

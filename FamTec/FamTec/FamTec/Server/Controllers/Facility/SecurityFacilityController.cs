@@ -41,10 +41,7 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                byte[]? ExcelForm = await SecurityFacilityService.DownloadSecurityFacilityForm(HttpContext);
+                byte[]? ExcelForm = await SecurityFacilityService.DownloadSecurityFacilityForm();
 
                 if (ExcelForm is not null)
                     return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "보안설비정보(양식).xlsx");
@@ -68,9 +65,6 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (files is null)
                     return NoContent();
 
@@ -94,7 +88,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (files.Length > Common.MEGABYTE_10)
                     return Ok(new ResponseUnit<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
 
-                ResponseUnit<bool> model = await SecurityFacilityService.ImportSecurityFacilityService(HttpContext, files);
+                ResponseUnit<bool> model = await SecurityFacilityService.ImportSecurityFacilityService(files);
                 if (model is null)
                     return BadRequest();
 
@@ -122,9 +116,6 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.Category))
                     return NoContent();
 
@@ -154,7 +145,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<FacilityDTO> model = await SecurityFacilityService.AddSecurityFacilityService(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<FacilityDTO> model = await SecurityFacilityService.AddSecurityFacilityService(dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -187,10 +178,7 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<FacilityListDTO> model = await SecurityFacilityService.GetSecurityFacilityListService(HttpContext).ConfigureAwait(false);
+                ResponseList<FacilityListDTO> model = await SecurityFacilityService.GetSecurityFacilityListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -221,13 +209,10 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 // 모바일 여부
-                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+                bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<FacilityDetailDTO> model = await SecurityFacilityService.GetSecurityDetailFacilityService(HttpContext, facilityid, isMobile).ConfigureAwait(false);
+                ResponseUnit<FacilityDetailDTO> model = await SecurityFacilityService.GetSecurityDetailFacilityService(facilityid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -257,9 +242,6 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.ID is null)
                     return NoContent();
 
@@ -292,7 +274,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<bool?> model = await SecurityFacilityService.UpdateSecurityFacilityService(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await SecurityFacilityService.UpdateSecurityFacilityService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -323,16 +305,13 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (delIdx is null)
                     return NoContent();
 
                 if (delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await SecurityFacilityService.DeleteSecurityFacilityService(HttpContext, delIdx).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await SecurityFacilityService.DeleteSecurityFacilityService(delIdx).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

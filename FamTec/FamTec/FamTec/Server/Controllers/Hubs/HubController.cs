@@ -33,11 +33,11 @@ namespace FamTec.Server.Controllers.Hubs
         }
 
         /// <summary>
-        /// 인증코드 발급
+        /// 인증코드 발급 [V2]
         /// </summary>
-        /// <param name="phonenumber"></param>
         /// <returns></returns>
         [HttpGet]
+        [Route("v2/AddAuthCode")]
         [Route("AddAuthCode")]
         public async Task<IActionResult> AddAuthCode([FromQuery]int PlaceId, [FromQuery]int BuildingId, [FromQuery]string PhoneNumber)
         {
@@ -72,12 +72,11 @@ namespace FamTec.Server.Controllers.Hubs
         }
 
         /// <summary>
-        /// 인증코드 검사
+        /// 인증코드 검사 [V2]
         /// </summary>
-        /// <param name="phonenumber"></param>
-        /// <param name="authcode"></param>
         /// <returns></returns>
         [HttpGet]
+        [Route("v2/GetVerifyAuthCode")]
         [Route("GetVerifyAuthCode")]
         public async Task<IActionResult> GetVerifyAuthCode([FromQuery] string PhoneNumber, [FromQuery]string AuthCode)
         {
@@ -256,14 +255,11 @@ namespace FamTec.Server.Controllers.Hubs
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(voccode))
                     return NoContent();
 
                 // 모바일 여부
-                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+                bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseUnit<VocUserDetailDTO?> model = await HubService.GetVocRecord(voccode, isMobile).ConfigureAwait(false);
                 if (model is null)
@@ -303,11 +299,8 @@ namespace FamTec.Server.Controllers.Hubs
                 if (String.IsNullOrWhiteSpace(voccode))
                     return NoContent();
 
-                if (HttpContext is null)
-                    return BadRequest();
-
                 // 모바일 여부
-                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+                bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseList<VocCommentListDTO>? model = await HubService.GetVocCommentList(voccode, isMobile).ConfigureAwait(false);
                 if (model is null)
@@ -346,11 +339,8 @@ namespace FamTec.Server.Controllers.Hubs
                 if(commentid is 0)
                     return NoContent();
 
-                if (HttpContext is null)
-                    return BadRequest();
-
                 // 모바일 여부
-                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+                bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseUnit<VocCommentDetailDTO?> model = await HubService.GetVocCommentDetail(commentid, isMobile).ConfigureAwait(false);
                 if (model is null)

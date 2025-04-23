@@ -9,6 +9,7 @@ using ClosedXML.Excel;
 using FamTec.Shared.Server.DTO.Excel;
 using Microsoft.AspNetCore.SignalR;
 using FamTec.Server.Hubs;
+using System.Runtime.CompilerServices;
 
 namespace FamTec.Server.Services.Facility.Type.Beauty
 {
@@ -27,6 +28,8 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         private DirectoryInfo? di;
         private string? BeautyFileFolderPath;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         public BeautyFacilityService(
            IFacilityInfoRepository _facilityinforepository,
            IBuildingInfoRepository _buildinginforepository,
@@ -34,6 +37,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
            IRoomInfoRepository _roominforepository,
            IFileService _fileservice,
            ILogService _logService,
+           IHttpContextAccessor _httpcontextaccessor,
            ConsoleLogService<BeautyFacilityService> _createbuilderlogger)
         {
             this.FacilityInfoRepository = _facilityinforepository;
@@ -43,6 +47,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
             
             this.FileService = _fileservice;
             this.LogService = _logService;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -158,10 +163,14 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<byte[]?> DownloadBeautyFacilityForm(HttpContext context)
+        public async Task<byte[]?> DownloadBeautyFacilityForm()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+                if (context is null)
+                    return null;
+
                 string? PlaceId = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(PlaceId))
                     return null;
@@ -216,10 +225,12 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> ImportBeautyFacilityService(HttpContext context, IFormFile? file)
+        public async Task<ResponseUnit<bool>> ImportBeautyFacilityService(IFormFile? file)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -396,10 +407,12 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
             }
         }
 
-        public async Task<ResponseUnit<FacilityDTO>> AddBeautyFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddBeautyFacilityService(FacilityDTO dto, IFormFile? files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
@@ -492,10 +505,12 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<FacilityListDTO>> GetBeautyFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetBeautyFacilityListService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<FacilityListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -524,10 +539,12 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
             }
         }
 
-        public async Task<ResponseUnit<FacilityDetailDTO>> GetBeautyDetailFacilityService(HttpContext context, int facilityId, bool isMobile)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetBeautyDetailFacilityService(int facilityId, bool isMobile)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -678,7 +695,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         }
      
 
-        public async Task<ResponseUnit<bool?>> UpdateBeautyFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateBeautyFacilityService(FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -691,6 +708,8 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                 string RemoveTemp = String.Empty;
 
                 DateTime ThisTime = DateTime.Now;
+
+                var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -839,10 +858,12 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
             }
         }
 
-        public async Task<ResponseUnit<bool?>> DeleteBeautyFacilityService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteBeautyFacilityService(List<int> delIdx)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || delIdx is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 

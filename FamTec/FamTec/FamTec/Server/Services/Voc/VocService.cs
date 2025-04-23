@@ -14,8 +14,6 @@ using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.IdentityModel.Logging;
-using System.Linq;
 
 namespace FamTec.Server.Services.Voc
 {
@@ -28,7 +26,6 @@ namespace FamTec.Server.Services.Voc
         private readonly IFileService FileService;
         private readonly IUserInfoRepository UserInfoRepository;
 
-        private readonly IBlackListInfoRepository BlackListInfoRepository;
         private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
         private readonly IAdminUserInfoRepository AdminUserInfoRepository;
         private readonly IKakaoService KakaoService;
@@ -45,6 +42,8 @@ namespace FamTec.Server.Services.Voc
         private string? VocFileFolderPath;
         private ILogService LogService;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         public VocService(IVocInfoRepository _vocinforepository,
             IVocCommentRepository _voccommentrepository,
             IBuildingInfoRepository _buildinginforepository,
@@ -52,13 +51,13 @@ namespace FamTec.Server.Services.Voc
             IUserInfoRepository _userinforepository,
             IAdminUserInfoRepository _adminuserinforepository,
             IPlaceInfoRepository _placeinforepository,
-            IBlackListInfoRepository _blacklistinforepository,
             IKakaoLogInfoRepository _kakaologinforepository,
             IHubContext<BroadcastHub> _hubcontext,
             IKakaoService _kakaoservice,
             IFileService _fileservice,
             ILogService _logservice,
             IWebHostEnvironment _webhostenvironment,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<VocService> _createbuilderlogger)
         {
             this.VocInfoRepository = _vocinforepository;
@@ -69,13 +68,14 @@ namespace FamTec.Server.Services.Voc
             this.AdminUserInfoRepository = _adminuserinforepository;
 
             this.PlaceInfoRepository = _placeinforepository;
-            this.BlackListInfoRepository = _blacklistinforepository;
             this.KakaoLogInfoRepository = _kakaologinforepository;
 
             this.HubContext = _hubcontext;
             this.KakaoService = _kakaoservice;
 
             this.WebHostEnvironment = _webhostenvironment;
+
+            this.HttpContextAccessor = _httpcontextaccessor;
 
             this.FileService = _fileservice;
             this.LogService = _logservice;
@@ -87,10 +87,12 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="importdata"></param>
         /// <returns></returns>
-        public async Task<ResponseList<ImportVocData>?> ImportVocServiceV2(HttpContext context, List<ImportVocData> importdata)
+        public async Task<ResponseList<ImportVocData>?> ImportVocServiceV2(List<ImportVocData> importdata)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<ImportVocData>() { message = "인증되지 않는 사용자입니다.", data = null, code = 401 };
 
@@ -330,10 +332,12 @@ namespace FamTec.Server.Services.Voc
         /// VOC 엑셀 양식 다운로드
         /// </summary>
         /// <returns></returns>
-        public async Task<byte[]?> DownloadVocForm(HttpContext context)
+        public async Task<byte[]?> DownloadVocForm()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return null;
 
@@ -353,9 +357,8 @@ namespace FamTec.Server.Services.Voc
                 if (BuildingList is null || BuildingList.Count == 0)
                     return null;
 
-                
                 var UserList = await AdminUserInfoRepository.GetAdminPlaceList(Convert.ToInt32(PlaceId));
-                //var UserList = await UserInfoRepository.GetPlaceUserList(Convert.ToInt32(PlaceId));
+                
                 if (UserList is null || UserList.Count == 0)
                     return null;
 
@@ -375,8 +378,6 @@ namespace FamTec.Server.Services.Voc
                     cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙 정렬
                     cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // 중앙정렬
                 }
-
-             
 
                 var ws2 = workbook.Worksheet(2); // 관리자정보 Sheet
                 for (int i = 0; i < UserList.Count; i++)
@@ -414,10 +415,12 @@ namespace FamTec.Server.Services.Voc
         /// 등록된 민원 처리내역 최신상태를 알림톡으로 전송
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> RecentVocSendService(HttpContext context, RecentVocDTO dto)
+        public async Task<ResponseUnit<bool>> RecentVocSendService(RecentVocDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool>() { message = "요청 권한이 없습니다.", data = false, code = 401 };
                 if (dto is null)
@@ -530,10 +533,12 @@ namespace FamTec.Server.Services.Voc
         /// 사업장별 VOC 리스트 조회
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseList<AllVocListDTO>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division)
+        public async Task<ResponseList<AllVocListDTO>> GetVocList(List<int> type, List<int> status, List<int> buildingid, List<int> division)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<AllVocListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -561,10 +566,12 @@ namespace FamTec.Server.Services.Voc
         /// 해당 사업장의 선택된 일자의 VOC LIST 반환
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseList<VocListDTO>> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, List<int> type, List<int> status,List<int> buildingid, List<int>division)
+        public async Task<ResponseList<VocListDTO>> GetVocFilterList(DateTime startdate, DateTime enddate, List<int> type, List<int> status,List<int> buildingid, List<int>division)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
 
@@ -596,10 +603,12 @@ namespace FamTec.Server.Services.Voc
         /// 월간 사업장별 VOC 조회 - V2
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseList<VocListDTOV2>> GetMonthVocSearchListV2(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchDate)
+        public async Task<ResponseList<VocListDTOV2>> GetMonthVocSearchListV2(List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchDate)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<VocListDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -648,10 +657,12 @@ namespace FamTec.Server.Services.Voc
         /// 월간 사업장 VOC 조회 [Regacy]
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseList<VocListDTO>> GetMonthVocSearchList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchDate)
+        public async Task<ResponseList<VocListDTO>> GetMonthVocSearchList(List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchDate)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -702,10 +713,12 @@ namespace FamTec.Server.Services.Voc
         /// 기간 사업장 VOC 조회 -V2
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseList<VocListDTOV2>> GetDateVocSearchListV2(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, DateTime StartDate, DateTime EndDate)
+        public async Task<ResponseList<VocListDTOV2>> GetDateVocSearchListV2(List<int> type, List<int> status, List<int> buildingid, List<int> division, DateTime StartDate, DateTime EndDate)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<VocListDTOV2>() { message = "잘못된 요청입니다.", data = new List<VocListDTOV2>(), code = 404 };
 
@@ -734,10 +747,12 @@ namespace FamTec.Server.Services.Voc
         /// 기간 사업장 VOC 조회 [Regacy]
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseList<VocListDTO>> GetDateVocSearchList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, DateTime StartDate, DateTime EndDate)
+        public async Task<ResponseList<VocListDTO>> GetDateVocSearchList(List<int> type, List<int> status, List<int> buildingid, List<int> division, DateTime StartDate, DateTime EndDate)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
 
@@ -768,10 +783,12 @@ namespace FamTec.Server.Services.Voc
         /// VOC 상세보기 - 직원용
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<VocEmployeeDetailDTO>> GetVocDetail(HttpContext context, int vocid, bool isMobile)
+        public async Task<ResponseUnit<VocEmployeeDetailDTO>> GetVocDetail(int vocid, bool isMobile)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<VocEmployeeDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
@@ -917,10 +934,12 @@ namespace FamTec.Server.Services.Voc
         /// voc 유형 변경 -- 여기 바꿔야함
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateVocTypeService(HttpContext context, UpdateVocDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateVocTypeService(UpdateVocDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
@@ -1243,7 +1262,7 @@ namespace FamTec.Server.Services.Voc
         /// DashBoard용 일주일치 민원 각 타입별 카운트
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseList<VocWeekCountDTO>?> GetVocDashBoardWeeksDataService(HttpContext context)
+        public async Task<ResponseList<VocWeekCountDTO>?> GetVocDashBoardWeeksDataService()
         {
             try
             {
@@ -1275,6 +1294,8 @@ namespace FamTec.Server.Services.Voc
                    DateTime EndOfWeek = startOfWeek.AddDays(7);
             */
                 #endregion
+
+                var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
                     return new ResponseList<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -1314,10 +1335,12 @@ namespace FamTec.Server.Services.Voc
         /// 대쉬보드용 금일 유형별 건수 (기타, 기계, 건설, 미화 ..)
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<VocDaysCountDTO>?> GetVocDashBoardDaysDataService(HttpContext context)
+        public async Task<ResponseUnit<VocDaysCountDTO>?> GetVocDashBoardDaysDataService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<VocDaysCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -1352,10 +1375,12 @@ namespace FamTec.Server.Services.Voc
         /// DashBoard용 금일 처리유형별 발생건수 (미처리, 처리중, 처리완료)
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<VocDaysStatusCountDTO>?> GetVocDaysStatusDataService(HttpContext context)
+        public async Task<ResponseUnit<VocDaysStatusCountDTO>?> GetVocDaysStatusDataService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<VocDaysStatusCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -1391,10 +1416,12 @@ namespace FamTec.Server.Services.Voc
         /// DashBoard용 일주일치 처리유형별 발생건수 (미처리, 처리중, 처리완료)
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseList<VocWeekStatusCountDTO>?> GetVocWeeksStatusDataService(HttpContext context)
+        public async Task<ResponseList<VocWeekStatusCountDTO>?> GetVocWeeksStatusDataService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<VocWeekStatusCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

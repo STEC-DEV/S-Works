@@ -72,10 +72,7 @@ namespace FamTec.Server.Controllers.Place
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<PlacePermissionDTO?> model = await UserService.GetMenuPermService(HttpContext);
+                ResponseUnit<PlacePermissionDTO?> model = await UserService.GetMenuPermService();
                 if (model is null)
                     return BadRequest();
 

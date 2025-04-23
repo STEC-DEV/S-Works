@@ -50,7 +50,7 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
-                byte[]? fileBytes = await UserService.DownloadUserGuidForm(HttpContext);
+                byte[]? fileBytes = await UserService.DownloadUserGuidForm();
 
                 if (fileBytes is not null)
                     return File(fileBytes, "application/pdf", "S-Works_사용자설명서_1.3_KO_241211.pdf");
@@ -73,7 +73,7 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
-                byte[]? fileBytes = await UserService.DownloadUserForm(HttpContext);
+                byte[]? fileBytes = await UserService.DownloadUserForm();
 
                 if (fileBytes is not null)
                     return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "사용자정보.xlsx");
@@ -97,9 +97,6 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (files is null)
                     return NoContent();
 
@@ -120,7 +117,7 @@ namespace FamTec.Server.Controllers.User
                     }
                 }
 
-                ResponseUnit<bool> model = await UserService.ImportUserService(HttpContext, files);
+                ResponseUnit<bool> model = await UserService.ImportUserService(files);
                 if (model is null)
                     return BadRequest();
 
@@ -153,10 +150,7 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<ListUser>? model = await UserService.GetPlaceUserList(HttpContext).ConfigureAwait(false);
+                ResponseList<ListUser>? model = await UserService.GetPlaceUserList().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -193,9 +187,6 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.USERID)) return NoContent(); // 사용자ID
                 if(String.IsNullOrWhiteSpace(dto.PASSWORD)) return NoContent(); // 사용자 비밀번호
                 if(dto.PERM_BASIC is null) return NoContent(); // 기본정보메뉴 권한
@@ -245,7 +236,7 @@ namespace FamTec.Server.Controllers.User
                 dto.USERID = CommService.getRemoveWhiteSpace(dto.USERID);
                 dto.PASSWORD = CommService.getRemoveWhiteSpace(dto.PASSWORD);
 
-                ResponseUnit<UsersDTO> model = await UserService.AddUserService(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<UsersDTO> model = await UserService.AddUserService(dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -278,13 +269,10 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 // 모바일 여부
-                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+                bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<UsersDTO> model = await UserService.GetUserDetails(HttpContext, id, isMobile).ConfigureAwait(false);
+                ResponseUnit<UsersDTO> model = await UserService.GetUserDetails(id, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -314,16 +302,13 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-                
                 if (delIdx is null)
                     return NoContent();
 
                 if (delIdx.Count == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await UserService.DeleteUserService(HttpContext, delIdx).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await UserService.DeleteUserService(delIdx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -354,9 +339,6 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.ID is null) return NoContent();
                 if (String.IsNullOrWhiteSpace(dto.USERID)) return NoContent(); // 사용자ID
                 if (String.IsNullOrWhiteSpace(dto.PASSWORD)) return NoContent(); // 사용자 비밀번호
@@ -407,7 +389,7 @@ namespace FamTec.Server.Controllers.User
                 dto.USERID = CommService.getRemoveWhiteSpace(dto.USERID);
                 dto.PASSWORD = CommService.getRemoveWhiteSpace(dto.PASSWORD);
 
-                ResponseUnit<UsersDTO>? model = await UserService.UpdateUserService(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<UsersDTO>? model = await UserService.UpdateUserService(dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -443,9 +425,6 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(userid))
                     return BadRequest();
 

@@ -23,6 +23,7 @@ namespace FamTec.Server.Services.Building
         private readonly ConsoleLogService<BuildingService> CreateBuilderLogger;
 
         private readonly IWebHostEnvironment WebHostEnvironment;
+        private readonly IHttpContextAccessor HttpContextAccessor;
 
         public BuildingService(
             IBuildingInfoRepository _buildinginforepository,
@@ -30,6 +31,7 @@ namespace FamTec.Server.Services.Building
             IFileService _fileservice,
             ILogService _logservice,
             ConsoleLogService<BuildingService> _createbuilderlogger,
+            IHttpContextAccessor _httpcontextaccessor,
             IWebHostEnvironment _webhostenvironment)
         {
             this.BuildingInfoRepository = _buildinginforepository;
@@ -37,6 +39,7 @@ namespace FamTec.Server.Services.Building
 
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
             this.WebHostEnvironment = _webhostenvironment;
         }
@@ -45,7 +48,7 @@ namespace FamTec.Server.Services.Building
         /// 건물 엑셀양식 다운로드
         /// </summary>
         /// <returns></returns>
-        public async Task<byte[]?> DownloadBuildingForm(HttpContext context)
+        public async Task<byte[]?> DownloadBuildingForm()
         {
             try
             {
@@ -76,10 +79,12 @@ namespace FamTec.Server.Services.Building
         /// <param name="files"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ResponseUnit<bool>> ImportBuildingService(HttpContext context, IFormFile files)
+        public async Task<ResponseUnit<bool>> ImportBuildingService(IFormFile files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -264,10 +269,12 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<int?>> TotalBuildingCount(HttpContext context)
+        public async Task<ResponseUnit<int?>> TotalBuildingCount()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -294,10 +301,12 @@ namespace FamTec.Server.Services.Building
         /// <param name="dto"></param>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddBuildingDTO>> AddBuildingService(HttpContext? context, AddBuildingDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<AddBuildingDTO>> AddBuildingService(AddBuildingDTO dto, IFormFile? files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -456,11 +465,13 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async Task<ResponseList<BuildinglistDTO>> GetBuilidngListService(HttpContext context)
+        public async Task<ResponseList<BuildinglistDTO>> GetBuilidngListService()
         {
             try
             {
-                if(context is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null)
                     return new ResponseList<BuildinglistDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
@@ -507,10 +518,12 @@ namespace FamTec.Server.Services.Building
         /// <param name="skip"></param>
         /// <param name="take"></param>
         /// <returns></returns>
-        public async Task<ResponseList<BuildinglistDTO>> GetBuildingListPageService(HttpContext context, int skip, int take)
+        public async Task<ResponseList<BuildinglistDTO>> GetBuildingListPageService(int skip, int take)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<BuildinglistDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -554,10 +567,12 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<PlaceBuildingNameDTO>> GetPlaceBuildingNameService(HttpContext context)
+        public async Task<ResponseList<PlaceBuildingNameDTO>> GetPlaceBuildingNameService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<PlaceBuildingNameDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -597,10 +612,12 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="buildingId"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<DetailBuildingDTO>> GetDetailBuildingService(HttpContext context, int buildingId, bool isMobile)
+        public async Task<ResponseUnit<DetailBuildingDTO>> GetDetailBuildingService(int buildingId, bool isMobile)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -763,7 +780,7 @@ namespace FamTec.Server.Services.Building
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateBuildingService(HttpContext context, DetailBuildingDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateBuildingService(DetailBuildingDTO dto, IFormFile? files)
         {
             try
             {
@@ -775,6 +792,7 @@ namespace FamTec.Server.Services.Building
                 IFormFile? AddTemp = default;
                 string RemoveTemp = String.Empty;
 
+                var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -965,10 +983,12 @@ namespace FamTec.Server.Services.Building
         /// <param name="context"></param>
         /// <param name="buildingid"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteBuildingService(HttpContext context, List<int> buildingid)
+        public async Task<ResponseUnit<bool?>> DeleteBuildingService(List<int> buildingid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -1011,10 +1031,12 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<PlaceBuildingListDTO>> GetPlaceBuildingService(HttpContext context)
+        public async Task<ResponseList<PlaceBuildingListDTO>> GetPlaceBuildingService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<PlaceBuildingListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -1092,10 +1114,12 @@ namespace FamTec.Server.Services.Building
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        public async Task<ResponseList<PlaceBuildingNameDTO>> GetPlaceAvailableBuildingList(HttpContext context, int materialid)
+        public async Task<ResponseList<PlaceBuildingNameDTO>> GetPlaceAvailableBuildingList(int materialid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<PlaceBuildingNameDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

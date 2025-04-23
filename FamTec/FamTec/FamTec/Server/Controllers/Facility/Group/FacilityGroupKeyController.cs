@@ -35,10 +35,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<AddKeyDTO> model = await FacilityKeyService.AddKeyService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<AddKeyDTO> model = await FacilityKeyService.AddKeyService(dto).ConfigureAwait(false);
 
                 if (dto.GroupID is null)
                     return NoContent();
@@ -84,16 +81,13 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.ID is null)
                     return NoContent();
 
                 if (String.IsNullOrWhiteSpace(dto.Itemkey))
                     return NoContent();
 
-                ResponseUnit<UpdateKeyDTO> model = await FacilityKeyService.UpdateKeyService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<UpdateKeyDTO> model = await FacilityKeyService.UpdateKeyService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -124,16 +118,13 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (keylist is null)
                     return NoContent();
                 
                 if(keylist.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await FacilityKeyService.DeletKeyListService(HttpContext, keylist).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await FacilityKeyService.DeletKeyListService(keylist).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -164,10 +155,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<bool?> model = await FacilityKeyService.DeleteKeyService(HttpContext, keyid).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await FacilityKeyService.DeleteKeyService(keyid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

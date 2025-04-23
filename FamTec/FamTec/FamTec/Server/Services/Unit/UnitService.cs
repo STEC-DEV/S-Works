@@ -9,14 +9,16 @@ namespace FamTec.Server.Services.Unit
     {
         private readonly IUnitInfoRepository UnitInfoRepository;
         private readonly ILogService LogService;
+        private readonly IHttpContextAccessor HttpContextAccessor;
         private readonly ConsoleLogService<UnitService> CreateBuilderLogger;
 
         public UnitService(IUnitInfoRepository _unitinforepository,
             ILogService _logservice,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<UnitService> _createbuilderlogger)
         {
             this.UnitInfoRepository = _unitinforepository;
-            
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
             this.LogService = _logservice;
         }
@@ -26,10 +28,12 @@ namespace FamTec.Server.Services.Unit
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<UnitsDTO>> AddUnitService(HttpContext context, UnitsDTO dto)
+        public async Task<ResponseUnit<UnitsDTO>> AddUnitService(UnitsDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = new UnitsDTO(), code = 404 };
 
@@ -87,10 +91,12 @@ namespace FamTec.Server.Services.Unit
         /// 해당 사업장의 단위리스트 조회
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseList<UnitsDTO>> GetUnitList(HttpContext context)
+        public async Task<ResponseList<UnitsDTO>> GetUnitList()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<UnitsDTO>() { message = "잘못된 요청입니다.", data = new List<UnitsDTO>(), code = 404 };
 
@@ -131,10 +137,12 @@ namespace FamTec.Server.Services.Unit
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteUnitService(HttpContext context, List<int> unitid)
+        public async Task<ResponseUnit<bool?>> DeleteUnitService(List<int> unitid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                 
@@ -182,10 +190,12 @@ namespace FamTec.Server.Services.Unit
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<UnitsDTO>> UpdateUnitService(HttpContext context, UnitsDTO dto)
+        public async Task<ResponseUnit<UnitsDTO>> UpdateUnitService(UnitsDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 

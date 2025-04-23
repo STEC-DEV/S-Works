@@ -42,9 +42,6 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.Content))
                     return NoContent();
 
@@ -79,7 +76,7 @@ namespace FamTec.Server.Controllers.Voc
 
 
                 // 밑에 추가로 작성
-                ResponseUnit<AddVocCommentDTOV2?> model = await VocCommentService.AddVocCommentServiceV2(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<AddVocCommentDTOV2?> model = await VocCommentService.AddVocCommentServiceV2(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -122,9 +119,6 @@ namespace FamTec.Server.Controllers.Voc
        {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.Content))
                     return NoContent();
 
@@ -158,7 +152,7 @@ namespace FamTec.Server.Controllers.Voc
                 }
 
                 // 밑에 추가로 작성
-                ResponseUnit<AddVocCommentDTO?> model = await VocCommentService.AddVocCommentService(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<AddVocCommentDTO?> model = await VocCommentService.AddVocCommentService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -193,13 +187,10 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 // 모바일 여부
-                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+                bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseList<VocCommentListDTO>? model = await VocCommentService.GetVocCommentList(HttpContext, vocid, isMobile).ConfigureAwait(false);
+                ResponseList<VocCommentListDTO>? model = await VocCommentService.GetVocCommentList(vocid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -234,13 +225,10 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 // 모바일 여부
-                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+                bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<VocCommentDetailDTO?> model = await VocCommentService.GetVocCommentDetail(HttpContext, commentid, isMobile).ConfigureAwait(false);
+                ResponseUnit<VocCommentDetailDTO?> model = await VocCommentService.GetVocCommentDetail(commentid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -277,10 +265,6 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-
-                if (HttpContext is null) // NULL CHECK
-                    return BadRequest();
-
                 if (dto.VocCommentId is null) // NULL CHECK
                     return NoContent();
 
@@ -314,7 +298,7 @@ namespace FamTec.Server.Controllers.Voc
                     }
                 }
 
-                ResponseUnit<bool?> model = await VocCommentService.UpdateCommentService(HttpContext, dto, files).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await VocCommentService.UpdateCommentService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

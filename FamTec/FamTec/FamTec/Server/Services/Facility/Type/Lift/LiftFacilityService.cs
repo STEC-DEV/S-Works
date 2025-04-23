@@ -23,6 +23,8 @@ namespace FamTec.Server.Services.Facility.Type.Lift
         private DirectoryInfo? di;
         private string? LiftFileFolderPath;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         public LiftFacilityService(
            IBuildingInfoRepository _buildinginforepository,
            IFloorInfoRepository _floorinforepository,
@@ -30,6 +32,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
            IRoomInfoRepository _roominforepository,
            IFileService _fileservice,
            ILogService _logService,
+           IHttpContextAccessor _httpcontextaccessor,
            ConsoleLogService<LiftFacilityService> _createbuilderlogger)
         {
             this.FacilityInfoRepository = _facilityinforepository;
@@ -39,6 +42,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             
             this.FileService = _fileservice;
             this.LogService = _logService;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -152,10 +156,14 @@ namespace FamTec.Server.Services.Facility.Type.Lift
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<byte[]?> DownloadLiftFacilityForm(HttpContext context)
+        public async Task<byte[]?> DownloadLiftFacilityForm()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+                if (context is null)
+                    return null;
+
                 string? PlaceId = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(PlaceId))
                     return null;
@@ -213,10 +221,12 @@ namespace FamTec.Server.Services.Facility.Type.Lift
         /// <param name="file"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ResponseUnit<bool>> ImportLiftFacilityService(HttpContext context, IFormFile? file)
+        public async Task<ResponseUnit<bool>> ImportLiftFacilityService(IFormFile? file)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -397,10 +407,12 @@ namespace FamTec.Server.Services.Facility.Type.Lift
         /// <param name="dto"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<FacilityDTO>> AddLiftFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddLiftFacilityService(FacilityDTO dto, IFormFile? files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
@@ -498,10 +510,12 @@ namespace FamTec.Server.Services.Facility.Type.Lift
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<FacilityListDTO>> GetLiftFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetLiftFacilityListService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<FacilityListDTO>() { message = "요청이 잘못되었습니다.", data = new List<FacilityListDTO>(), code = 404 };
 
@@ -530,10 +544,12 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             }
         }
 
-        public async Task<ResponseUnit<FacilityDetailDTO>> GetLiftDetailFacilityService(HttpContext context, int facilityId, bool isMobile)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetLiftDetailFacilityService(int facilityId, bool isMobile)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
 
@@ -685,7 +701,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             }
         }
 
-        public async Task<ResponseUnit<bool?>> UpdateLiftFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateLiftFacilityService(FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -696,6 +712,8 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                 // 수정실패 시 돌려놓을 FormFile
                 IFormFile? AddTemp = default;
                 string RemoveTemp = String.Empty;
+
+                var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -846,10 +864,12 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             }
         }
 
-        public async Task<ResponseUnit<bool?>> DeleteLiftFacilityService(HttpContext? context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteLiftFacilityService(List<int> delIdx)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || delIdx is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

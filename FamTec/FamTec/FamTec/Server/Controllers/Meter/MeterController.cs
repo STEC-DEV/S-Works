@@ -40,9 +40,6 @@ namespace FamTec.Server.Controllers.Meter
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
@@ -57,7 +54,7 @@ namespace FamTec.Server.Controllers.Meter
                     }
                 }
 
-                ResponseUnit<AddMeterDTO> model = await MeterService.AddMeterService(HttpContext, dto);
+                ResponseUnit<AddMeterDTO> model = await MeterService.AddMeterService(dto);
                 if (model is null)
                     return BadRequest();
 

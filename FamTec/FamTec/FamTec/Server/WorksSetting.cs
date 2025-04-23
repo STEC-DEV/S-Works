@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace FamTec.Server
 {
@@ -13,6 +14,7 @@ namespace FamTec.Server
         public WorksSetting(IServiceProvider _serviceProvider)
         {
             this.ServiceProvider = _serviceProvider;
+
             defaultUnit = new List<string>()
             {
                 "㎀","㎁","㎂","㎃","KB", "MB", "GB", "㎈", "㎉", "㎊", "㎋", "㎌", "㎍", "㎎",

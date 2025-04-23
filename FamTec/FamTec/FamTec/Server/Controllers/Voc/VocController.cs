@@ -45,10 +45,7 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return Unauthorized();
-
-                var model = await VocService.ImportVocServiceV2(HttpContext, dto).ConfigureAwait(false);
+                var model = await VocService.ImportVocServiceV2(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -85,10 +82,7 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                byte[]? fileBytes = await VocService.DownloadVocForm(HttpContext);
+                byte[]? fileBytes = await VocService.DownloadVocForm();
 
                 if (fileBytes is not null)
                     return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "민원(양식).xlsx");
@@ -116,13 +110,10 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return Unauthorized();
-
                 if (dto.vocId == 0)
                     return NoContent();
 
-                var model = await VocService.RecentVocSendService(HttpContext, dto);
+                var model = await VocService.RecentVocSendService(dto);
                 if (model is null)
                     return BadRequest();
 
@@ -155,10 +146,7 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<VocDaysStatusCountDTO>? model = await VocService.GetVocDaysStatusDataService(HttpContext).ConfigureAwait(false);
+                ResponseUnit<VocDaysStatusCountDTO>? model = await VocService.GetVocDaysStatusDataService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -193,10 +181,7 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<VocWeekStatusCountDTO>? model = await VocService.GetVocWeeksStatusDataService(HttpContext).ConfigureAwait(false);
+                ResponseList<VocWeekStatusCountDTO>? model = await VocService.GetVocWeeksStatusDataService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -232,10 +217,7 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<VocDaysCountDTO>? model = await VocService.GetVocDashBoardDaysDataService(HttpContext).ConfigureAwait(false);
+                ResponseUnit<VocDaysCountDTO>? model = await VocService.GetVocDashBoardDaysDataService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -269,10 +251,7 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<VocWeekCountDTO>? model = await VocService.GetVocDashBoardWeeksDataService(HttpContext).ConfigureAwait(false);
+                ResponseList<VocWeekCountDTO>? model = await VocService.GetVocDashBoardWeeksDataService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -340,9 +319,6 @@ namespace FamTec.Server.Controllers.Voc
                 //    0,1
                 //};
 
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (searchType == 0) // 월간
                 {
                     if (String.IsNullOrWhiteSpace(searchdate))
@@ -368,7 +344,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (searchType == 0)
                 {
                     // 월간 Service API 호출
-                    ResponseList<VocListDTOV2>? model = await VocService.GetMonthVocSearchListV2(HttpContext, type, status, buildingid, division, searchdate);
+                    ResponseList<VocListDTOV2>? model = await VocService.GetMonthVocSearchListV2(type, status, buildingid, division, searchdate);
                     if (model is null)
                         return BadRequest();
                     if (model.code == 200)
@@ -379,7 +355,7 @@ namespace FamTec.Server.Controllers.Voc
                 else if (searchType == 1)
                 {
                     // 기간 Service API 호출
-                    ResponseList<VocListDTOV2>? model = await VocService.GetDateVocSearchListV2(HttpContext, type, status, buildingid, division, StartDate!.Value, EndDate!.Value);
+                    ResponseList<VocListDTOV2>? model = await VocService.GetDateVocSearchListV2(type, status, buildingid, division, StartDate!.Value, EndDate!.Value);
                     if (model is null)
                         return BadRequest();
                     if (model.code == 200)
@@ -422,9 +398,6 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if(searchType == 0) // 월간
                 {
                     if (String.IsNullOrWhiteSpace(searchdate))
@@ -450,7 +423,7 @@ namespace FamTec.Server.Controllers.Voc
                 if(searchType == 0)
                 {
                     // 월간 Service API 호출
-                    ResponseList<VocListDTO>? model = await VocService.GetMonthVocSearchList(HttpContext, type, status, buildingid, division, searchdate);
+                    ResponseList<VocListDTO>? model = await VocService.GetMonthVocSearchList(type, status, buildingid, division, searchdate);
                     if (model is null)
                         return BadRequest();
                     if (model.code == 200)
@@ -461,7 +434,7 @@ namespace FamTec.Server.Controllers.Voc
                 else if(searchType == 1)
                 {
                     // 기간 Service API 호출
-                    ResponseList<VocListDTO>? model = await VocService.GetDateVocSearchList(HttpContext, type, status, buildingid, division, StartDate!.Value, EndDate!.Value);
+                    ResponseList<VocListDTO>? model = await VocService.GetDateVocSearchList(type, status, buildingid, division, StartDate!.Value, EndDate!.Value);
                     if (model is null)
                         return BadRequest();
                     if (model.code == 200)
@@ -497,10 +470,7 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<AllVocListDTO> model = await VocService.GetVocList(HttpContext, type, status, buildingid, division).ConfigureAwait(false);
+                ResponseList<AllVocListDTO> model = await VocService.GetVocList(type, status, buildingid, division).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -541,9 +511,6 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                   return BadRequest();
-
                 if (type is null)
                     return NoContent();
                 if (type.Count == 0)
@@ -559,7 +526,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (buildingid.Count == 0)
                     return NoContent();
 
-                ResponseList<VocListDTO>? model = await VocService.GetVocFilterList(HttpContext, StartDate, EndDate, type, status, buildingid, division).ConfigureAwait(false);
+                ResponseList<VocListDTO>? model = await VocService.GetVocFilterList(StartDate, EndDate, type, status, buildingid, division).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -596,13 +563,10 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 // 모바일 여부
-                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+                bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<VocEmployeeDetailDTO> model = await VocService.GetVocDetail(HttpContext, VocId, isMobile).ConfigureAwait(false);
+                ResponseUnit<VocEmployeeDetailDTO> model = await VocService.GetVocDetail(VocId, isMobile).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -640,16 +604,13 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.VocID is null)
                     return NoContent();
 
                 if (dto.Type is null)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await VocService.UpdateVocTypeService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await VocService.UpdateVocTypeService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

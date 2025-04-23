@@ -1,5 +1,4 @@
-﻿using FamTec.Client.Pages.Normal.User.UserAdd;
-using FamTec.Server.Hubs;
+﻿using FamTec.Server.Hubs;
 using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.KakaoLog;
@@ -11,8 +10,6 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using System.Data.SqlClient;
 
 namespace FamTec.Server.Services.Voc
 {
@@ -20,12 +17,12 @@ namespace FamTec.Server.Services.Voc
     {
         private readonly IVocCommentRepository VocCommentRepository;
         private readonly IVocInfoRepository VocInfoRepository;
-        private readonly IBlackListInfoRepository BlackListInfoRepository;
         private readonly IPlaceInfoRepository PlaceInfoRepository;
         private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
-        private readonly IUserInfoRepository UserInfoRepository;
-        
+
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         private readonly IKakaoService KakaoService;
 
         private readonly ILogService LogService;
@@ -40,28 +37,26 @@ namespace FamTec.Server.Services.Voc
 
         public VocCommentService(IVocCommentRepository _voccommentrepository,
             IVocInfoRepository _vocinforepository,
-            IBlackListInfoRepository _blacklistinforepository,
             IPlaceInfoRepository _placeinforepository,
             IKakaoLogInfoRepository _kakaologinforepository,
             IBuildingInfoRepository _buildinginforepository,
-            IUserInfoRepository _userinforepository,
             IKakaoService _kakaoservice,
             ILogService _logservice,
             IFileService _fileservice,
+            IHttpContextAccessor _httpcontextaccessor,
             IHubContext<BroadcastHub> _hubcontext,
             ConsoleLogService<VocCommentService> _createbuilderlogger)
         {
             this.VocCommentRepository = _voccommentrepository;
             this.VocInfoRepository = _vocinforepository;
-            this.BlackListInfoRepository = _blacklistinforepository;
             this.PlaceInfoRepository = _placeinforepository;
             this.KakaoLogInfoRepository = _kakaologinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
-            this.UserInfoRepository = _userinforepository;
 
             this.KakaoService = _kakaoservice;
             this.HubContext = _hubcontext;
 
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.LogService = _logservice;
             this.FileService = _fileservice;
             this.CreateBuilderLogger = _createbuilderlogger;
@@ -75,10 +70,12 @@ namespace FamTec.Server.Services.Voc
         /// <param name="dto"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddVocCommentDTOV2?>> AddVocCommentServiceV2(HttpContext context, AddVocCommentDTOV2 dto, List<IFormFile> image)
+        public async Task<ResponseUnit<AddVocCommentDTOV2?>> AddVocCommentServiceV2(AddVocCommentDTOV2 dto, List<IFormFile> image)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<AddVocCommentDTOV2?>() { message = "요청 권한이 없습니다.", data = null, code = 401 };
 
@@ -337,15 +334,16 @@ namespace FamTec.Server.Services.Voc
         /// 민원 댓글 추가 [Regacy]
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddVocCommentDTO?>> AddVocCommentService(HttpContext context, AddVocCommentDTO dto, List<IFormFile> files)
+        public async Task<ResponseUnit<AddVocCommentDTO?>> AddVocCommentService(AddVocCommentDTO dto, List<IFormFile> files)
         {
             try
             {
-                List<string> newFileName = new List<string>();
+                var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
                     return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
+                List<string> newFileName = new List<string>();
 
                 string? placeId = Convert.ToString(context.Items["PlaceIdx"]);
                 string? Creater = Convert.ToString(context.Items["Name"]);
@@ -532,10 +530,12 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public async Task<ResponseList<VocCommentListDTO>> GetVocCommentList(HttpContext context, int vocid, bool isMobile)
+        public async Task<ResponseList<VocCommentListDTO>> GetVocCommentList(int vocid, bool isMobile)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -704,11 +704,13 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="commentid"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(HttpContext context, int commentid, bool isMobile)
+        public async Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(int commentid, bool isMobile)
         {
             try
             {
-                if(context is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null)
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeId = Convert.ToString(context.Items["PlaceIdx"]);
@@ -853,10 +855,12 @@ namespace FamTec.Server.Services.Voc
         /// <param name="dto"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateCommentService(HttpContext context, VocCommentDetailDTO dto, List<IFormFile>? files)
+        public async Task<ResponseUnit<bool?>> UpdateCommentService(VocCommentDetailDTO dto, List<IFormFile>? files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

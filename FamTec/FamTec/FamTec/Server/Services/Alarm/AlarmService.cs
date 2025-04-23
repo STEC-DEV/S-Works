@@ -10,12 +10,16 @@ namespace FamTec.Server.Services.Alarm
         private readonly ILogService LogService;
         private readonly ConsoleLogService<AlarmService> CreateBuilderLogger;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         public AlarmService(IAlarmInfoRepository _alarminforepository,
             ILogService _logservice,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<AlarmService> _createbuilderlogger)
         {
             this.AlarmInfoRepository = _alarminforepository;
-            
+
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
 
@@ -26,10 +30,12 @@ namespace FamTec.Server.Services.Alarm
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<AlarmDTO>> GetAllAlarmService(HttpContext? context)
+        public async Task<ResponseList<AlarmDTO>> GetAllAlarmService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<AlarmDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -59,10 +65,12 @@ namespace FamTec.Server.Services.Alarm
         /// <param name="context"></param>
         /// <param name="StartDate"></param>
         /// <returns></returns>
-        public async Task<ResponseList<AlarmDTO>> GetAllAlarmByDateService(HttpContext? context, DateTime StartDate)
+        public async Task<ResponseList<AlarmDTO>> GetAllAlarmByDateService(DateTime StartDate)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<AlarmDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -91,10 +99,12 @@ namespace FamTec.Server.Services.Alarm
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> AllAlarmDelete(HttpContext? context)
+        public async Task<ResponseUnit<bool?>> AllAlarmDelete()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -129,10 +139,12 @@ namespace FamTec.Server.Services.Alarm
         /// </summary>
         /// <param name="alarmid"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> AlarmDelete(HttpContext? context, int? alarmid)
+        public async Task<ResponseUnit<bool?>> AlarmDelete(int? alarmid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || alarmid is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

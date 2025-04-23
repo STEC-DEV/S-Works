@@ -47,9 +47,6 @@ namespace FamTec.Server.Controllers.KakaoLog
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (page is 0)
                     return NoContent();
 
@@ -62,7 +59,7 @@ namespace FamTec.Server.Controllers.KakaoLog
                 if(limit_day is 0)
                     return NoContent();
 
-                ResponseList<KaKaoSenderResult>? model = await KakaoService.KakaoSenderResult(HttpContext, page, pagesize, StartDate, limit_day);
+                ResponseList<KaKaoSenderResult>? model = await KakaoService.KakaoSenderResult(page, pagesize, StartDate, limit_day);
                 
                 if (model is null)
                     return BadRequest();
@@ -98,10 +95,7 @@ namespace FamTec.Server.Controllers.KakaoLog
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogListService(HttpContext, isSuccess).ConfigureAwait(false);
+                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogListService(isSuccess).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -137,10 +131,7 @@ namespace FamTec.Server.Controllers.KakaoLog
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogDateListService(HttpContext, StartDate, EndDate, isSuccess).ConfigureAwait(false);
+                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogDateListService(StartDate, EndDate, isSuccess).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -182,10 +173,7 @@ namespace FamTec.Server.Controllers.KakaoLog
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<int?> model = await KakaoLogService.GetKakaoLogCountService(HttpContext).ConfigureAwait(false);
+                ResponseUnit<int?> model = await KakaoLogService.GetKakaoLogCountService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -228,7 +216,7 @@ namespace FamTec.Server.Controllers.KakaoLog
                 if (pagenum == 0)
                     return BadRequest(); // 잘못된 요청
 
-                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogPageNationListService(HttpContext, pagenum, pagesize).ConfigureAwait(false);
+                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogPageNationListService(pagenum, pagesize).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

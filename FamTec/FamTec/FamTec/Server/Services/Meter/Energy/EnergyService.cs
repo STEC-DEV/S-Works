@@ -8,12 +8,15 @@ namespace FamTec.Server.Services.Meter.Energy
     public class EnergyService : IEnergyService
     {
         private readonly IEnergyInfoRepository EnergyInfoRepository;
+        private readonly IHttpContextAccessor HttpContextAccessor;
         private ILogService LogService;
 
         public EnergyService(IEnergyInfoRepository _energyinforepository,
+            IHttpContextAccessor _httpcontextaccessor,
             ILogService _logservice)
         {
             this.EnergyInfoRepository = _energyinforepository;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.LogService = _logservice;
         }
 
@@ -24,10 +27,12 @@ namespace FamTec.Server.Services.Meter.Energy
         /// <param name="dto"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ResponseUnit<AddEnergyDTO>> AddEnergyService(HttpContext context, AddEnergyDTO dto)
+        public async Task<ResponseUnit<AddEnergyDTO>> AddEnergyService(AddEnergyDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<AddEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

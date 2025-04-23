@@ -12,16 +12,18 @@ namespace FamTec.Server.Services.KakaoLog
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly ILogService LogService;
         private readonly ConsoleLogService<KakaoLogService> CreateBuilderLogger;
-
+        private readonly IHttpContextAccessor HttpContextAccessor;
         public KakaoLogService(IKakaoLogInfoRepository _kakaologinforepository,
             IBuildingInfoRepository _buildinginforepository,
             ILogService _logservice,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<KakaoLogService> _createbuilderlogger)
         {
             this.KakaoLogInfoRepository = _kakaologinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
          
             this.LogService = _logservice;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -29,15 +31,13 @@ namespace FamTec.Server.Services.KakaoLog
         /// <summary>
         /// 해당 사업장의 카카오 로그 리스트 기간 조회
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="StartDate"></param>
-        /// <param name="EndDate"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<ResponseList<KakaoLogListDTO>> GetKakaoLogDateListService(HttpContext context, DateTime StartDate, DateTime EndDate,int isSuccess)
+        public async Task<ResponseList<KakaoLogListDTO>> GetKakaoLogDateListService(DateTime StartDate, DateTime EndDate,int isSuccess)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<KakaoLogListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -88,10 +88,12 @@ namespace FamTec.Server.Services.KakaoLog
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<KakaoLogListDTO>> GetKakaoLogListService(HttpContext context, int isSuccess)
+        public async Task<ResponseList<KakaoLogListDTO>> GetKakaoLogListService(int isSuccess)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<KakaoLogListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -142,10 +144,12 @@ namespace FamTec.Server.Services.KakaoLog
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<int?>> GetKakaoLogCountService(HttpContext context)
+        public async Task<ResponseUnit<int?>> GetKakaoLogCountService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -173,10 +177,12 @@ namespace FamTec.Server.Services.KakaoLog
         /// <param name="pagenumber"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public async Task<ResponseList<KakaoLogListDTO>> GetKakaoLogPageNationListService(HttpContext context, int pagenumber, int pagesize)
+        public async Task<ResponseList<KakaoLogListDTO>> GetKakaoLogPageNationListService(int pagenumber, int pagesize)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<KakaoLogListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

@@ -35,16 +35,13 @@ namespace FamTec.Server.Controllers.Floor
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
                 if (dto.BuildingTBID is null)
                     return NoContent();
 
-                ResponseUnit<FloorDTO> model = await FloorService.AddFloorService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<FloorDTO> model = await FloorService.AddFloorService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -75,9 +72,6 @@ namespace FamTec.Server.Controllers.Floor
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 ResponseList<FloorDTO> model = await FloorService.GetFloorListService(buildingid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
@@ -108,16 +102,13 @@ namespace FamTec.Server.Controllers.Floor
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.FloorID is null)
                     return NoContent();
 
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                ResponseUnit<bool?> model = await FloorService.UpdateFloorService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await FloorService.UpdateFloorService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -147,10 +138,7 @@ namespace FamTec.Server.Controllers.Floor
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<bool?> model = await FloorService.DeleteFloorService(HttpContext, idx).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await FloorService.DeleteFloorService(idx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

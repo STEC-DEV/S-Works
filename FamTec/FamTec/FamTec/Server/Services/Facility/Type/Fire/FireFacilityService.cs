@@ -23,6 +23,8 @@ namespace FamTec.Server.Services.Facility.Type.Fire
         private DirectoryInfo? di;
         private string? FireFileFolderPath;
 
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         private readonly ConsoleLogService<FireFacilityService> CreateBuilderLogger;
 
         public FireFacilityService(
@@ -32,6 +34,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
             IRoomInfoRepository _roominforepository,
             IFileService _fileservice,
             ILogService _logService,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<FireFacilityService> _createbuilderlogger)
         {
             this.FacilityInfoRepository = _facilityinforepository;
@@ -41,6 +44,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
             
             this.FileService = _fileservice;
             this.LogService = _logService;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -154,10 +158,14 @@ namespace FamTec.Server.Services.Facility.Type.Fire
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<byte[]?> DownloadFireFacilityForm(HttpContext context)
+        public async Task<byte[]?> DownloadFireFacilityForm()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+                if (context is null)
+                    return null;
+
                 string? PlaceId = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(PlaceId))
                     return null;
@@ -213,10 +221,12 @@ namespace FamTec.Server.Services.Facility.Type.Fire
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> ImportFireFacilityService(HttpContext context, IFormFile? file)
+        public async Task<ResponseUnit<bool>> ImportFireFacilityService(IFormFile? file)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -390,10 +400,12 @@ namespace FamTec.Server.Services.Facility.Type.Fire
             }
         }
 
-        public async Task<ResponseUnit<FacilityDTO>> AddFireFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddFireFacilityService(FacilityDTO dto, IFormFile? files)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
@@ -491,10 +503,12 @@ namespace FamTec.Server.Services.Facility.Type.Fire
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<FacilityListDTO>> GetFireFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetFireFacilityListService()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<FacilityListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -523,10 +537,12 @@ namespace FamTec.Server.Services.Facility.Type.Fire
             }
         }
 
-        public async Task<ResponseUnit<FacilityDetailDTO>> GetFireDetailFacilityService(HttpContext context, int facilityId, bool isMobile)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetFireDetailFacilityService(int facilityId, bool isMobile)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -678,7 +694,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
             }
         }
 
-        public async Task<ResponseUnit<bool?>> UpdateFireFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateFireFacilityService(FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -691,6 +707,8 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                 string RemoveTemp = String.Empty;
 
                 DateTime ThisTime = DateTime.Now;
+
+                var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -840,10 +858,12 @@ namespace FamTec.Server.Services.Facility.Type.Fire
             }
         }
 
-        public async Task<ResponseUnit<bool?>> DeleteFireFacilityService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteFireFacilityService(List<int> delIdx)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null || delIdx is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

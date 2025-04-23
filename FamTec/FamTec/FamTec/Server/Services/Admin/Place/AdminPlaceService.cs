@@ -20,6 +20,9 @@ namespace FamTec.Server.Services.Admin.Place
         private readonly IUserInfoRepository UserInfoRepository;
         private readonly IWebHostEnvironment WebHostEnvironment;
         private readonly ILogService LogService;
+
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         private readonly ConsoleLogService<AdminPlaceService> CreateBuilderLogger;
 
         public AdminPlaceService(IAdminPlacesInfoRepository _adminplaceinforepository,
@@ -29,6 +32,7 @@ namespace FamTec.Server.Services.Admin.Place
             IUserInfoRepository _userinforepository,
             ILogService _logservice,
             IWebHostEnvironment _webhostenvironment,
+            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<AdminPlaceService> _createbuilderlogger)
         {
             this.AdminPlaceInfoRepository = _adminplaceinforepository;
@@ -38,6 +42,7 @@ namespace FamTec.Server.Services.Admin.Place
             this.UserInfoRepository = _userinforepository;
             this.WebHostEnvironment = _webhostenvironment;
             this.LogService = _logservice;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -46,7 +51,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<byte[]?> DownloadAdminGuidForm(HttpContext context)
+        public async Task<byte[]?> DownloadAdminGuidForm()
         {
             try
             {
@@ -78,11 +83,13 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="context">JWT 토큰</param>
         /// <returns>ResponseList<AllPlaceDTO></returns>
-        public async Task<ResponseList<AllPlaceDTO>> GetAllWorksService(HttpContext context)
+        public async Task<ResponseList<AllPlaceDTO>> GetAllWorksService()
         {
             try
             {
-                if(context is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null)
                     return new ResponseList<AllPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? AdminId = Convert.ToString(context.Items["AdminIdx"]);
@@ -200,10 +207,12 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async Task<ResponseList<AdminPlaceDTO>> GetMyWorksList(HttpContext context)
+        public async Task<ResponseList<AdminPlaceDTO>> GetMyWorksList()
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<AdminPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -266,11 +275,13 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="dto">사업장 추가 DTO</param>
         /// <returns>추가된 사업장ID</returns>
-        public async Task<ResponseUnit<int?>> AddPlaceService(HttpContext context, AddPlaceDTO dto)
+        public async Task<ResponseUnit<int?>> AddPlaceService(AddPlaceDTO dto)
         {
             try
             {
-                if(context is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (context is null)
                     return new ResponseUnit<int?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? Creater = Convert.ToString(context.Items["Name"]);
@@ -333,10 +344,12 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="dto">수정할 DTO</param>
         /// <returns></returns>
-        public async Task<ResponseUnit<UpdatePlaceDTO>> UpdatePlaceService(HttpContext context, UpdatePlaceDTO dto)
+        public async Task<ResponseUnit<UpdatePlaceDTO>> UpdatePlaceService(UpdatePlaceDTO dto)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
@@ -428,11 +441,13 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="placemanager">추가할 관리자 정보 DTO</param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> AddPlaceManagerService(HttpContext context, AddPlaceManagerDTO<ManagerListDTO> placemanager)
+        public async Task<ResponseUnit<bool?>> AddPlaceManagerService(AddPlaceManagerDTO<ManagerListDTO> placemanager)
         {
             try
             {
-                if(placemanager is null || context is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (placemanager is null || context is null)
                     return new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? Creater = Convert.ToString(context.Items["Name"]);
@@ -493,11 +508,13 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> AddManagerPlaceSerivce(HttpContext context, AddManagerPlaceDTO dto)
+        public async Task<ResponseUnit<bool?>> AddManagerPlaceSerivce(AddManagerPlaceDTO dto)
         {
             try
             {
-                if(dto is null || context is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (dto is null || context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 
                 string? creater = Convert.ToString(context.Items["Name"]);
@@ -562,11 +579,13 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteManagerPlaceService(HttpContext context, AddPlaceManagerDTO<ManagerListDTO> dto)
+        public async Task<ResponseUnit<bool?>> DeleteManagerPlaceService(AddPlaceManagerDTO<ManagerListDTO> dto)
         {
             try
             {
-                if(dto is null || context is null)
+                var context = HttpContextAccessor.HttpContext;
+
+                if (dto is null || context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
@@ -603,10 +622,12 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="placeidx">삭제할 사업장 인덱스</param>
         /// <returns>TRUE & FALSE</returns>
-        public async Task<ResponseUnit<bool?>> DeletePlaceService(HttpContext context, List<int> placeidx)
+        public async Task<ResponseUnit<bool?>> DeletePlaceService(List<int> placeidx)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -658,10 +679,12 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="placeid">사업장 ID</param>
         /// <returns></returns>
-        public async Task<ResponseList<ManagerListDTO>> NotContainManagerList(HttpContext context, int placeid)
+        public async Task<ResponseList<ManagerListDTO>> NotContainManagerList(int placeid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<ManagerListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -692,10 +715,12 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="adminid">관리자 ID</param>
         /// <returns></returns>
-        public async Task<ResponseList<AdminPlaceDTO>> NotContainPlaceList(HttpContext context, int adminid)
+        public async Task<ResponseList<AdminPlaceDTO>> NotContainPlaceList(int adminid)
         {
             try
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseList<AdminPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -752,10 +777,12 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdatePlaceManagerService(HttpContext context, UpdatePlaceManagerDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdatePlaceManagerService(UpdatePlaceManagerDTO dto)
         {
             try 
             {
+                var context = HttpContextAccessor.HttpContext;
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

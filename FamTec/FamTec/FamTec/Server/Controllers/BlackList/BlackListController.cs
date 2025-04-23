@@ -41,13 +41,10 @@ namespace FamTec.Server.Controllers.BlackList
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.PhoneNumber))
                     return NoContent();
 
-                ResponseUnit<AddBlackListDTO> model = await BlackListService.AddBlackList(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<AddBlackListDTO> model = await BlackListService.AddBlackList(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -81,10 +78,7 @@ namespace FamTec.Server.Controllers.BlackList
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<BlackListDTO> model = await BlackListService.GetAllBlackList(HttpContext).ConfigureAwait(false);
+                ResponseList<BlackListDTO> model = await BlackListService.GetAllBlackList().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -118,10 +112,7 @@ namespace FamTec.Server.Controllers.BlackList
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<int?> model = await BlackListService.GetBlackListCountService(HttpContext).ConfigureAwait(false);
+                ResponseUnit<int?> model = await BlackListService.GetBlackListCountService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -155,9 +146,6 @@ namespace FamTec.Server.Controllers.BlackList
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (pagesize > 100)
                     return BadRequest(); // 사이즈 초과
 
@@ -167,7 +155,7 @@ namespace FamTec.Server.Controllers.BlackList
                 if (pagesize == 0)
                     return BadRequest(); // 잘못된 요청
 
-                ResponseList<BlackListDTO> model = await BlackListService.GetAllBlackListPageNation(HttpContext, pagenum, pagesize).ConfigureAwait(false);
+                ResponseList<BlackListDTO> model = await BlackListService.GetAllBlackListPageNation(pagenum, pagesize).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -202,13 +190,10 @@ namespace FamTec.Server.Controllers.BlackList
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (String.IsNullOrWhiteSpace(dto.PhoneNumber))
                     return NoContent();
 
-                ResponseUnit<bool?> model = await BlackListService.UpdateBlackList(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await BlackListService.UpdateBlackList(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -243,16 +228,13 @@ namespace FamTec.Server.Controllers.BlackList
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (delIdx is null)
                     return NoContent();
 
                 if (delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await BlackListService.DeleteBlackList(HttpContext, delIdx).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await BlackListService.DeleteBlackList(delIdx).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

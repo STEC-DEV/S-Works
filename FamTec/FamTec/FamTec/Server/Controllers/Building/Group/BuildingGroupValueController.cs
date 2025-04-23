@@ -36,16 +36,13 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.KeyID is null)
                     return NoContent();
 
                 if (String.IsNullOrWhiteSpace(dto.Value))
                     return NoContent();
 
-                ResponseUnit<AddValueDTO> model = await BuildingValueService.AddValueService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<AddValueDTO> model = await BuildingValueService.AddValueService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -76,16 +73,13 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.ID is null)
                     return NoContent();
 
                 if (String.IsNullOrWhiteSpace(dto.ItemValue))
                     return NoContent();
 
-                ResponseUnit<UpdateValueDTO> model = await BuildingValueService.UpdateValueService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<UpdateValueDTO> model = await BuildingValueService.UpdateValueService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -116,10 +110,7 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<bool?> model = await BuildingValueService.DeleteValueService(HttpContext, valueid).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await BuildingValueService.DeleteValueService(valueid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

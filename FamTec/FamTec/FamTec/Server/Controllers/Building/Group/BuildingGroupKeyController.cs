@@ -42,9 +42,6 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.GroupID is null)
                     return NoContent();
 
@@ -60,7 +57,7 @@ namespace FamTec.Server.Controllers.Building.Group
                     }
                 }
 
-                ResponseUnit<AddKeyDTO> model = await BuildingKeyService.AddKeyService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<AddKeyDTO> model = await BuildingKeyService.AddKeyService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -94,16 +91,13 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 if (dto.ID is null)
                     return NoContent();
                 
                 if (String.IsNullOrWhiteSpace(dto.Itemkey))
                     return NoContent();
 
-                ResponseUnit<UpdateKeyDTO> model = await BuildingKeyService.UpdateKeyService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<UpdateKeyDTO> model = await BuildingKeyService.UpdateKeyService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -135,14 +129,12 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
                 if (keylist is null)
                     return NoContent();
                 if (keylist.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyListService(HttpContext, keylist).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyListService(keylist).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -178,10 +170,7 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyService(HttpContext, keyid).ConfigureAwait(false);
+                ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyService(keyid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
