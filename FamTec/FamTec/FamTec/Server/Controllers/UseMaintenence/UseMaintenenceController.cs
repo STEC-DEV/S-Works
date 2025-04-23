@@ -1,5 +1,4 @@
-﻿using FamTec.Server.Hubs;
-using FamTec.Server.Middleware;
+﻿using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.UseMaintenence;
 using FamTec.Shared.Server.DTO;
@@ -7,7 +6,7 @@ using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.UseMaintenenceMaterial;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.UseMaintenence
 {
@@ -17,14 +16,11 @@ namespace FamTec.Server.Controllers.UseMaintenence
     public class UseMaintenenceController : ControllerBase
     {
         private readonly IUseMaintenenceService UseMaintenenceService;
-        
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<UseMaintenenceController> CreateBuilderLogger;
-
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<UseMaintenenceController> CreateBuilderLogger; /* 콘솔로그 */
 
         public UseMaintenenceController(IUseMaintenenceService _usemaintenenceservice,
             ILogService _logservice,
-            IHubContext<BroadcastHub> _hubcontext,
             ConsoleLogService<UseMaintenenceController> _createbuilderlogger)
         {
             this.UseMaintenenceService = _usemaintenenceservice;
@@ -39,10 +35,13 @@ namespace FamTec.Server.Controllers.UseMaintenence
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDetailUseMaterial")]
-        public async Task<IActionResult> GetDetailUseMaterial([FromQuery]int useid, [FromQuery]int materialid, [FromQuery]int roomid)
+        public async Task<IActionResult> GetDetailUseMaterial([FromQuery][Required]int useid, [FromQuery][Required]int materialid, [FromQuery][Required]int roomid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (materialid is 0)
                     return NoContent();
                 
@@ -52,11 +51,6 @@ namespace FamTec.Server.Controllers.UseMaintenence
                 ResponseUnit<UseMaterialDetailDTO>? model = await UseMaintenenceService.GetDetailUseMaterialService(useid, materialid, roomid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -85,6 +79,9 @@ namespace FamTec.Server.Controllers.UseMaintenence
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.MaintanceID is 0)
                     return NoContent();
 
@@ -95,10 +92,6 @@ namespace FamTec.Server.Controllers.UseMaintenence
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Admin.Department
 {
@@ -14,26 +15,21 @@ namespace FamTec.Server.Controllers.Admin.Department
     public class DepartmentController : ControllerBase
     {
         private readonly IDepartmentService DepartmentService;
-        private readonly ILogService LogService;
-
-        // 콘솔로그
-        private readonly ConsoleLogService<DepartmentController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<DepartmentController> CreateBuilderLogger; /* 콘솔로그 */
 
         public DepartmentController(IDepartmentService _departmentservice,
             ILogService _logservice,
             ConsoleLogService<DepartmentController> _createbuilderlogger)
         {
             this.DepartmentService = _departmentservice;
-            
             this.LogService = _logservice;
-            // 콘솔로그
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
         /// 부서추가
         /// </summary>
-        /// <param name="dto"></param>
         /// <returns></returns>
         [Authorize(Roles ="SystemManager, Master, Manager")]
         [HttpPost]
@@ -42,20 +38,17 @@ namespace FamTec.Server.Controllers.Admin.Department
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                
                 if (String.IsNullOrWhiteSpace(dto.Name))
-                    return NoContent();
-
-                if(dto.ManagerYN is null)
                     return NoContent();
 
                 ResponseUnit<AddDepartmentDTO>? model = await DepartmentService.AddDepartmentService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -85,13 +78,14 @@ namespace FamTec.Server.Controllers.Admin.Department
         {
             try
             {
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 ResponseList<DepartmentDTO>? model = await DepartmentService.GetAllDepartmentService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -115,13 +109,13 @@ namespace FamTec.Server.Controllers.Admin.Department
         {
             try
             {
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<DepartmentDTO>? model = await DepartmentService.ManageDepartmentService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -148,18 +142,23 @@ namespace FamTec.Server.Controllers.Admin.Department
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/DeleteDepartment")]
-        public async Task<IActionResult> DeleteDepartmentList([FromBody]List<int> departmentidx)
+        public async Task<IActionResult> DeleteDepartmentList([FromBody][Required]List<int> departmentidx)
         {
             try
             {
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                if (departmentidx is null)
+                    return NoContent();
+                if(departmentidx.Count == 0)
+                    return NoContent();
+
                 ResponseUnit<bool?> model = await DepartmentService.DeleteDepartmentService(departmentidx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -190,6 +189,10 @@ namespace FamTec.Server.Controllers.Admin.Department
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto.Id is null)
                     return NoContent();
                 if (String.IsNullOrWhiteSpace(dto.Name))
@@ -202,10 +205,6 @@ namespace FamTec.Server.Controllers.Admin.Department
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

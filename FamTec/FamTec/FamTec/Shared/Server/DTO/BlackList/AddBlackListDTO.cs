@@ -1,4 +1,6 @@
-﻿namespace FamTec.Shared.Server.DTO.BlackList
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FamTec.Shared.Server.DTO.BlackList
 {
     /// <summary>
     /// 블랙리스트 추가 DTO
@@ -8,6 +10,7 @@
         /// <summary>
         /// 휴대폰 번호
         /// </summary>
-        public string? PhoneNumber { get; set; }
+        [Required]
+        public string PhoneNumber { get; set; } = null!;
     }
 }

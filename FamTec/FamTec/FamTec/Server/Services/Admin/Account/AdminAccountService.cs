@@ -318,7 +318,7 @@ namespace FamTec.Server.Services.Admin.Account
                     UpdateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater,
                     DelYn = false,
                     UserTbId = userresult.Id,
-                    DepartmentTbId = dto.DepartmentId!.Value
+                    DepartmentTbId = dto.DepartmentId
                 };
 
                 AdminTb? adminresult = await AdminUserInfoRepository.AddAdminUserInfo(adminModel).ConfigureAwait(false);

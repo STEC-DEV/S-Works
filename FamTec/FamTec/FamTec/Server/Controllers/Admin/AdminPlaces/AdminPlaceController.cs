@@ -7,6 +7,7 @@ using FamTec.Shared.Server.DTO.Admin.Place;
 using FamTec.Shared.Server.DTO.Place;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Admin.AdminPlaces
 {
@@ -16,19 +17,15 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
     public class AdminPlaceController : ControllerBase
     {
         private readonly IAdminPlaceService AdminPlaceService;
-        private readonly ILogService LogService;
-
-        // 콘솔로그
-        private readonly ConsoleLogService<AdminPlaceController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<AdminPlaceController> CreateBuilderLogger; /* 콘솔로그 */
 
         public AdminPlaceController(IAdminPlaceService _adminplaceservice,
             ILogService _logservice,
             ConsoleLogService<AdminPlaceController> _createbuilderlogger)
         {
             this.AdminPlaceService = _adminplaceservice;
-            
             this.LogService = _logservice;
-            // 콘솔로그
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -43,6 +40,10 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 byte[]? fileBytes = await AdminPlaceService.DownloadAdminGuidForm();
 
                 if (fileBytes is not null)
@@ -73,14 +74,15 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 ResponseList<AllPlaceDTO> model = await AdminPlaceService.GetAllWorksService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -109,14 +111,14 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 ResponseList<ManagerListDTO> model = await AdminPlaceService.GetAllManagerListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -136,23 +138,24 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         /// <summary>
         /// 선택된 매니저가 관리하는 사업장 LIST반환
         /// </summary>
-        /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpGet]
         [Route("sign/MyWorks")]
-        public async Task<IActionResult> GetMyWorks([FromQuery] int adminid)
+        public async Task<IActionResult> GetMyWorks([FromQuery][Required] int adminid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksService(adminid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
+
 
                 if (model.code == 200)
                     return Ok(model);
@@ -174,26 +177,22 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         /// <summary>
         /// 사업장 상세정보
         /// </summary>
-        /// <param name="placeid">사업장ID</param>
         /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpGet]
         [Route("sign/DetailWorks")]
-        public async Task<IActionResult> DetailWorks([FromQuery]int placeid)
+        public async Task<IActionResult> DetailWorks([FromQuery][Required]int placeid) /* 사업장 ID */
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
 
                 ResponseUnit<PlaceDetailDTO> model = await AdminPlaceService.GetPlaceService(placeid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -213,66 +212,23 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         /// <summary>
         /// 사업장 등록
         /// </summary>
-        /// <param name="dto">추가할 사업장정보 DTO</param>
         /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPost]
         [Route("sign/AddWorks")]
-        public async Task<IActionResult> AddWorks([FromBody]AddPlaceDTO dto)
+        public async Task<IActionResult> AddWorks([FromBody]AddPlaceDTO dto) /* 추가할 사업장정보 DTO */
         {
             try
             {
-                if (String.IsNullOrWhiteSpace(dto.Name))
-                    return NoContent();
 
-                if (String.IsNullOrWhiteSpace(dto.Tel))
-                    return NoContent();
-
-                if (String.IsNullOrWhiteSpace(dto.ContractNum))
-                    return NoContent();
-
-                if (dto.PermMachine == null)
-                    return NoContent();
-
-                if (dto.PermLift == null)
-                    return NoContent();
-
-                if (dto.PermFire == null)
-                    return NoContent();
-
-                if (dto.PermElec == null)
-                    return NoContent();
-
-                if (dto.PermConstruct == null)
-                    return NoContent();
-
-                if (dto.PermNetwork == null)
-                    return NoContent();
-
-                if (dto.PermBeauty == null)
-                    return NoContent();
-
-                if (dto.PermSecurity == null)
-                    return NoContent();
-
-                if (dto.PermMaterial == null)
-                    return NoContent();
-
-                if (dto.PermEnergy == null)
-                    return NoContent();
-
-                if (dto.PermVoc == null)
-                    return NoContent();
-                
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
 
                 ResponseUnit<int?> model = await AdminPlaceService.AddPlaceService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 // 성공
                 if (model.code == 200) 
@@ -301,16 +257,16 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto.PlaceId is 0)
                     return NoContent();
 
                 ResponseUnit<bool?> model = await AdminPlaceService.UpdatePlaceManagerService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -336,10 +292,14 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         [HttpPut]
         [Route("sign/DeleteWorks")]
         
-        public async Task<IActionResult> DeleteWorks([FromBody]List<int> placeidx)
+        public async Task<IActionResult> DeleteWorks([FromBody][Required]List<int> placeidx)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (placeidx is null)
                     return NoContent();
                 if (placeidx.Count == 0)
@@ -349,10 +309,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -394,6 +350,10 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto.PlaceInfo.Id is null)
                     return NoContent();
 
@@ -450,10 +410,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (model is null)
                     return BadRequest();
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)
@@ -474,15 +430,19 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         /// <summary>
         /// 사업장에 포함되어있지 않은 관리자 리스트 조회
         /// </summary>
-        /// <param name="placeid"></param>
+        /// <param name="placeid">사업장 인덱스</param>
         /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpGet]
         [Route("sign/NotContainManagerList")]
-        public async Task<IActionResult> NotContainManagerList([FromQuery]int placeid)
+        public async Task<IActionResult> NotContainManagerList([FromQuery][Required]int placeid) /* 사업장 인덱스 */
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (placeid is 0)
                     return NoContent();
 
@@ -490,10 +450,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -513,15 +469,18 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         /// <summary>
         /// 해당 관리자가 가지고 있지 않은 사업장 List 조회
         /// </summary>
-        /// <param name="adminid"></param>
+        /// <param name="adminid">관리자 테이블 인덱스</param>
         /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpGet]
         [Route("sign/NotContainPlaceList")]
-        public async Task<IActionResult> NotContainPlaceList([FromQuery]int adminid)
+        public async Task<IActionResult> NotContainPlaceList([FromQuery][Required]int adminid) /* 관리자 테이블 인덱스 */
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (adminid is 0)
                     return NoContent();
 
@@ -529,10 +488,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -561,7 +516,12 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
-                if(placemanager.PlaceId is null)
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+
+#endif
+
+                if (placemanager.PlaceId is null)
                     return NoContent();
                 
                 if(placemanager.PlaceManager is null)
@@ -577,11 +537,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -603,7 +558,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         /// <summary>
         /// 사업장에서 관리자 삭제
         /// </summary>
-        /// <param name="DeletePlace"></param>
         /// <returns></returns>
         [Authorize(Roles ="SystemManager, Master, Manager")]
         [HttpPut]
@@ -612,6 +566,10 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto.PlaceId is null)
                     return NoContent();
                 
@@ -625,10 +583,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 }
 
                 ResponseUnit<bool?> model = await AdminPlaceService.DeleteManagerPlaceService(dto).ConfigureAwait(false);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model is null)
                     return BadRequest(model);

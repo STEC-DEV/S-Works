@@ -1,5 +1,4 @@
-﻿using DevExpress.Utils;
-using FamTec.Server.Middleware;
+﻿using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Voc;
 using FamTec.Shared.Server.DTO;
@@ -7,6 +6,7 @@ using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Voc
 {
@@ -16,21 +16,19 @@ namespace FamTec.Server.Controllers.Voc
     public class VocController : ControllerBase
     {
         private readonly IVocService VocService;
-        private readonly ILogService LogService;
-        private readonly ICommService CommService;
-
-        private readonly ConsoleLogService<VocController> CreateBuilderLogger;
+        private readonly ICommService CommService; /* 핼퍼클래스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<VocController> CreateBuilderLogger; /* 콘솔로그 */
 
         public VocController(IVocService _vocservice,
+            ICommService _commservice,
             ILogService _logservice,
-            ConsoleLogService<VocController> _createbuilderlogger,
-            ICommService _commservice)
+            ConsoleLogService<VocController> _createbuilderlogger)
         {
             this.VocService = _vocservice;
+            this.CommService = _commservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
-
-            this.CommService = _commservice;
         }
 
         /// <summary>
@@ -41,10 +39,14 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/v1/ImportVocData")]
-        public async Task<IActionResult> ImportVocData([FromBody] List<ImportVocData> dto)
+        public async Task<IActionResult> ImportVocData([FromBody][Required] List<ImportVocData> dto)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 var model = await VocService.ImportVocServiceV2(dto).ConfigureAwait(false);
                 
                 if (model is null)
@@ -82,7 +84,10 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                byte[]? fileBytes = await VocService.DownloadVocForm();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                byte[]? fileBytes = await VocService.DownloadVocForm().ConfigureAwait(false);
 
                 if (fileBytes is not null)
                     return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "민원(양식).xlsx");
@@ -106,14 +111,17 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/v1/RecentVoc")]
-        public async Task<IActionResult> RecentVoc([FromBody]RecentVocDTO dto)
+        public async Task<IActionResult> RecentVoc([FromBody][Required]RecentVocDTO dto)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.vocId == 0)
                     return NoContent();
 
-                var model = await VocService.RecentVocSendService(dto);
+                var model = await VocService.RecentVocSendService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -146,14 +154,12 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<VocDaysStatusCountDTO>? model = await VocService.GetVocDaysStatusDataService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -181,15 +187,13 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<VocWeekStatusCountDTO>? model = await VocService.GetVocWeeksStatusDataService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -217,14 +221,12 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<VocDaysCountDTO>? model = await VocService.GetVocDashBoardDaysDataService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -251,14 +253,12 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<VocWeekCountDTO>? model = await VocService.GetVocDashBoardWeeksDataService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -294,31 +294,13 @@ namespace FamTec.Server.Controllers.Voc
         [HttpGet]
         [Route("sign/v2/GetVocSearchList")]
         //public async Task<IActionResult> GetVocSearchListV2()
-        public async Task<IActionResult> GetVocSearchListV2([FromQuery] int searchType, [FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid, [FromQuery] List<int> division, [FromQuery] string? searchdate, [FromQuery] DateTime? StartDate, [FromQuery] DateTime? EndDate)
+        public async Task<IActionResult> GetVocSearchListV2([FromQuery][Required] int searchType, [FromQuery][Required] List<int> type, [FromQuery][Required] List<int> status, [FromQuery][Required] List<int> buildingid, [FromQuery][Required] List<int> division, [FromQuery] string? searchdate, [FromQuery] DateTime? StartDate, [FromQuery] DateTime? EndDate)
         {
             try
             {
-                //int searchType = 0;
-                //DateTime? StartDate = null;
-                //DateTime? EndDate = null;
-                //string searchdate = "2025-04";
-                //List<int> type = new List<int>
-                //{
-                //    0,1,2,3,4,5,6,7,8
-                //};
-                //List<int> status = new List<int>
-                //{
-                //    0,1,2
-                //};
-                //List<int> buildingid = new List<int>()
-                //{
-                //    1,2,3,4,5,10,23,28,29,30,31,32,34,35,43
-                //};
-                //List<int> division = new List<int>
-                //{
-                //    0,1
-                //};
-
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (searchType == 0) // 월간
                 {
                     if (String.IsNullOrWhiteSpace(searchdate))
@@ -344,7 +326,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (searchType == 0)
                 {
                     // 월간 Service API 호출
-                    ResponseList<VocListDTOV2>? model = await VocService.GetMonthVocSearchListV2(type, status, buildingid, division, searchdate);
+                    ResponseList<VocListDTOV2>? model = await VocService.GetMonthVocSearchListV2(type, status, buildingid, division, searchdate).ConfigureAwait(false);
                     if (model is null)
                         return BadRequest();
                     if (model.code == 200)
@@ -355,7 +337,7 @@ namespace FamTec.Server.Controllers.Voc
                 else if (searchType == 1)
                 {
                     // 기간 Service API 호출
-                    ResponseList<VocListDTOV2>? model = await VocService.GetDateVocSearchListV2(type, status, buildingid, division, StartDate!.Value, EndDate!.Value);
+                    ResponseList<VocListDTOV2>? model = await VocService.GetDateVocSearchListV2(type, status, buildingid, division, StartDate!.Value, EndDate!.Value).ConfigureAwait(false);
                     if (model is null)
                         return BadRequest();
                     if (model.code == 200)
@@ -394,11 +376,14 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocSearchList")]
-        public async Task<IActionResult> GetVocSearchList([FromQuery] int searchType, [FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid, [FromQuery] List<int> division, [FromQuery]string? searchdate, [FromQuery]DateTime? StartDate, [FromQuery]DateTime? EndDate)
+        public async Task<IActionResult> GetVocSearchList([FromQuery][Required] int searchType, [FromQuery][Required] List<int> type, [FromQuery][Required] List<int> status, [FromQuery][Required] List<int> buildingid, [FromQuery][Required] List<int> division, [FromQuery]string? searchdate, [FromQuery]DateTime? StartDate, [FromQuery]DateTime? EndDate)
         {
             try
             {
-                if(searchType == 0) // 월간
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                if (searchType == 0) // 월간
                 {
                     if (String.IsNullOrWhiteSpace(searchdate))
                         return NoContent();
@@ -423,7 +408,7 @@ namespace FamTec.Server.Controllers.Voc
                 if(searchType == 0)
                 {
                     // 월간 Service API 호출
-                    ResponseList<VocListDTO>? model = await VocService.GetMonthVocSearchList(type, status, buildingid, division, searchdate);
+                    ResponseList<VocListDTO>? model = await VocService.GetMonthVocSearchList(type, status, buildingid, division, searchdate).ConfigureAwait(false);
                     if (model is null)
                         return BadRequest();
                     if (model.code == 200)
@@ -434,7 +419,7 @@ namespace FamTec.Server.Controllers.Voc
                 else if(searchType == 1)
                 {
                     // 기간 Service API 호출
-                    ResponseList<VocListDTO>? model = await VocService.GetDateVocSearchList(type, status, buildingid, division, StartDate!.Value, EndDate!.Value);
+                    ResponseList<VocListDTO>? model = await VocService.GetDateVocSearchList(type, status, buildingid, division, StartDate!.Value, EndDate!.Value).ConfigureAwait(false);
                     if (model is null)
                         return BadRequest();
                     if (model.code == 200)
@@ -466,18 +451,17 @@ namespace FamTec.Server.Controllers.Voc
         [HttpGet]
         [Route("sign/GetVocList")]
         // SearchDate = string 값
-        public async Task<IActionResult> GetVocList([FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid, [FromQuery] List<int> division)
+        public async Task<IActionResult> GetVocList([FromQuery][Required] List<int> type, [FromQuery][Required] List<int> status, [FromQuery][Required] List<int> buildingid, [FromQuery][Required] List<int> division)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<AllVocListDTO> model = await VocService.GetVocList(type, status, buildingid, division).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -507,10 +491,13 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocFilterList")]
-        public async Task<IActionResult> GetVocFilterList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid, [FromQuery] List<int> division)
+        public async Task<IActionResult> GetVocFilterList([FromQuery][Required] DateTime StartDate, [FromQuery][Required] DateTime EndDate, [FromQuery][Required] List<int> type, [FromQuery][Required] List<int> status, [FromQuery][Required] List<int> buildingid, [FromQuery][Required] List<int> division)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (type is null)
                     return NoContent();
                 if (type.Count == 0)
@@ -530,11 +517,6 @@ namespace FamTec.Server.Controllers.Voc
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -559,10 +541,13 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/VocInfo")]
-        public async Task<IActionResult> GetDetailVoc([FromQuery] int VocId)
+        public async Task<IActionResult> GetDetailVoc([FromQuery][Required] int VocId)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
@@ -570,11 +555,6 @@ namespace FamTec.Server.Controllers.Voc
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -590,8 +570,6 @@ namespace FamTec.Server.Controllers.Voc
             }
         }
 
-
-
         /// <summary>
         /// 민원타입 변경
         /// </summary>
@@ -604,6 +582,9 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.VocID is null)
                     return NoContent();
 
@@ -614,10 +595,6 @@ namespace FamTec.Server.Controllers.Voc
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

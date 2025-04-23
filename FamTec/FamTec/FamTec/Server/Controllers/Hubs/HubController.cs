@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Hubs
 {
@@ -14,10 +15,9 @@ namespace FamTec.Server.Controllers.Hubs
     public class HubController : ControllerBase
     {
         private readonly IHubService HubService;
-        
-        private readonly ILogService LogService;
-        private readonly ICommService CommService;
-        private readonly ConsoleLogService<HubController> CreateBuilderLogger;
+        private readonly ICommService CommService; /* 핼퍼클래스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<HubController> CreateBuilderLogger; /* 콘솔로그 */
         
         public HubController(
             IHubService _hubservice,
@@ -26,9 +26,8 @@ namespace FamTec.Server.Controllers.Hubs
             ConsoleLogService<HubController> _createbuilderlogger)
         {
             this.HubService = _hubservice;
-            
-            this.LogService = _logservice;
             this.CommService = _commservice;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -39,10 +38,13 @@ namespace FamTec.Server.Controllers.Hubs
         [HttpGet]
         [Route("v2/AddAuthCode")]
         [Route("AddAuthCode")]
-        public async Task<IActionResult> AddAuthCode([FromQuery]int PlaceId, [FromQuery]int BuildingId, [FromQuery]string PhoneNumber)
+        public async Task<IActionResult> AddAuthCode([FromQuery][Required]int PlaceId, [FromQuery][Required]int BuildingId, [FromQuery][Required]string PhoneNumber)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (PlaceId is 0)
                     return NoContent();
 
@@ -52,7 +54,7 @@ namespace FamTec.Server.Controllers.Hubs
                 if (String.IsNullOrWhiteSpace(PhoneNumber))
                     return NoContent();
 
-                ResponseUnit<bool> model = await HubService.AddAuthCodeService(PlaceId, BuildingId, PhoneNumber);
+                ResponseUnit<bool> model = await HubService.AddAuthCodeService(PlaceId, BuildingId, PhoneNumber).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -78,14 +80,17 @@ namespace FamTec.Server.Controllers.Hubs
         [HttpGet]
         [Route("v2/GetVerifyAuthCode")]
         [Route("GetVerifyAuthCode")]
-        public async Task<IActionResult> GetVerifyAuthCode([FromQuery] string PhoneNumber, [FromQuery]string AuthCode)
+        public async Task<IActionResult> GetVerifyAuthCode([FromQuery][Required] string PhoneNumber, [FromQuery][Required]string AuthCode)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(PhoneNumber) || String.IsNullOrWhiteSpace(AuthCode))
                     return NoContent();
 
-                ResponseUnit<bool> model = await HubService.GetVerifyAuthCodeService(PhoneNumber, AuthCode);
+                ResponseUnit<bool> model = await HubService.GetVerifyAuthCodeService(PhoneNumber, AuthCode).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -114,6 +119,9 @@ namespace FamTec.Server.Controllers.Hubs
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.title)) // 민원 제목 NULL CHECK
                     return NoContent();
 
@@ -148,11 +156,6 @@ namespace FamTec.Server.Controllers.Hubs
                 ResponseUnit<AddVocReturnDTO?> model = await HubService.AddVocServiceV2(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-
-#endif
                 if (model.code == 200) // OK
                     return Ok(model);
                 else if (model.code == 204) // 내용잘못됨
@@ -185,6 +188,9 @@ namespace FamTec.Server.Controllers.Hubs
         {
             try 
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.Title)) // 민원 제목 NULL CHECK
                     return NoContent();
 
@@ -225,11 +231,6 @@ namespace FamTec.Server.Controllers.Hubs
                 ResponseUnit<AddVocReturnDTO?> model = await HubService.AddVocService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-
-#endif
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -251,10 +252,13 @@ namespace FamTec.Server.Controllers.Hubs
         /// <returns></returns>
         [HttpGet]
         [Route("VocInfo")]
-        public async Task<IActionResult> GetVocInfo([FromQuery]string voccode)
+        public async Task<IActionResult> GetVocInfo([FromQuery][Required]string voccode)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(voccode))
                     return NoContent();
 
@@ -264,10 +268,6 @@ namespace FamTec.Server.Controllers.Hubs
                 ResponseUnit<VocUserDetailDTO?> model = await HubService.GetVocRecord(voccode, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -292,10 +292,13 @@ namespace FamTec.Server.Controllers.Hubs
         /// <returns></returns>
         [HttpGet]
         [Route("GetVocCommentList")]
-        public async Task<IActionResult> GetVocComment([FromQuery]string voccode)
+        public async Task<IActionResult> GetVocComment([FromQuery][Required]string voccode)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(voccode))
                     return NoContent();
 
@@ -305,10 +308,6 @@ namespace FamTec.Server.Controllers.Hubs
                 ResponseList<VocCommentListDTO>? model = await HubService.GetVocCommentList(voccode, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -332,11 +331,15 @@ namespace FamTec.Server.Controllers.Hubs
         /// <returns></returns>
         [HttpGet]
         [Route("VocCommentDetail")]
-        public async Task<IActionResult> GetVocCommentDetail([FromQuery] int commentid)
+        public async Task<IActionResult> GetVocCommentDetail([FromQuery][Required] int commentid)
         {
             try
             {
-                if(commentid is 0)
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
+                if (commentid is 0)
                     return NoContent();
 
                 // 모바일 여부
@@ -345,11 +348,6 @@ namespace FamTec.Server.Controllers.Hubs
                 ResponseUnit<VocCommentDetailDTO?> model = await HubService.GetVocCommentDetail(commentid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else

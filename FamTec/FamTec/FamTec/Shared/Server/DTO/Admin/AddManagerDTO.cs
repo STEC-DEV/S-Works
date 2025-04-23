@@ -1,4 +1,6 @@
-﻿namespace FamTec.Shared.Server.DTO.Admin
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FamTec.Shared.Server.DTO.Admin
 {
     /// <summary>
     /// 매니저 추가 DTO
@@ -8,12 +10,14 @@
         /// <summary>
         /// 사용자 ID
         /// </summary>
-        public string? UserId { get; set; }
+        [Required]
+        public string UserId { get; set; } = null!;
 
         /// <summary>
         /// 비밀번호
         /// </summary>
-        public string? Password { get; set; }
+        [Required]
+        public string Password { get; set; } = null!;
 
         /// <summary>
         /// 이름
@@ -34,7 +38,8 @@
         /// <summary>
         /// 부서INDEX
         /// </summary>
-        public int? DepartmentId { get; set; }
+        [Required]
+        public int DepartmentId { get; set; }
 
     }
 }

@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Facility
 {
@@ -14,11 +15,10 @@ namespace FamTec.Server.Controllers.Facility
     public class MachineFacilityController : ControllerBase
     {
         private readonly IMachineFacilityService MachineFacilityService;
-        private readonly IFileService FileService;
-        private readonly ILogService LogService;
-        private readonly ICommService CommService;
-
-        private readonly ConsoleLogService<MachineFacilityController> CreateBuilderLogger;
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly ICommService CommService; /* 핼퍼 클래스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<MachineFacilityController> CreateBuilderLogger; /* 콘솔로그 */
 
         public MachineFacilityController(IMachineFacilityService _machinefacilityservice,
             IFileService _fileservice,
@@ -27,20 +27,24 @@ namespace FamTec.Server.Controllers.Facility
             ConsoleLogService<MachineFacilityController> _createbuilderlogger)
         {
             this.MachineFacilityService = _machinefacilityservice;
-            
             this.FileService = _fileservice;
-            this.LogService = _logservice;
             this.CommService = _commservice;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("sign/DownloadMachineFacilityForm")]
         public async Task<IActionResult> DownloadMachineFacilityForm()
         {
             try
             {
-                byte[]? ExcelForm = await MachineFacilityService.DownloadMachineFacilityForm();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
+                byte[]? ExcelForm = await MachineFacilityService.DownloadMachineFacilityForm().ConfigureAwait(false);
 
                 if (ExcelForm is not null)
                     return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "기계설비정보(양식).xlsx");
@@ -60,10 +64,14 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/ImportMachineFacility")]
-        public async Task<IActionResult> ImportMachineFacilityForm([FromForm] IFormFile files)
+        public async Task<IActionResult> ImportMachineFacilityForm([FromForm][Required] IFormFile files)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (files is null)
                     return NoContent();
 
@@ -115,13 +123,9 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                //FacilityDTO dto = new FacilityDTO();
-                //dto.Category = "기계";
-                //dto.Name = "기계설비A_1";
-                //dto.Type = "형식1";
-                //dto.Num = 30;
-                //dto.Unit = "개";
-                //dto.RoomTbId = 10;
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
 
                 if (String.IsNullOrWhiteSpace(dto.Category))
                     return NoContent();
@@ -157,10 +161,6 @@ namespace FamTec.Server.Controllers.Facility
                 if (model is null)
                     return BadRequest();
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -183,14 +183,14 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 ResponseList<FacilityListDTO>? model = await MachineFacilityService.GetMachineFacilityListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -210,21 +210,19 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailMachineFacility")]
-        public async Task<IActionResult> DetailMachineFacility([FromQuery]int facilityid)
+        public async Task<IActionResult> DetailMachineFacility([FromQuery][Required]int facilityid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseUnit<FacilityDetailDTO> model = await MachineFacilityService.GetMachineDetailFacilityService(facilityid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -247,12 +245,9 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                //FacilityDTO dto = new FacilityDTO();
-                //dto.ID = 4;
-                //dto.Category = "기계";
-                //dto.Name = "기계수정설비A_1";
-                //dto.Type = "형식1";
-                //dto.RoomTbId = 10;
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
 
                 if (dto.ID is null)
                     return NoContent();
@@ -289,11 +284,6 @@ namespace FamTec.Server.Controllers.Facility
                 ResponseUnit<bool?> model = await MachineFacilityService.UpdateMachineFacilityService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -312,15 +302,13 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteMachineFacility")]
-        public async Task<IActionResult> DeleteMachineFacility([FromBody] List<int> delIdx)
+        public async Task<IActionResult> DeleteMachineFacility([FromBody][Required] List<int> delIdx)
         {
-            //List<int> delIdx = new List<int>() { 3, 4 };
-
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (delIdx is null)
                     return NoContent();
 
@@ -331,11 +319,6 @@ namespace FamTec.Server.Controllers.Facility
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else

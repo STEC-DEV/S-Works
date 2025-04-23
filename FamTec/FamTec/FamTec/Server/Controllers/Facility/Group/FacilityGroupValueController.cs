@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility.Group;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Facility.Group
 {
@@ -14,21 +15,17 @@ namespace FamTec.Server.Controllers.Facility.Group
     public class FacilityGroupValueController : ControllerBase
     {
         private readonly IFacilityValueService FacilityValueService;
-        
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<FacilityGroupValueController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<FacilityGroupValueController> CreateBuilderLogger; /* 콘솔로그 */
 
         public FacilityGroupValueController(IFacilityValueService _facilityvalueservice,
             ILogService _logservice,
             ConsoleLogService<FacilityGroupValueController> _createbuilderlogger)
         {
             this.FacilityValueService = _facilityvalueservice;
-
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
-
-   
 
         [AllowAnonymous]
         [HttpPost]
@@ -37,6 +34,10 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto.KeyID is null)
                     return NoContent();
 
@@ -48,9 +49,6 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (model is null)
                     return BadRequest();
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -73,6 +71,9 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.ID is null)
                     return NoContent();
 
@@ -82,10 +83,6 @@ namespace FamTec.Server.Controllers.Facility.Group
                 ResponseUnit<UpdateValueDTO> model = await FacilityValueService.UpdateValueService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -105,7 +102,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteValue")]
-        public async Task<IActionResult> DeleteGroupValue([FromBody]int valueid)
+        public async Task<IActionResult> DeleteGroupValue([FromBody][Required]int valueid)
         {
             try
             {

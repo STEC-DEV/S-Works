@@ -1,10 +1,13 @@
-﻿namespace FamTec.Shared.Server.DTO.Facility.Group
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FamTec.Shared.Server.DTO.Facility.Group
 {
     public class UpdateValueDTO
     {
         /// <summary>
         /// 아이템 ID
         /// </summary>
+        [Required]
         public int? ID { get; set; }
 
         /// <summary>

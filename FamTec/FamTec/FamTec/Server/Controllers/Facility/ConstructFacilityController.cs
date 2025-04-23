@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
 using FamTec.Server.Middleware;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Facility
 {
@@ -15,15 +16,15 @@ namespace FamTec.Server.Controllers.Facility
     {
         private readonly IConstructFacilityService ConstructFacilityService;
         
-        private readonly IFileService FileService;
-        private readonly ILogService LogService;
-        private readonly ICommService CommService;
-        private readonly ConsoleLogService<ConstructFacilityController> CreateBuilderLogger;
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly ICommService CommService; /* 핼퍼 클래스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<ConstructFacilityController> CreateBuilderLogger; /* 콘솔로그 */
 
         public ConstructFacilityController(IConstructFacilityService _constructfacilityservice,
             IFileService _fileservice,
-            ILogService _logservice,
             ICommService _commservice,
+            ILogService _logservice,
             ConsoleLogService<ConstructFacilityController> _createbuilderlogger)
         {
             this.ConstructFacilityService = _constructfacilityservice;
@@ -40,7 +41,11 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                byte[]? ExcelForm = await ConstructFacilityService.DownloadConstructFacilityForm();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
+                byte[]? ExcelForm = await ConstructFacilityService.DownloadConstructFacilityForm().ConfigureAwait(false);
 
                 if (ExcelForm is not null)
                     return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "건축설비정보(양식).xlsx");
@@ -60,10 +65,13 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/ImportConstructFacility")]
-        public async Task<IActionResult> ImportConstructFacilityForm([FromForm] IFormFile files)
+        public async Task<IActionResult> ImportConstructFacilityForm([FromForm][Required] IFormFile files)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (files is null)
                     return NoContent();
 
@@ -87,7 +95,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (files.Length > Common.MEGABYTE_10)
                     return Ok(new ResponseUnit<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
 
-                ResponseUnit<bool> model = await ConstructFacilityService.ImportConstructFacilityService(files);
+                ResponseUnit<bool> model = await ConstructFacilityService.ImportConstructFacilityService(files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -115,6 +123,10 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (String.IsNullOrWhiteSpace(dto.Category))
                     return NoContent();
 
@@ -149,10 +161,6 @@ namespace FamTec.Server.Controllers.Facility
                 if (model is null)
                     return BadRequest();
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -175,15 +183,13 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<FacilityListDTO>? model = await ConstructFacilityService.GetConstructFacilityListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -202,10 +208,13 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailConstructFacility")]
-        public async Task<IActionResult> DetailConstructFacility([FromQuery] int facilityid)
+        public async Task<IActionResult> DetailConstructFacility([FromQuery][Required] int facilityid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
@@ -213,11 +222,6 @@ namespace FamTec.Server.Controllers.Facility
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-
-#endif
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -240,6 +244,9 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.ID is null)
                     return NoContent();
 
@@ -276,11 +283,6 @@ namespace FamTec.Server.Controllers.Facility
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -299,10 +301,14 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteConstructFacility")]
-        public async Task<IActionResult> DeleteConstructFacility([FromBody] List<int> delIdx)
+        public async Task<IActionResult> DeleteConstructFacility([FromBody][Required] List<int> delIdx)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (delIdx is null)
                     return NoContent();
 
@@ -313,10 +319,6 @@ namespace FamTec.Server.Controllers.Facility
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

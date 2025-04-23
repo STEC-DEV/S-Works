@@ -6,6 +6,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Place;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Place
 {
@@ -16,9 +17,8 @@ namespace FamTec.Server.Controllers.Place
     {
         private readonly IUserService UserService;
         private readonly IAdminPlaceService AdminPlaceService;
-
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<PlaceController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<PlaceController> CreateBuilderLogger; /* 콘솔로그 */
         
         public PlaceController(IAdminPlaceService _adminplaceservice,
             IUserService _userservice,
@@ -27,28 +27,25 @@ namespace FamTec.Server.Controllers.Place
         {
             this.AdminPlaceService = _adminplaceservice;
             this.UserService = _userservice;
-
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         [HttpGet]
         [Route("GetPlaceName")]
-        public async Task<IActionResult> GetPlaceName([FromQuery]int placeid)
+        public async Task<IActionResult> GetPlaceName([FromQuery][Required]int placeid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (placeid is 0)
                     return NoContent();
 
                 ResponseUnit<string?> model = await AdminPlaceService.GetPlaceName(placeid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -72,14 +69,12 @@ namespace FamTec.Server.Controllers.Place
         {
             try
             {
-                ResponseUnit<PlacePermissionDTO?> model = await UserService.GetMenuPermService();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                ResponseUnit<PlacePermissionDTO?> model = await UserService.GetMenuPermService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else

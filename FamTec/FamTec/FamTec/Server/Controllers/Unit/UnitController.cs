@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Unit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Unit
 {
@@ -14,9 +15,8 @@ namespace FamTec.Server.Controllers.Unit
     public class UnitController : ControllerBase
     {
         private readonly IUnitService UnitService;
-        
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<UnitController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<UnitController> CreateBuilderLogger; /* 콘솔로그 */
 
         public UnitController(IUnitService _unitservice,
             ILogService _logservice,
@@ -38,14 +38,12 @@ namespace FamTec.Server.Controllers.Unit
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<UnitsDTO> model = await UnitService.GetUnitList().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -73,6 +71,9 @@ namespace FamTec.Server.Controllers.Unit
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.Unit))
                     return NoContent();
 
@@ -80,11 +81,6 @@ namespace FamTec.Server.Controllers.Unit
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if(model.code == 201)
@@ -105,10 +101,13 @@ namespace FamTec.Server.Controllers.Unit
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteUnitInfo")]
-        public async Task<IActionResult> DeleteUnitInfo([FromBody] List<int> unitid)
+        public async Task<IActionResult> DeleteUnitInfo([FromBody][Required] List<int> unitid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (unitid is null)
                     return NoContent();
 
@@ -118,10 +117,6 @@ namespace FamTec.Server.Controllers.Unit
                 ResponseUnit<bool?> model = await UnitService.DeleteUnitService(unitid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -145,6 +140,9 @@ namespace FamTec.Server.Controllers.Unit
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.Id is null)
                     return NoContent();
 
@@ -154,10 +152,6 @@ namespace FamTec.Server.Controllers.Unit
                 ResponseUnit<UnitsDTO> model = await UnitService.UpdateUnitService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Alarm;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Alarm
 {
@@ -14,17 +15,14 @@ namespace FamTec.Server.Controllers.Alarm
     public class AlarmController : ControllerBase
     {
         private readonly IAlarmService AlarmService;
-        private readonly ILogService LogService;
-
-        // 콘솔로그
-        private readonly ConsoleLogService<AlarmController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<AlarmController> CreateBuilderLogger; /* 콘솔로그 */
         
         public AlarmController(IAlarmService _alarmservice,
             ILogService _logservice,
             ConsoleLogService<AlarmController> _createbuilderlogger)
         {
             this.AlarmService = _alarmservice;
-            
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -40,14 +38,13 @@ namespace FamTec.Server.Controllers.Alarm
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<AlarmDTO> model = await AlarmService.GetAllAlarmService().ConfigureAwait(false);
       
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -77,16 +74,16 @@ namespace FamTec.Server.Controllers.Alarm
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 DateTime StartDate = DateTime.Now;
 
                 ResponseList<AlarmDTO> model = await AlarmService.GetAllAlarmByDateService(StartDate).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -114,13 +111,12 @@ namespace FamTec.Server.Controllers.Alarm
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<bool?> model = await AlarmService.AllAlarmDelete().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -145,17 +141,16 @@ namespace FamTec.Server.Controllers.Alarm
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/AlarmDelete")]
-        public async Task<IActionResult> AlarmDelete([FromBody]int delId)
+        public async Task<IActionResult> AlarmDelete([FromBody][Required]int delId)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<bool?> model = await AlarmService.AlarmDelete(delId).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

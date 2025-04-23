@@ -15,20 +15,17 @@ namespace FamTec.Server.Controllers.Building.Group
     public class BuildingGroupKeyController : ControllerBase
     {
         private readonly IBuildingKeyService BuildingKeyService;
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<BuildingGroupKeyController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<BuildingGroupKeyController> CreateBuilderLogger; /* 콘솔로그 */
 
         public BuildingGroupKeyController(IBuildingKeyService _buildingkeyservice,
             ILogService _logservice,
-            ConsoleLogService<BuildingGroupKeyController> _createbuilderlogger
-            )
+            ConsoleLogService<BuildingGroupKeyController> _createbuilderlogger)
         {
             this.BuildingKeyService = _buildingkeyservice;
-            
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
-
 
         /// <summary>
         /// Key 추가
@@ -42,6 +39,10 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto.GroupID is null)
                     return NoContent();
 
@@ -61,10 +62,6 @@ namespace FamTec.Server.Controllers.Building.Group
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -91,6 +88,9 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.ID is null)
                     return NoContent();
                 
@@ -101,10 +101,6 @@ namespace FamTec.Server.Controllers.Building.Group
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -129,6 +125,11 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (keylist is null)
                     return NoContent();
                 if (keylist.Count() == 0)
@@ -138,10 +139,6 @@ namespace FamTec.Server.Controllers.Building.Group
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -170,14 +167,15 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($" {HttpContext.Request.Path.Value}");
+#endif
+
                 ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyService(keyid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -193,8 +191,6 @@ namespace FamTec.Server.Controllers.Building.Group
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
-
-
 
     }
 }

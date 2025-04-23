@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility.Group;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Facility.Group
 {
@@ -14,16 +15,14 @@ namespace FamTec.Server.Controllers.Facility.Group
     public class FacilityGroupKeyController : ControllerBase
     {
         private readonly IFacilityKeyService FacilityKeyService;
-        
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<FacilityGroupKeyController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<FacilityGroupKeyController> CreateBuilderLogger; /* 콘솔로그 */
 
         public FacilityGroupKeyController(IFacilityKeyService _facilitykeyservice,
             ILogService _logservice,
             ConsoleLogService<FacilityGroupKeyController> _createbuilderlogger)
         {
             this.FacilityKeyService = _facilitykeyservice;
-            
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -35,6 +34,9 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<AddKeyDTO> model = await FacilityKeyService.AddKeyService(dto).ConfigureAwait(false);
 
                 if (dto.GroupID is null)
@@ -54,10 +56,6 @@ namespace FamTec.Server.Controllers.Facility.Group
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -81,6 +79,9 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.ID is null)
                     return NoContent();
 
@@ -91,10 +92,6 @@ namespace FamTec.Server.Controllers.Facility.Group
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -114,10 +111,13 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteKeyList")]
-        public async Task<IActionResult> DeleteGroupKeyList([FromBody]List<int> keylist)
+        public async Task<IActionResult> DeleteGroupKeyList([FromBody][Required]List<int> keylist)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (keylist is null)
                     return NoContent();
                 
@@ -128,10 +128,6 @@ namespace FamTec.Server.Controllers.Facility.Group
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -151,18 +147,17 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteKey")]
-        public async Task<IActionResult> DeleteGroupKey([FromBody]int keyid)
+        public async Task<IActionResult> DeleteGroupKey([FromBody][Required]int keyid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<bool?> model = await FacilityKeyService.DeleteKeyService(keyid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

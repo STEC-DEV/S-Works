@@ -8,6 +8,7 @@ using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Maintenance
 {
@@ -18,29 +19,27 @@ namespace FamTec.Server.Controllers.Maintenance
     {
         private readonly IMaintanceService MaintanceService;
         private readonly IUseMaintenenceService UseMaintenenceService;
-                
-        private readonly IFileService FileService;
-        private readonly ILogService LogService;
-        private readonly ICommService CommService;
-        private readonly ConsoleLogService<MaintenanceController> CreateBuilderLogger;
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly ICommService CommService; /* 핼퍼 클래스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<MaintenanceController> CreateBuilderLogger; /* 콘솔로그 */
 
         public MaintenanceController(IMaintanceService _maintanceservice,
             IUseMaintenenceService _usermaintenenceservice,
             IFileService _fileservice,
-            ILogService _logservice,
             ICommService _commservice,
+            ILogService _logservice,
             ConsoleLogService<MaintenanceController> _createbuilderlogger)
         {
             this.MaintanceService = _maintanceservice;
             this.UseMaintenenceService = _usermaintenenceservice;
-            
             this.FileService = _fileservice;
-            this.LogService = _logservice;
             this.CommService = _commservice;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-// ################ DashBoard
+        #region 대시보드
 
         /// <summary>
         /// 금일 유지보수 이력
@@ -53,15 +52,13 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<MaintenanceDaysDTO>? model = await MaintanceService.GetMaintenanceDaysList().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -88,14 +85,12 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                ResponseList<MaintanceYearPriceDTO>? model = await MaintanceService.GetMaintenanceYearPriceList();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                ResponseList<MaintanceYearPriceDTO>? model = await MaintanceService.GetMaintenanceYearPriceList().ConfigureAwait(false);
                 if (model == null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)
@@ -124,15 +119,13 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                ResponseList<MaintanceWeekCount>? model = await MaintanceService.GetMaintanceDashBoardDataService();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                ResponseList<MaintanceWeekCount>? model = await MaintanceService.GetMaintanceDashBoardDataService().ConfigureAwait(false);
 
                 if (model == null)
                     return BadRequest();
-                else if (model.code == 204)
-                    return Ok(new ResponseList<MaintanceWeekCount>() { message = "값이 존재하지 않습니다.", data = null, code = 200 });
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)
@@ -150,7 +143,8 @@ namespace FamTec.Server.Controllers.Maintenance
             }
         }
 
-// ######################################
+        #endregion
+
 
         [AllowAnonymous]
         [HttpPost]
@@ -159,6 +153,9 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.MaintanceID is 0)
                     return NoContent();
 
@@ -176,10 +173,6 @@ namespace FamTec.Server.Controllers.Maintenance
                 ResponseUnit<bool?> model = await UseMaintenenceService.UpdateUseMaintanceService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -212,6 +205,9 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.MaintanceID is 0)
                     return NoContent();
 
@@ -241,10 +237,6 @@ namespace FamTec.Server.Controllers.Maintenance
                 ResponseUnit<FailResult?> model = await MaintanceService.AddSupMaintanceService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -279,6 +271,9 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.MaintanceID == 0)
                     return BadRequest();
               
@@ -305,11 +300,6 @@ namespace FamTec.Server.Controllers.Maintenance
                 ResponseUnit<bool?> model = await MaintanceService.UpdateMaintenanceService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -328,10 +318,13 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddMaintenanceImage")]
-        public async Task<IActionResult> AddMaintenanceImage([FromForm] int id, [FromForm] IFormFile? files)
+        public async Task<IActionResult> AddMaintenanceImage([FromForm][Required] int id, [FromForm] IFormFile? files)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (id is 0)
                     return BadRequest();
 
@@ -358,11 +351,6 @@ namespace FamTec.Server.Controllers.Maintenance
                 ResponseUnit<bool?> model = await MaintanceService.AddMaintanceImageService(id, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -390,6 +378,9 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
@@ -423,11 +414,6 @@ namespace FamTec.Server.Controllers.Maintenance
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 422)
@@ -455,17 +441,16 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetMaintanceHistory")]
-        public async Task<IActionResult> GetMaintanceHistory([FromQuery]int facilityid)
+        public async Task<IActionResult> GetMaintanceHistory([FromQuery][Required]int facilityid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<MaintanceListDTO> model = await MaintanceService.GetMaintanceHistoryService(facilityid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -485,21 +470,19 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDetailMaintance")]
-        public async Task<IActionResult> GetDetailMaintance([FromQuery]int Maintanceid)
+        public async Task<IActionResult> GetDetailMaintance([FromQuery][Required]int Maintanceid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseUnit<DetailMaintanceDTO?> model = await MaintanceService.GetDetailService(Maintanceid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -527,17 +510,15 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.MaintanceID is null || !dto.MaintanceID.Any())
                     return NoContent();
 
                 ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceRecordService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -553,8 +534,6 @@ namespace FamTec.Server.Controllers.Maintenance
             }
         }
 
-       
-
         /// <summary>
         /// 유지보수 내용 삭제
         /// </summary>
@@ -567,6 +546,9 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (delInfo.MaintanceID is 0)
                     return NoContent();
                 if(!delInfo.UseMaintenenceIDs.Any())
@@ -576,11 +558,6 @@ namespace FamTec.Server.Controllers.Maintenance
                 ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceStoreRecordService(delInfo).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -609,10 +586,13 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDateHistoryList")]
-        public async Task<IActionResult> GetDateHistoryList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]List<string> category, [FromQuery]List<int> type)
+        public async Task<IActionResult> GetDateHistoryList([FromQuery][Required]DateTime StartDate, [FromQuery][Required]DateTime EndDate, [FromQuery][Required]List<string> category, [FromQuery][Required]List<int> type)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (category is null || !category.Any())
                     return NoContent();
 
@@ -624,11 +604,6 @@ namespace FamTec.Server.Controllers.Maintenance
                 ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHistoryList(StartDate, EndDate, category, type).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 401)
@@ -655,10 +630,13 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllHistoryList")]
-        public async Task<IActionResult> GetAllHistoryList([FromQuery]List<string> category, [FromQuery]List<int> type)
+        public async Task<IActionResult> GetAllHistoryList([FromQuery][Required]List<string> category, [FromQuery][Required]List<int> type)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (category is null || !category.Any())
                     return NoContent();
 
@@ -670,10 +648,6 @@ namespace FamTec.Server.Controllers.Maintenance
                 ResponseList<AllMaintanceHistoryDTO>? model = await MaintanceService.GetAllHistoryList(category, type).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -696,10 +670,14 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetHistorySearchList")]
-        public async Task<IActionResult> GetHistorySearchList([FromQuery] int searchType, [FromQuery] List<string> category, [FromQuery] List<int> type, [FromQuery] string? searchdate, [FromQuery] DateTime? StartDate, [FromQuery] DateTime? EndDate)
+        public async Task<IActionResult> GetHistorySearchList([FromQuery][Required] int searchType, [FromQuery][Required] List<string> category, [FromQuery][Required] List<int> type, [FromQuery] string? searchdate, [FromQuery] DateTime? StartDate, [FromQuery] DateTime? EndDate)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (searchType == 0) // 월간
                 {
                     if (String.IsNullOrWhiteSpace(searchdate))
@@ -729,10 +707,6 @@ namespace FamTec.Server.Controllers.Maintenance
 
                     if (model is null)
                         return BadRequest();
-
-#if DEBUG
-                    CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
                     if (model.code == 200)
                         return Ok(model);
                     else if (model.code == 401)
@@ -745,16 +719,11 @@ namespace FamTec.Server.Controllers.Maintenance
 #if DEBUG
                     CreateBuilderLogger.ConsoleText("기간조회");
 #endif
-
                     // 기간 Service API 호출
                     ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHistoryList(StartDate!.Value, EndDate!.Value, category, type).ConfigureAwait(false);
 
                     if (model is null)
                         return BadRequest();
-
-#if DEBUG
-                    CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
                     if (model.code == 200)
                         return Ok(model);
                     else if (model.code == 401)

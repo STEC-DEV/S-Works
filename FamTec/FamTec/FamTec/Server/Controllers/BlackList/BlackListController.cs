@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.BlackList;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.BlackList
 {
@@ -14,17 +15,14 @@ namespace FamTec.Server.Controllers.BlackList
     public class BlackListController : ControllerBase
     {
         private readonly IBlackListService BlackListService;
-        private readonly ILogService LogService;
-
-        // 콘솔로그
-        private readonly ConsoleLogService<BlackListController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<BlackListController> CreateBuilderLogger; /* 콘솔 로그 */
 
         public BlackListController(IBlackListService _blacklistservice, 
             ILogService _logservice,
             ConsoleLogService<BlackListController> _createbuilderlogger)
         {
             this.BlackListService = _blacklistservice;
-            
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -41,16 +39,15 @@ namespace FamTec.Server.Controllers.BlackList
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.PhoneNumber))
                     return NoContent();
 
                 ResponseUnit<AddBlackListDTO> model = await BlackListService.AddBlackList(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -78,13 +75,12 @@ namespace FamTec.Server.Controllers.BlackList
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<BlackListDTO> model = await BlackListService.GetAllBlackList().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -112,14 +108,13 @@ namespace FamTec.Server.Controllers.BlackList
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<int?> model = await BlackListService.GetBlackListCountService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
+                
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -142,10 +137,13 @@ namespace FamTec.Server.Controllers.BlackList
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllPageNationBlackList")]
-        public async Task<IActionResult> GetAllBlackList([FromQuery]int pagenum, [FromQuery]int pagesize)
+        public async Task<IActionResult> GetAllBlackList([FromQuery][Required]int pagenum, [FromQuery][Required]int pagesize)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (pagesize > 100)
                     return BadRequest(); // 사이즈 초과
 
@@ -158,10 +156,6 @@ namespace FamTec.Server.Controllers.BlackList
                 ResponseList<BlackListDTO> model = await BlackListService.GetAllBlackListPageNation(pagenum, pagesize).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -190,16 +184,15 @@ namespace FamTec.Server.Controllers.BlackList
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.PhoneNumber))
                     return NoContent();
 
                 ResponseUnit<bool?> model = await BlackListService.UpdateBlackList(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -224,10 +217,14 @@ namespace FamTec.Server.Controllers.BlackList
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteBlackList")]
-        public async Task<IActionResult> DeleteBlackList(List<int> delIdx)
+        public async Task<IActionResult> DeleteBlackList([FromBody]List<int> delIdx)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (delIdx is null)
                     return NoContent();
 
@@ -237,11 +234,7 @@ namespace FamTec.Server.Controllers.BlackList
                 ResponseUnit<bool?> model = await BlackListService.DeleteBlackList(delIdx).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
+                
                 if (model.code == 200)
                     return Ok(model);
                 else

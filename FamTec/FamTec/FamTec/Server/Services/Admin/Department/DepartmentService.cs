@@ -27,8 +27,6 @@ namespace FamTec.Server.Services.Admin.Department
         /// <summary>
         /// 부서추가
         /// </summary>
-        /// <param name="dto"></param>
-        /// <param name="name"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<AddDepartmentDTO>> AddDepartmentService(AddDepartmentDTO dto)
         {
@@ -56,7 +54,7 @@ namespace FamTec.Server.Services.Admin.Department
                     CreateUser = !String.IsNullOrWhiteSpace(Creater) ? Creater.Trim() : Creater,
                     UpdateDt = ThisTime,
                     UpdateUser = !String.IsNullOrWhiteSpace(Creater) ? Creater.Trim() : Creater,
-                    ManagementYn = dto.ManagerYN!.Value
+                    ManagementYn = dto.ManagerYN
                 };
 
                 DepartmentsTb? result = await DepartmentInfoRepository.AddAsync(DepartmentTB).ConfigureAwait(false);

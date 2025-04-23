@@ -14,17 +14,14 @@ namespace FamTec.Server.Controllers.Building.Group
     public class BuildingGroupValueController : ControllerBase
     {
         private readonly IBuildingValueService BuildingValueService;
-        private readonly ILogService LogService;
-
-        // 콘솔로그
-        private readonly ConsoleLogService<BuildingGroupValueController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<BuildingGroupValueController> CreateBuilderLogger; /* 콘솔로그 */
 
         public BuildingGroupValueController(IBuildingValueService _buildingvalueservice,
             ILogService _logservice,
             ConsoleLogService<BuildingGroupValueController> _createbuilderlogger)
         {
             this.BuildingValueService = _buildingvalueservice;
-            
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -36,6 +33,11 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto.KeyID is null)
                     return NoContent();
 
@@ -46,10 +48,6 @@ namespace FamTec.Server.Controllers.Building.Group
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -73,6 +71,10 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.ID is null)
                     return NoContent();
 
@@ -83,10 +85,6 @@ namespace FamTec.Server.Controllers.Building.Group
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -110,14 +108,15 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 ResponseUnit<bool?> model = await BuildingValueService.DeleteValueService(valueid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

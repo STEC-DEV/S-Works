@@ -5,7 +5,7 @@
         /// <summary>
         /// 아이템의 이름 ex) 전기차
         /// </summary>
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// 단위

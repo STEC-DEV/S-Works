@@ -1,13 +1,11 @@
-﻿using DocumentFormat.OpenXml.InkML;
-using FamTec.Server.Middleware;
-using FamTec.Server.Repository.Building;
+﻿using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Building;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Building;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Building
 {
@@ -17,24 +15,21 @@ namespace FamTec.Server.Controllers.Building
     public class BuildingController : ControllerBase
     {
         private readonly IBuildingService BuildingService;
-        
-        private readonly IFileService FileService;
-        private readonly ILogService LogService;
-        private readonly ICommService CommService;
-        private readonly ConsoleLogService<BuildingController> CreateBuilderLogger;
+        private readonly IFileService FileService; /* 이미지 공통 서비스 */
+        private readonly ICommService CommService; /* 핼퍼클래스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<BuildingController> CreateBuilderLogger; /* 콘솔로그 */
 
         public BuildingController(IBuildingService _buildingservice,
-            IBuildingInfoRepository _buildinginforepository,
             IFileService _fileservice,
-            ILogService _logservice,
             ICommService _commservice,
+            ILogService _logservice,
             ConsoleLogService<BuildingController> _createbuilderlogger)
         {
             this.BuildingService = _buildingservice;
-
             this.FileService = _fileservice;
-            this.LogService = _logservice;
             this.CommService = _commservice;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -48,7 +43,10 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 byte[]? fileBytes = await BuildingService.DownloadBuildingForm();
 
                 if (fileBytes is not null)
@@ -69,10 +67,14 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/ImportBuilding")]
-        public async Task<IActionResult> ImportBuildingData([FromForm] IFormFile files)
+        public async Task<IActionResult> ImportBuildingData([FromForm][Required] IFormFile files)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (files is null)
                     return NoContent();
 
@@ -126,10 +128,13 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetMaterialBuildings")]
-        public async Task<IActionResult> GetMaterialBuildings([FromQuery]int materialid)
+        public async Task<IActionResult> GetMaterialBuildings([FromQuery][Required]int materialid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (materialid is 0)
                     return NoContent();
 
@@ -164,15 +169,14 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<int?> model = await BuildingService.TotalBuildingCount().ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
+                
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -199,14 +203,13 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<BuildinglistDTO> model = await BuildingService.GetBuilidngListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -232,18 +235,17 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/MyBuildingPage")]
-        public async Task<IActionResult> SelectMyBuildingPage([FromQuery]int skip, [FromQuery]int take)
+        public async Task<IActionResult> SelectMyBuildingPage([FromQuery][Required]int skip, [FromQuery][Required]int take)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<BuildinglistDTO> model = await BuildingService.GetBuildingListPageService(skip, take).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -271,14 +273,13 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<PlaceBuildingNameDTO> model = await BuildingService.GetPlaceBuildingNameService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -302,14 +303,13 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<PlaceBuildingListDTO> model = await BuildingService.GetPlaceBuildingService().ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -338,6 +338,10 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
@@ -366,10 +370,6 @@ namespace FamTec.Server.Controllers.Building
                 if (model is null)
                     return BadRequest(model);
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -393,20 +393,20 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailBuilding")]
-        public async Task<IActionResult> DetailBuilding([FromQuery] int buildingid)
+        public async Task<IActionResult> DetailBuilding([FromQuery][Required] int buildingid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseUnit<DetailBuildingDTO> model = await BuildingService.GetDetailBuildingService(buildingid, isMobile).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -427,10 +427,13 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteBuilding")]
-        public async Task<IActionResult> DeleteBuilding([FromBody] List<int> buildingidx)
+        public async Task<IActionResult> DeleteBuilding([FromBody][Required] List<int> buildingidx)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (buildingidx is null)
                     return NoContent();
                 
@@ -440,10 +443,6 @@ namespace FamTec.Server.Controllers.Building
                 ResponseUnit<bool?> model = await BuildingService.DeleteBuildingService(buildingidx).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -468,6 +467,10 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto.ID is null)
                     return NoContent();
 
@@ -499,10 +502,6 @@ namespace FamTec.Server.Controllers.Building
                 if (model is null)
                     return BadRequest();
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -525,10 +524,13 @@ namespace FamTec.Server.Controllers.Building
         /// <returns></returns>
         [HttpGet]
         [Route("GetBuildingName")]
-        public async Task<IActionResult> GetBuildingName([FromQuery]int buildingid)
+        public async Task<IActionResult> GetBuildingName([FromQuery][Required]int buildingid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (buildingid is 0)
                     return NoContent();
 
@@ -536,10 +538,6 @@ namespace FamTec.Server.Controllers.Building
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

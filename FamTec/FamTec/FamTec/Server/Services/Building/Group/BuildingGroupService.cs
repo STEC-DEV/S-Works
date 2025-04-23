@@ -105,7 +105,7 @@ namespace FamTec.Server.Services.Building.Group
                     CreateUser = creater,
                     UpdateDt = ThisTime,
                     UpdateUser = creater,
-                    BuildingTbId = dto.BuildingIdx!.Value
+                    BuildingTbId = dto.BuildingIdx
                 };
 
                 BuildingItemGroupTb? AddResult = await BuildingGroupItemInfoRepository.AddAsync(GroupTb).ConfigureAwait(false);

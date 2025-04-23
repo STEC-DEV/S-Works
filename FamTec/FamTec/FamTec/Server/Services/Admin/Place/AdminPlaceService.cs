@@ -18,9 +18,8 @@ namespace FamTec.Server.Services.Admin.Place
         private readonly IAdminUserInfoRepository AdminUserInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IUserInfoRepository UserInfoRepository;
-        private readonly IWebHostEnvironment WebHostEnvironment;
         private readonly ILogService LogService;
-
+        private readonly IWebHostEnvironment WebHostEnvironment;
         private readonly IHttpContextAccessor HttpContextAccessor;
 
         private readonly ConsoleLogService<AdminPlaceService> CreateBuilderLogger;
@@ -40,8 +39,8 @@ namespace FamTec.Server.Services.Admin.Place
             this.AdminUserInfoRepository = _adminuserinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
             this.UserInfoRepository = _userinforepository;
-            this.WebHostEnvironment = _webhostenvironment;
             this.LogService = _logservice;
+            this.WebHostEnvironment = _webhostenvironment;
             this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -302,17 +301,17 @@ namespace FamTec.Server.Services.Admin.Place
                     Address = dto.Address,
                     ContractNum = dto.ContractNum,
                     ContractDt = Convert.ToDateTime(dto.ContractDT),
-                    PermMachine = dto.PermMachine!.Value,
-                    PermLift = dto.PermLift!.Value,
-                    PermElec = dto.PermElec!.Value,
-                    PermFire = dto.PermFire!.Value,
-                    PermConstruct = dto.PermConstruct!.Value,
-                    PermNetwork = dto.PermNetwork!.Value,
-                    PermBeauty = dto.PermBeauty!.Value,
-                    PermSecurity = dto.PermSecurity!.Value,
-                    PermMaterial = dto.PermMaterial!.Value,
-                    PermEnergy = dto.PermEnergy!.Value,
-                    PermVoc = dto.PermVoc!.Value,
+                    PermMachine = dto.PermMachine,
+                    PermLift = dto.PermLift,
+                    PermElec = dto.PermElec,
+                    PermFire = dto.PermFire,
+                    PermConstruct = dto.PermConstruct,
+                    PermNetwork = dto.PermNetwork,
+                    PermBeauty = dto.PermBeauty,
+                    PermSecurity = dto.PermSecurity,
+                    PermMaterial = dto.PermMaterial,
+                    PermEnergy = dto.PermEnergy,
+                    PermVoc = dto.PermVoc,
                     CreateDt = ThisTime,
                     CreateUser = Creater,
                     UpdateDt = ThisTime,
@@ -423,7 +422,6 @@ namespace FamTec.Server.Services.Admin.Place
                     return new ResponseUnit<PlaceDetailDTO> { message = "요청이 정상 처리되었습니다.", data = model, code = 200};
                 else
                     return new ResponseUnit<PlaceDetailDTO> { message = "잘못된 요청입니다.", data = null, code = 404 };
-               
             }
             catch(Exception ex)
             {
@@ -577,7 +575,6 @@ namespace FamTec.Server.Services.Admin.Place
         /// <summary>
         /// 해당 사업장에 관리자 삭제
         /// </summary>
-        /// <param name="placeidx"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<bool?>> DeleteManagerPlaceService(AddPlaceManagerDTO<ManagerListDTO> dto)
         {
@@ -619,7 +616,6 @@ namespace FamTec.Server.Services.Admin.Place
         ///     - 사업장에 할당된 매니저가 있으면 삭제안됨.
         ///     - 사업장에 할당된 건물이 있으면 삭제안됨.
         /// </summary>
-        /// <param name="context">JWT 토큰</param>
         /// <param name="placeidx">삭제할 사업장 인덱스</param>
         /// <returns>TRUE & FALSE</returns>
         public async Task<ResponseUnit<bool?>> DeletePlaceService(List<int> placeidx)

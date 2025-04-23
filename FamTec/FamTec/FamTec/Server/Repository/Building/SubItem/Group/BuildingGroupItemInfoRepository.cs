@@ -260,7 +260,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                             GroupTB.CreateUser = creater; // 생성자
                             GroupTB.UpdateDt = ThisDate; // 현재시간
                             GroupTB.UpdateUser = creater; // 생성자
-                            GroupTB.BuildingTbId = Group.BuildingIdx!.Value; // 건물 ID
+                            GroupTB.BuildingTbId = Group.BuildingIdx; // 건물 ID
 
                             await context.BuildingItemGroupTbs.AddAsync(GroupTB).ConfigureAwait(false);
                             SaveResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;

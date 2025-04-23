@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
 using FamTec.Server.Middleware;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Facility
 {
@@ -14,33 +15,35 @@ namespace FamTec.Server.Controllers.Facility
     public class FireFacilityController : ControllerBase
     {
         private readonly IFireFacilityService FireFacilityService;
-        private readonly IFileService FileService;
-        private readonly ILogService LogService;
-        private readonly ICommService CommService;
-
-        private readonly ConsoleLogService<FireFacilityController> CreateBuilderLogger;
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly ICommService CommService; /* 핼퍼 클래스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<FireFacilityController> CreateBuilderLogger; /* 콘솔로그 */
 
         public FireFacilityController(IFireFacilityService _firefacilityservice,
             IFileService _fileservice,
-            ILogService _logservice,
             ICommService _commservice,
+            ILogService _logservice,
             ConsoleLogService<FireFacilityController> _createbuilderlogger)
         {
             this.FireFacilityService = _firefacilityservice;
-            
             this.FileService = _fileservice;
-            this.LogService = _logservice;
             this.CommService = _commservice;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("sign/DownloadFireFacilityForm")]
         public async Task<IActionResult> DownloadFireFacilityForm()
         {
             try
             {
-                byte[]? ExcelForm = await FireFacilityService.DownloadFireFacilityForm();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                byte[]? ExcelForm = await FireFacilityService.DownloadFireFacilityForm().ConfigureAwait(false);
 
                 if (ExcelForm is not null)
                     return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "소방설비정보(양식).xlsx");
@@ -61,10 +64,13 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/ImportFireFacility")]
-        public async Task<IActionResult> ImportFireFacilityForm([FromForm] IFormFile files)
+        public async Task<IActionResult> ImportFireFacilityForm([FromForm][Required] IFormFile files)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (files is null)
                     return NoContent();
 
@@ -88,7 +94,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (files.Length > Common.MEGABYTE_10)
                     return Ok(new ResponseUnit<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
 
-                ResponseUnit<bool> model = await FireFacilityService.ImportFireFacilityService(files);
+                ResponseUnit<bool> model = await FireFacilityService.ImportFireFacilityService(files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -116,6 +122,9 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.Category))
                     return NoContent();
 
@@ -149,11 +158,6 @@ namespace FamTec.Server.Controllers.Facility
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -176,15 +180,13 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<FacilityListDTO>? model = await FireFacilityService.GetFireFacilityListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-
-#endif
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -203,21 +205,19 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailFireFacility")]
-        public async Task<IActionResult> DetailFireFacility([FromQuery] int facilityid)
+        public async Task<IActionResult> DetailFireFacility([FromQuery][Required] int facilityid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseUnit<FacilityDetailDTO> model = await FireFacilityService.GetFireDetailFacilityService(facilityid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -240,6 +240,9 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.ID is null)
                     return NoContent();
 
@@ -275,11 +278,6 @@ namespace FamTec.Server.Controllers.Facility
                 ResponseUnit<bool?> model = await FireFacilityService.UpdateFireFacilityService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -298,10 +296,13 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteFireFacility")]
-        public async Task<IActionResult> DeleteFireFacility([FromBody] List<int> delIdx)
+        public async Task<IActionResult> DeleteFireFacility([FromBody][Required] List<int> delIdx)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (delIdx is null)
                     return NoContent();
 
@@ -312,10 +313,6 @@ namespace FamTec.Server.Controllers.Facility
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

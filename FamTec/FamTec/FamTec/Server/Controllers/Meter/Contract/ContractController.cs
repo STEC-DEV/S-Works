@@ -14,16 +14,14 @@ namespace FamTec.Server.Controllers.Meter.Contract
     public class ContractController : ControllerBase
     {
         private readonly IContractService ContractService;
-        
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<ContractController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<ContractController> CreateBuilderLogger; /* 콘솔로그 */
 
         public ContractController(IContractService _contractservice,
             ILogService _logservice,
             ConsoleLogService<ContractController> _createbuilderlogger)
         {
             this.ContractService = _contractservice;
-
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -40,17 +38,15 @@ namespace FamTec.Server.Controllers.Meter.Contract
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                ResponseUnit<AddContractDTO> model = await ContractService.AddContractService(dto);
+                ResponseUnit<AddContractDTO> model = await ContractService.AddContractService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.data?.ToString() ?? ""} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 201)
@@ -79,13 +75,12 @@ namespace FamTec.Server.Controllers.Meter.Contract
         {
             try
             {
-                ResponseList<ContractDTO>? model = await ContractService.GetAllContractListService();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                ResponseList<ContractDTO>? model = await ContractService.GetAllContractListService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.data?.ToString() ?? ""} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

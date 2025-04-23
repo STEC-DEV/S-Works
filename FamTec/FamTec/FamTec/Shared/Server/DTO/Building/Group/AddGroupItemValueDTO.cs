@@ -1,10 +1,13 @@
-﻿namespace FamTec.Shared.Server.DTO.Building.Group
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FamTec.Shared.Server.DTO.Building.Group
 {
     public class AddGroupItemValueDTO
     {
         /// <summary>
         /// 값
         /// </summary>
-        public string? Values { get; set; }
+        [Required]
+        public string Values { get; set; } = null!;
     }
 }

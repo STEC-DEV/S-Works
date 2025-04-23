@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.KakaoLog
 {
@@ -14,21 +15,18 @@ namespace FamTec.Server.Controllers.KakaoLog
     public class KakaoLogController : ControllerBase
     {
         private readonly IKakaoLogService KakaoLogService;
-        private readonly ILogService LogService;
         private readonly IKakaoService KakaoService;
-        
-        private readonly ConsoleLogService<KakaoLogController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<KakaoLogController> CreateBuilderLogger; /* 콘솔로그 */
 
         public KakaoLogController(IKakaoLogService _kakaologservice,
             ILogService _logservice,
-            ConsoleLogService<KakaoLogController> _createbuilderlogger,
-            IKakaoService _kakaoservice)
+            IKakaoService _kakaoservice,
+            ConsoleLogService<KakaoLogController> _createbuilderlogger)
         {
             this.KakaoLogService = _kakaologservice;
-            this.LogService = _logservice;
             this.KakaoService = _kakaoservice;
-
-            // 콘솔로그
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -43,10 +41,13 @@ namespace FamTec.Server.Controllers.KakaoLog
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/KakaoSenderResult")]
-        public async Task<IActionResult> KakaoSenderResult([FromQuery]int page, [FromQuery]int pagesize, [FromQuery] DateTime StartDate, [FromQuery] int limit_day)
+        public async Task<IActionResult> KakaoSenderResult([FromQuery][Required]int page, [FromQuery][Required] int pagesize, [FromQuery][Required] DateTime StartDate, [FromQuery][Required] int limit_day)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (page is 0)
                     return NoContent();
 
@@ -59,14 +60,10 @@ namespace FamTec.Server.Controllers.KakaoLog
                 if(limit_day is 0)
                     return NoContent();
 
-                ResponseList<KaKaoSenderResult>? model = await KakaoService.KakaoSenderResult(page, pagesize, StartDate, limit_day);
+                ResponseList<KaKaoSenderResult>? model = await KakaoService.KakaoSenderResult(page, pagesize, StartDate, limit_day).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -91,19 +88,17 @@ namespace FamTec.Server.Controllers.KakaoLog
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetKakaoLogList")]
-        public async Task<IActionResult> GetKakaoLogList([FromQuery]int isSuccess)
+        public async Task<IActionResult> GetKakaoLogList([FromQuery][Required]int isSuccess)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogListService(isSuccess).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -127,10 +122,13 @@ namespace FamTec.Server.Controllers.KakaoLog
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetKakaoDateLogList")]
-        public async Task<IActionResult> GetKakaoDateLogList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]int isSuccess)
+        public async Task<IActionResult> GetKakaoDateLogList([FromQuery][Required]DateTime StartDate, [FromQuery][Required]DateTime EndDate, [FromQuery][Required]int isSuccess)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogDateListService(StartDate, EndDate, isSuccess).ConfigureAwait(false);
 
                 if (model is null)
@@ -141,10 +139,6 @@ namespace FamTec.Server.Controllers.KakaoLog
 
                 if (EndDate == DateTime.MinValue)
                     return NoContent();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -173,14 +167,13 @@ namespace FamTec.Server.Controllers.KakaoLog
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<int?> model = await KakaoLogService.GetKakaoLogCountService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -206,10 +199,13 @@ namespace FamTec.Server.Controllers.KakaoLog
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllPageNationKakaoLog")]
-        public async Task<IActionResult> GetAllPageNationKakaoLog([FromQuery]int pagenum, [FromQuery]int pagesize)
+        public async Task<IActionResult> GetAllPageNationKakaoLog([FromQuery][Required]int pagenum, [FromQuery][Required] int pagesize)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (pagesize == 0 || pagesize > 100)
                     return BadRequest(); // 사이즈 초과
 
@@ -219,11 +215,6 @@ namespace FamTec.Server.Controllers.KakaoLog
                 ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogPageNationListService(pagenum, pagesize).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else

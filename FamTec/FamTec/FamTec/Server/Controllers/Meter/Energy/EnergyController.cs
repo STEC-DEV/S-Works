@@ -16,7 +16,6 @@ namespace FamTec.Server.Controllers.Meter.Energy
     {
         private readonly IEnergyService EnergyService;
         private readonly IEnergyInfoRepository EnergyInfoRepository;
-        
         private readonly ILogService LogService;
         private readonly ConsoleLogService<EnergyController> CreateBuilderLogger;
 

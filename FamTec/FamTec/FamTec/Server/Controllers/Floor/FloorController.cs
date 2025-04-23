@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
 using FamTec.Server.Middleware;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Floor
 {
@@ -14,16 +15,14 @@ namespace FamTec.Server.Controllers.Floor
     public class FloorController : ControllerBase
     {
         private readonly IFloorService FloorService;
-        private readonly ILogService LogService;
-
-        private readonly ConsoleLogService<FloorController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<FloorController> CreateBuilderLogger; /* 콘솔로그 */
 
         public FloorController(IFloorService _floorservice,
             ILogService _logservice,
             ConsoleLogService<FloorController> _createbuilderlogger)
         {
             this.FloorService = _floorservice;
-
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -35,6 +34,9 @@ namespace FamTec.Server.Controllers.Floor
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
@@ -45,10 +47,6 @@ namespace FamTec.Server.Controllers.Floor
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -68,18 +66,16 @@ namespace FamTec.Server.Controllers.Floor
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetFloorList")]
-        public async Task<IActionResult> GetFloorList([FromQuery] int buildingid)
+        public async Task<IActionResult> GetFloorList([FromQuery][Required] int buildingid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<FloorDTO> model = await FloorService.GetFloorListService(buildingid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -102,6 +98,9 @@ namespace FamTec.Server.Controllers.Floor
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.FloorID is null)
                     return NoContent();
 
@@ -111,10 +110,6 @@ namespace FamTec.Server.Controllers.Floor
                 ResponseUnit<bool?> model = await FloorService.UpdateFloorService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -134,18 +129,17 @@ namespace FamTec.Server.Controllers.Floor
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteFloor")]
-        public async Task<IActionResult> DeleteFloor([FromBody] List<int> idx)
+        public async Task<IActionResult> DeleteFloor([FromBody][Required] List<int> idx)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<bool?> model = await FloorService.DeleteFloorService(idx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

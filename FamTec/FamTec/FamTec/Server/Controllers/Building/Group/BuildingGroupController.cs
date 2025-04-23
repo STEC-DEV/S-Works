@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Group;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Building.Group
 {
@@ -14,17 +15,14 @@ namespace FamTec.Server.Controllers.Building.Group
     public class BuildingGroupController : ControllerBase
     {
         private readonly IBuildingGroupService GroupService;
-        private readonly ILogService LogService;
-
-        // 콘솔로그
-        private readonly ConsoleLogService<BuildingGroupController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<BuildingGroupController> CreateBuilderLogger; /* 콘솔로그 */
 
         public BuildingGroupController(IBuildingGroupService _groupservice,
             ILogService _logservice,
             ConsoleLogService<BuildingGroupController> _createbuilderlogger)
         {
             this.GroupService = _groupservice;
-            
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -36,8 +34,10 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                if (dto.BuildingIdx is null)
-                    return NoContent();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
 
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
@@ -46,10 +46,6 @@ namespace FamTec.Server.Controllers.Building.Group
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -67,20 +63,18 @@ namespace FamTec.Server.Controllers.Building.Group
         }
 
         [AllowAnonymous]
-        //[HttpGet]
         [HttpPost]
         [Route("sign/AddBuildingGroup")]
         public async Task<IActionResult> AddBuildingGroup([FromBody] List<AddGroupDTO> dto)
         {
             try
             {
-                // ------------- DTO 검사
                 if (dto is null)
                     return NoContent();
 
                 foreach(AddGroupDTO group in dto)
                 {
-                    if(group.BuildingIdx is null || group.BuildingIdx == 0)
+                    if(group.BuildingIdx == 0)
                         return NoContent();
                     if(String.IsNullOrWhiteSpace(group.Name))
                         return NoContent();
@@ -138,18 +132,18 @@ namespace FamTec.Server.Controllers.Building.Group
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetBuildingGroup")]
-        public async Task<IActionResult> GetDetailBuilding(int buildingid)
+        public async Task<IActionResult> GetDetailBuilding([FromQuery][Required]int buildingid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 ResponseList<GroupListDTO?> model = await GroupService.GetBuildingGroupListService(buildingid).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -178,6 +172,10 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto.GroupId is null)
                     return NoContent();
 
@@ -188,10 +186,6 @@ namespace FamTec.Server.Controllers.Building.Group
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -211,17 +205,17 @@ namespace FamTec.Server.Controllers.Building.Group
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteGroup")]
-        public async Task<IActionResult> DeleteBuildingGroup([FromBody]int groupid)
+        public async Task<IActionResult> DeleteBuildingGroup([FromBody][Required]int groupid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 ResponseUnit<bool?> model = await GroupService.DeleteGroupService(groupid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility.Group;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Facility.Group
 {
@@ -14,21 +15,17 @@ namespace FamTec.Server.Controllers.Facility.Group
     public class FacilityGroupController : ControllerBase
     {
         private readonly IFacilityGroupService GroupService;
-        private readonly ILogService LogService;
-
-        private readonly ConsoleLogService<FacilityGroupController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<FacilityGroupController> CreateBuilderLogger; /* 콘솔로그 */
 
         public FacilityGroupController(IFacilityGroupService _groupservice,
             ILogService _logservice,
             ConsoleLogService<FacilityGroupController> _createbuilderlogger)
         {
             this.GroupService = _groupservice;
-            
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
-
-      
 
         [AllowAnonymous]
         [HttpPost]
@@ -37,6 +34,10 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto.FacilityIdx is null)
                     return NoContent();
 
@@ -47,10 +48,6 @@ namespace FamTec.Server.Controllers.Facility.Group
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -80,6 +77,9 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.Id is null)
                     return NoContent();
 
@@ -99,10 +99,6 @@ namespace FamTec.Server.Controllers.Facility.Group
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -126,6 +122,10 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto is null)
                     return NoContent();
 
@@ -160,10 +160,6 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (model is null)
                     return BadRequest();
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 201)
@@ -184,17 +180,16 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetFacilityGroup")]
-        public async Task<IActionResult> GetDetailFacility([FromQuery]int Facilityid)
+        public async Task<IActionResult> GetDetailFacility([FromQuery][Required]int Facilityid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<GroupListDTO> model = await GroupService.GetFacilityGroupListService(Facilityid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -223,6 +218,9 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.GroupId is null)
                     return NoContent();
 
@@ -234,10 +232,6 @@ namespace FamTec.Server.Controllers.Facility.Group
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -262,19 +256,18 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteGroup")]
-        public async Task<IActionResult> DeleteFacilityGroup([FromBody]int groupid)
+        public async Task<IActionResult> DeleteFacilityGroup([FromBody][Required]int groupid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<bool?> model = await GroupService.DeleteGroupService(groupid).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
+                
                 if (model.code == 200)
                     return Ok(model);
                 else

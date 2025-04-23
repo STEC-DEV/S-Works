@@ -16,16 +16,15 @@ namespace FamTec.Server.Controllers.Material
     public class MaterialController : ControllerBase
     {
         private readonly IMaterialService MaterialService;
-        private readonly IFileService FileService;
-        
-        private readonly ILogService LogService;
-        private readonly ICommService CommService;
-        private readonly ConsoleLogService<MaterialController> CreateBuilderLogger;
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly ICommService CommService; /* 핼퍼 클래스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<MaterialController> CreateBuilderLogger; /* 콘솔로그 */
 
         public MaterialController(IMaterialService _materialservice,
             IFileService _fileservice,
-            ILogService _logservice,
             ICommService _commservice,
+            ILogService _logservice,
             ConsoleLogService<MaterialController> _createbuilderlogger)
         {
             this.MaterialService = _materialservice;
@@ -35,8 +34,7 @@ namespace FamTec.Server.Controllers.Material
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-        // ########################## DashBoard
-
+#region 대시보드
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/v2/GetDashBoardMaterialIdx")]
@@ -44,20 +42,17 @@ namespace FamTec.Server.Controllers.Material
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<ShowMaterialIdxDTO>? model = await MaterialService.GetMaterialIndexService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
                     return BadRequest();
-
             }
             catch(Exception ex)
             {
@@ -72,18 +67,21 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/v2/SetDashBoardMaterial")]
-        public async Task<IActionResult> SetDashBoardMaterial([FromBody]List<int> MaterialIdx)
+        public async Task<IActionResult> SetDashBoardMaterial([FromBody][Required]List<int> MaterialIdx)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (MaterialIdx is null || MaterialIdx.Count == 0)
                     return BadRequest();
 
-                ResponseUnit<bool>? model = await MaterialService.SetDashBoardMaterialService(MaterialIdx);
+                ResponseUnit<bool>? model = await MaterialService.SetDashBoardMaterialService(MaterialIdx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 409)
@@ -114,15 +112,13 @@ namespace FamTec.Server.Controllers.Material
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<MaterialCountDTO>? model = await MaterialService.GetMaterialCountService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -137,16 +133,19 @@ namespace FamTec.Server.Controllers.Material
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
+        #endregion
 
-// ###############################
-
+        [AllowAnonymous]
         [HttpGet]
         [Route("sign/DownloadMaterialForm")]
         public async Task<IActionResult> DownloadMaterialForm()
         {
             try
             {
-                byte[]? ExcelForm = await MaterialService.DownloadMaterialForm();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                byte[]? ExcelForm = await MaterialService.DownloadMaterialForm().ConfigureAwait(false);
 
                 if(ExcelForm is not null)
                     return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "품목정보(양식).xlsx");
@@ -166,10 +165,14 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/ImportMaterial")]
-        public async Task<IActionResult> ImportMaterialForm([FromForm] IFormFile files)
+        public async Task<IActionResult> ImportMaterialForm([FromForm][Required] IFormFile files)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (files is null)
                     return NoContent();
 
@@ -193,7 +196,7 @@ namespace FamTec.Server.Controllers.Material
                 if (files.Length > Common.MEGABYTE_10)
                     return Ok(new ResponseUnit<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
 
-                ResponseUnit<bool> model = await MaterialService.ImportMaterialService(files);
+                ResponseUnit<bool> model = await MaterialService.ImportMaterialService(files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -227,6 +230,10 @@ namespace FamTec.Server.Controllers.Material
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (String.IsNullOrWhiteSpace(dto.Code))
                     return NoContent();
 
@@ -260,11 +267,6 @@ namespace FamTec.Server.Controllers.Material
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 201)
@@ -293,16 +295,16 @@ namespace FamTec.Server.Controllers.Material
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialListService(isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -331,14 +333,12 @@ namespace FamTec.Server.Controllers.Material
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<MaterialSearchListDTO> model = await MaterialService.GetAllPlaecMaterialSearchService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -365,14 +365,13 @@ namespace FamTec.Server.Controllers.Material
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<int?> model = await MaterialService.GetPlaceMaterialCountService().ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -393,10 +392,13 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllPageNationMaterial")]
-        public async Task<IActionResult> GetAllPageNationMaterial([FromQuery]int pagenum, [FromQuery]int pagesize)
+        public async Task<IActionResult> GetAllPageNationMaterial([FromQuery][Required]int pagenum, [FromQuery][Required]int pagesize)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (pagesize > 100)
                     return BadRequest(); // 사이즈 초과
 
@@ -409,10 +411,6 @@ namespace FamTec.Server.Controllers.Material
                 ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialPageNationListService(pagenum, pagesize).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -465,21 +463,19 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailMaterial")]
-        public async Task<IActionResult> DetailMaterial([FromQuery]int materialid)
+        public async Task<IActionResult> DetailMaterial([FromQuery][Required]int materialid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseUnit<DetailMaterialDTO> model = await MaterialService.GetDetailMaterialService(materialid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -508,6 +504,9 @@ namespace FamTec.Server.Controllers.Material
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.Id is null)
                     return NoContent();
 
@@ -537,11 +536,6 @@ namespace FamTec.Server.Controllers.Material
                 ResponseUnit<bool?> model = await MaterialService.UpdateMaterialService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -565,10 +559,13 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteMaterial")]
-        public async Task<IActionResult> DeleteMateral([FromBody]List<int> delIdx)
+        public async Task<IActionResult> DeleteMateral([FromBody][Required]List<int> delIdx)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (delIdx is null)
                     return NoContent();
                 
@@ -578,10 +575,6 @@ namespace FamTec.Server.Controllers.Material
                 ResponseUnit<bool?> model = await MaterialService.DeleteMaterialService(delIdx).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -610,14 +603,12 @@ namespace FamTec.Server.Controllers.Material
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<MaterialSearchListDTO>? model = await MaterialService.GetMaterialSearchService(searchData).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else

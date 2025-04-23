@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
 using FamTec.Server.Middleware;
-using Microsoft.AspNetCore.SignalR;
-using FamTec.Server.Hubs;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Facility
 {
@@ -16,27 +15,23 @@ namespace FamTec.Server.Controllers.Facility
     public class BeautyFacilityController : ControllerBase
     {
         private readonly IBeautyFacilityService BeautyFacilityService;
-        
-        private readonly IFileService FileService;
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<BeautyFacilityController> CreateBuilderLogger;
-        private readonly ICommService CommService;
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly ICommService CommService; /* 핼퍼 클래스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<BeautyFacilityController> CreateBuilderLogger; /* 콘솔로그 */
 
         public BeautyFacilityController(IBeautyFacilityService _beautyfacilityservice,
             IFileService _fileservice,
-            ILogService _logservice,
             ICommService _commservice,
+            ILogService _logservice,
             ConsoleLogService<BeautyFacilityController> _createbuilderlogger)
         {
             this.BeautyFacilityService = _beautyfacilityservice;
-
             this.FileService = _fileservice;
-            this.LogService = _logservice;
             this.CommService = _commservice;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
-
-      
 
         [HttpGet]
         [Route("sign/DownloadBeautyFacilityForm")]
@@ -44,7 +39,10 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
-                byte[]? ExcelForm = await BeautyFacilityService.DownloadBeautyFacilityForm();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                byte[]? ExcelForm = await BeautyFacilityService.DownloadBeautyFacilityForm().ConfigureAwait(false);
 
                 if (ExcelForm is not null)
                     return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "미화설비정보(양식).xlsx");
@@ -68,6 +66,9 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (files is null)
                     return NoContent();
 
@@ -91,7 +92,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (files.Length > Common.MEGABYTE_10)
                     return Ok(new ResponseUnit<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
 
-                ResponseUnit<bool> model = await BeautyFacilityService.ImportBeautyFacilityService(files);
+                ResponseUnit<bool> model = await BeautyFacilityService.ImportBeautyFacilityService(files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -126,6 +127,10 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (String.IsNullOrWhiteSpace(dto.Category))
                     return NoContent();
 
@@ -160,10 +165,6 @@ namespace FamTec.Server.Controllers.Facility
                 if (model is null)
                     return BadRequest();
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -190,14 +191,14 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 ResponseList<FacilityListDTO>? model = await BeautyFacilityService.GetBeautyFacilityListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -223,10 +224,14 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailBeautyFacility")]
-        public async Task<IActionResult> DetailBeautyFacility([FromQuery] int facilityid)
+        public async Task<IActionResult> DetailBeautyFacility([FromQuery][Required] int facilityid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
@@ -234,11 +239,6 @@ namespace FamTec.Server.Controllers.Facility
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -267,6 +267,10 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto.ID is null)
                     return NoContent();
 
@@ -304,10 +308,6 @@ namespace FamTec.Server.Controllers.Facility
                 if (model is null)
                     return BadRequest();
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -331,10 +331,14 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteBeautyFacility")]
-        public async Task<IActionResult> DeleteBeautyFacility([FromBody] List<int> delIdx)
+        public async Task<IActionResult> DeleteBeautyFacility([FromBody][Required] List<int> delIdx)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (delIdx is null)
                     return NoContent();
 
@@ -345,10 +349,6 @@ namespace FamTec.Server.Controllers.Facility
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

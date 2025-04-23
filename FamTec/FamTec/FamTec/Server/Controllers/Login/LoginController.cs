@@ -8,6 +8,7 @@ using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Login;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Login
 {
@@ -19,20 +20,18 @@ namespace FamTec.Server.Controllers.Login
         private readonly IAdminAccountService AdminAccountService;
         private readonly IAdminPlaceService AdminPlaceService;
         private readonly IUserService UserService;
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<LoginController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<LoginController> CreateBuilderLogger; /* 콘솔로그 */
 
         public LoginController(IAdminAccountService _adminaccountservice,
             IAdminPlaceService _adminplaceservice,
             IUserService _userservice,
             ILogService _logservice,
-            //IDapperTempRepository _dappertemp,
             ConsoleLogService<LoginController> _createbuilderlogger)
         {
             this.AdminAccountService = _adminaccountservice;
             this.AdminPlaceService = _adminplaceservice;
             this.UserService = _userservice;
-            
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -48,6 +47,9 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 /* 필수값 검사 */
                 if (String.IsNullOrWhiteSpace(dto.UserID))
                     return NoContent();
@@ -58,10 +60,6 @@ namespace FamTec.Server.Controllers.Login
                 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -89,7 +87,10 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
-                if(token.placeid is 0)
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                if (token.placeid is 0)
                     return NoContent();
 
                 if (token.useridx is 0)
@@ -117,6 +118,9 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.UserId))
                     return NoContent();
                 if (String.IsNullOrWhiteSpace(dto.UserPassword))
@@ -126,10 +130,6 @@ namespace FamTec.Server.Controllers.Login
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -163,6 +163,9 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.UserID))
                     return NoContent();
 
@@ -173,11 +176,6 @@ namespace FamTec.Server.Controllers.Login
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model); // 유저
                 else if (model.code == 201)
@@ -208,13 +206,12 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksList().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -245,14 +242,13 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<string?> model = await UserService.LoginSelectPlaceService(placeid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -285,6 +281,9 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.UserID))
                     return NoContent();
 
@@ -295,11 +294,6 @@ namespace FamTec.Server.Controllers.Login
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model); // 유저
                 else if (model.code == 201) // 관리자 로그인했을 경우 사업장 선택화면으로 이동해야함.
@@ -330,10 +324,13 @@ namespace FamTec.Server.Controllers.Login
         [Authorize(Roles = "SystemManager,Master,Manager")]
         [HttpGet]
         [Route("sign/v2/Web/UserSelectPlace")]
-        public async Task<IActionResult> WebSelectPlaceV2([FromQuery] int placeid, [FromQuery]string sessionId)
+        public async Task<IActionResult> WebSelectPlaceV2([FromQuery][Required] int placeid, [FromQuery][Required] string sessionId)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (placeid is 0)
                     return BadRequest();
                 
@@ -344,11 +341,6 @@ namespace FamTec.Server.Controllers.Login
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if(model.code == 403)
@@ -376,13 +368,12 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 var model = await UserService.WebLoginRefreshTokenService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 403)
@@ -404,12 +395,16 @@ namespace FamTec.Server.Controllers.Login
         /// 로그아웃
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost]
         [Route("sign/v2/Web/Logout")]
         public async Task<IActionResult> WebLogOutV2([FromBody]LogoutDTO dto)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 var model = await UserService.WebLogoutService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
@@ -442,6 +437,9 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.UserId))
                     return NoContent();
                 if (String.IsNullOrWhiteSpace(dto.UserPassword))
@@ -451,10 +449,6 @@ namespace FamTec.Server.Controllers.Login
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -484,6 +478,9 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 /* 필수값 검사 */
                 if (String.IsNullOrWhiteSpace(dto.UserID))
                     return NoContent();
@@ -494,11 +491,6 @@ namespace FamTec.Server.Controllers.Login
 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 402)
@@ -528,13 +520,12 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 var model = await AdminAccountService.WebAdminLoginRefreshTokenService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 403)

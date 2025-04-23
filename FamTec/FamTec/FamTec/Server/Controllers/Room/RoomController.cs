@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Room;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Room
 {
@@ -14,16 +15,14 @@ namespace FamTec.Server.Controllers.Room
     public class RoomController : ControllerBase
     {
         private readonly IRoomService RoomService;
-        
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<RoomController> CreateBuilderLogger;
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<RoomController> CreateBuilderLogger; /* 콘솔로그 */
 
         public RoomController(IRoomService _roomservice,
             ILogService _logservice,
             ConsoleLogService<RoomController> _createbuilderlogger)
         {
             this.RoomService = _roomservice;
-            
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -35,13 +34,12 @@ namespace FamTec.Server.Controllers.Room
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<PlaceRoomListDTO>? model = await RoomService.GetPlaceAllGroupRoomInfo().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -66,21 +64,19 @@ namespace FamTec.Server.Controllers.Room
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetRoomName")]
-        public async Task<IActionResult> GetRoomName([FromQuery]int roomid)
+        public async Task<IActionResult> GetRoomName([FromQuery][Required]int roomid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (roomid is 0)
                     return NoContent();
 
                 ResponseUnit<string?> model = await RoomService.GetRoomNameService(roomid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)
@@ -110,6 +106,9 @@ namespace FamTec.Server.Controllers.Room
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
@@ -120,11 +119,6 @@ namespace FamTec.Server.Controllers.Room
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -151,15 +145,13 @@ namespace FamTec.Server.Controllers.Room
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<RoomListDTO> model = await RoomService.GetRoomListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -187,6 +179,9 @@ namespace FamTec.Server.Controllers.Room
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.RoomId is null)
                     return NoContent();
 
@@ -196,11 +191,6 @@ namespace FamTec.Server.Controllers.Room
                 ResponseUnit<bool?> model = await RoomService.UpdateRoomService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -224,10 +214,13 @@ namespace FamTec.Server.Controllers.Room
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteRoom")]
-        public async Task<IActionResult> DeleteRoom([FromBody]List<int> idx)
+        public async Task<IActionResult> DeleteRoom([FromBody][Required]List<int> idx)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (idx is null)
                     return NoContent();
                 
@@ -237,11 +230,6 @@ namespace FamTec.Server.Controllers.Room
                 ResponseUnit<bool?> model = await RoomService.DeleteRoomService(idx).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -256,7 +244,6 @@ namespace FamTec.Server.Controllers.Room
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
-
 
     }
 }

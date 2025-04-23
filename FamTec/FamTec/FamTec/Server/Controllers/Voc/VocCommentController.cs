@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Voc
 {
@@ -14,22 +15,19 @@ namespace FamTec.Server.Controllers.Voc
     public class VocCommentController : ControllerBase
     {
         private readonly IVocCommentService VocCommentService;
-        
-        private readonly IFileService FileService;
-        private readonly ILogService LogService;
-        private readonly ICommService CommService;
-
-        private readonly ConsoleLogService<VocCommentController> CreateBuilderLogger;
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly ICommService CommService; /* 핼퍼클래스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<VocCommentController> CreateBuilderLogger; /* 콘솔로그 */
 
         public VocCommentController(IVocCommentService _voccommentservice,
             IFileService _fileservice,
-            ILogService _logservice,
             ICommService _commservice,
+            ILogService _logservice,
             ConsoleLogService<VocCommentController> _createbuilderlogger)
         {
             this.VocCommentService = _voccommentservice;
             this.FileService = _fileservice;
-
             this.CommService = _commservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
@@ -42,6 +40,9 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.Content))
                     return NoContent();
 
@@ -80,10 +81,6 @@ namespace FamTec.Server.Controllers.Voc
                 if (model is null)
                     return BadRequest();
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)
@@ -119,6 +116,9 @@ namespace FamTec.Server.Controllers.Voc
        {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (String.IsNullOrWhiteSpace(dto.Content))
                     return NoContent();
 
@@ -155,11 +155,6 @@ namespace FamTec.Server.Controllers.Voc
                 ResponseUnit<AddVocCommentDTO?> model = await VocCommentService.AddVocCommentService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -183,21 +178,19 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocCommentList")]
-        public async Task<IActionResult> GetVocComment([FromQuery]int vocid)
+        public async Task<IActionResult> GetVocComment([FromQuery][Required]int vocid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseList<VocCommentListDTO>? model = await VocCommentService.GetVocCommentList(vocid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -221,20 +214,19 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/VocCommentDetail")]
-        public async Task<IActionResult> GetVocCommentDetail([FromQuery] int commentid)
+        public async Task<IActionResult> GetVocCommentDetail([FromQuery][Required] int commentid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseUnit<VocCommentDetailDTO?> model = await VocCommentService.GetVocCommentDetail(commentid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -251,7 +243,6 @@ namespace FamTec.Server.Controllers.Voc
             }
         }
 
-
         /// <summary>
         /// 민원 댓글 수정
         /// </summary>
@@ -265,6 +256,9 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.VocCommentId is null) // NULL CHECK
                     return NoContent();
 
@@ -301,11 +295,6 @@ namespace FamTec.Server.Controllers.Voc
                 ResponseUnit<bool?> model = await VocCommentService.UpdateCommentService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else

@@ -1,10 +1,13 @@
-﻿namespace FamTec.Shared.Server.DTO.Facility.Group
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FamTec.Shared.Server.DTO.Facility.Group
 {
     public class AddValueDTO
     {
         /// <summary>
         /// 키 ID
         /// </summary>
+        [Required]
         public int? KeyID { get; set; }
 
         /// <summary>

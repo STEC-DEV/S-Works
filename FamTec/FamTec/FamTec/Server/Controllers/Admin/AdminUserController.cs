@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
 using FamTec.Server.Middleware;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.Admin
 {
@@ -17,12 +18,11 @@ namespace FamTec.Server.Controllers.Admin
     {
         private readonly IAdminAccountService AdminAccountService;
         private readonly IAdminPlaceService AdminPlaceService;
-        private readonly ICommService CommService;
         
-        private readonly IFileService FileService;
-        private readonly ILogService LogService;
-
-        private readonly ConsoleLogService<AdminUserController> CreateBuilderLogger;
+        private readonly ICommService CommService; /* 핼퍼 클래스 */
+        private readonly IFileService FileService; /* 파일 서비스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<AdminUserController> CreateBuilderLogger; /* 콘솔로그 */
 
         public AdminUserController(IAdminAccountService _adminservice,
             IAdminPlaceService _adminplaceservice,
@@ -34,7 +34,6 @@ namespace FamTec.Server.Controllers.Admin
             this.AdminAccountService = _adminservice;
             this.AdminPlaceService = _adminplaceservice;
             this.CommService = _commservice;
-            
             this.FileService = _fileservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
@@ -52,6 +51,10 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 // * ID 필수
                 if (String.IsNullOrWhiteSpace(dto.UserId)) 
                     return NoContent();
@@ -60,9 +63,6 @@ namespace FamTec.Server.Controllers.Admin
                 if (String.IsNullOrWhiteSpace(dto.Password)) 
                     return NoContent();
                 
-                // * 부서필수
-                if (dto.DepartmentId is null)
-                    return NoContent();
 
                 if (files is not null)
                 {
@@ -92,10 +92,6 @@ namespace FamTec.Server.Controllers.Admin
                 if (model is null)
                     return BadRequest();
 
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)
@@ -121,20 +117,20 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpGet]
         [Route("sign/DetailManagerInfo")]
-        public async Task<IActionResult> GetManagerInfo([FromQuery]int adminid)
+        public async Task<IActionResult> GetManagerInfo([FromQuery][Required]int adminid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseUnit<DManagerDTO>? model = await AdminAccountService.DetailAdminService(adminid, isMobile).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -163,14 +159,14 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseUnit<bool?> model = await AdminPlaceService.AddManagerPlaceSerivce(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -195,10 +191,14 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/DeleteManager")]
-        public async Task<IActionResult> DeleteManager([FromBody]List<int> adminidx)
+        public async Task<IActionResult> DeleteManager([FromBody][Required]List<int> adminidx)
         {
             try
             {
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (adminidx is null)
                     return NoContent();
                 
@@ -209,10 +209,6 @@ namespace FamTec.Server.Controllers.Admin
 
                 if (model is null)
                     return BadRequest(model);
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -239,10 +235,14 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles ="SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/UpdateManagerImage")]
-        public async Task<IActionResult> UpdateManagerImage([FromForm]int adminid, [FromForm]IFormFile? files)
+        public async Task<IActionResult> UpdateManagerImage([FromForm][Required]int adminid, [FromForm]IFormFile? files)
         {
             try
             {
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (adminid is 0)
                     return NoContent();
 
@@ -270,10 +270,6 @@ namespace FamTec.Server.Controllers.Admin
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -303,6 +299,10 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (dto.AdminIndex is null)
                     return NoContent();
                 
@@ -325,10 +325,6 @@ namespace FamTec.Server.Controllers.Admin
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -354,21 +350,21 @@ namespace FamTec.Server.Controllers.Admin
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/UserIdCheck")]
-        public async Task<IActionResult> UserIdCheck([FromQuery] string userid)
+        public async Task<IActionResult> UserIdCheck([FromQuery][Required] string userid)
         {
             try
             {
-                if(String.IsNullOrWhiteSpace(userid))
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
+                if (String.IsNullOrWhiteSpace(userid))
                     return BadRequest();
 
                 ResponseUnit<bool?> model = await AdminAccountService.UserIdCheckService(CommService.getRemoveWhiteSpace(userid)).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);

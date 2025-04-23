@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using FamTec.Server.Services;
 using FamTec.Server.Middleware;
 using FamTec.Server.Services.Admin.Account;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Server.Controllers.User
 {
@@ -17,24 +18,22 @@ namespace FamTec.Server.Controllers.User
     {
         private readonly IAdminAccountService AdminAccountService;
         private readonly IUserService UserService;
-        private readonly ICommService CommService;
-        
-        private readonly IFileService FileService;
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<UserController> CreateBuilderLogger;
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly ICommService CommService; /* 핼퍼 클래스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<UserController> CreateBuilderLogger; /* 콘솔로그 */
 
         public UserController(IUserService _userservice,
+            IAdminAccountService _adminservice,
             IFileService _fileservice,
             ICommService _commservice,
             ILogService _logservice,
-            IAdminAccountService _adminservice,
             ConsoleLogService<UserController> _createbuilderlogger)
         {
-            this.AdminAccountService = _adminservice;
             this.UserService = _userservice;
-            this.CommService = _commservice;
-            
+            this.AdminAccountService = _adminservice;
             this.FileService = _fileservice;
+            this.CommService = _commservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -50,7 +49,10 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
-                byte[]? fileBytes = await UserService.DownloadUserGuidForm();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                byte[]? fileBytes = await UserService.DownloadUserGuidForm().ConfigureAwait(false);
 
                 if (fileBytes is not null)
                     return File(fileBytes, "application/pdf", "S-Works_사용자설명서_1.3_KO_241211.pdf");
@@ -73,7 +75,10 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
-                byte[]? fileBytes = await UserService.DownloadUserForm();
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+                byte[]? fileBytes = await UserService.DownloadUserForm().ConfigureAwait(false);
 
                 if (fileBytes is not null)
                     return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "사용자정보.xlsx");
@@ -93,10 +98,14 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/ImportUser")]
-        public async Task<IActionResult> ImportUserData([FromForm] IFormFile files)
+        public async Task<IActionResult> ImportUserData([FromForm][Required] IFormFile files)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (files is null)
                     return NoContent();
 
@@ -117,7 +126,7 @@ namespace FamTec.Server.Controllers.User
                     }
                 }
 
-                ResponseUnit<bool> model = await UserService.ImportUserService(files);
+                ResponseUnit<bool> model = await UserService.ImportUserService(files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -150,14 +159,13 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 ResponseList<ListUser>? model = await UserService.GetPlaceUserList().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -187,6 +195,10 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (String.IsNullOrWhiteSpace(dto.USERID)) return NoContent(); // 사용자ID
                 if(String.IsNullOrWhiteSpace(dto.PASSWORD)) return NoContent(); // 사용자 비밀번호
                 if(dto.PERM_BASIC is null) return NoContent(); // 기본정보메뉴 권한
@@ -240,11 +252,6 @@ namespace FamTec.Server.Controllers.User
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)
@@ -265,21 +272,19 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailUser")]
-        public async Task<IActionResult> DetailUser([FromQuery]int id)
+        public async Task<IActionResult> DetailUser([FromQuery][Required]int id)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
                 ResponseUnit<UsersDTO> model = await UserService.GetUserDetails(id, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -298,10 +303,13 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteUser")]
-        public async Task<IActionResult> DeleteUser([FromBody] List<int> delIdx)
+        public async Task<IActionResult> DeleteUser([FromBody][Required] List<int> delIdx)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (delIdx is null)
                     return NoContent();
 
@@ -312,11 +320,6 @@ namespace FamTec.Server.Controllers.User
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -339,6 +342,9 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
                 if (dto.ID is null) return NoContent();
                 if (String.IsNullOrWhiteSpace(dto.USERID)) return NoContent(); // 사용자ID
                 if (String.IsNullOrWhiteSpace(dto.PASSWORD)) return NoContent(); // 사용자 비밀번호
@@ -393,11 +399,6 @@ namespace FamTec.Server.Controllers.User
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -421,10 +422,14 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/UserIdCheck")]
-        public async Task<IActionResult> UserIdCheck([FromQuery] string userid)
+        public async Task<IActionResult> UserIdCheck([FromQuery][Required] string userid)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
+#endif
+
                 if (String.IsNullOrWhiteSpace(userid))
                     return BadRequest();
 
@@ -432,10 +437,6 @@ namespace FamTec.Server.Controllers.User
 
                 if (model is null)
                     return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
 
                 if (model.code == 200)
                     return Ok(model);
