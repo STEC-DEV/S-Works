@@ -11,17 +11,15 @@ namespace FamTec.Server.Services.UseMaintenence
     public class UseMaintenenceService : IUseMaintenenceService
     {
         private readonly IUseMaintenenceInfoRepository UseMaintenenceInfoRepository;
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<UseMaintenenceService> CreateBuilderLogger;
-
-        IHubContext<BroadcastHub> HubContext;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        IHubContext<BroadcastHub> HubContext; /* SignalR 허브 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<UseMaintenenceService> CreateBuilderLogger; /* 콘솔로그 */
 
         public UseMaintenenceService(IUseMaintenenceInfoRepository _usemaintenenceinforepository,
-            ILogService _logservice,
-            IHubContext<BroadcastHub> _hubcontext,
             IHttpContextAccessor _httpcontextaccessor,
+            IHubContext<BroadcastHub> _hubcontext,
+            ILogService _logservice,
             ConsoleLogService<UseMaintenenceService> _createbuilderlogger)
         {
             this.UseMaintenenceInfoRepository = _usemaintenenceinforepository;
@@ -100,14 +98,10 @@ namespace FamTec.Server.Services.UseMaintenence
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(updater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                UseMaintenenceMaterialTb? UseMaterialTB = await UseMaintenenceInfoRepository.GetUseMaintanceInfo(dto.UseMaintanceID, Int32.Parse(placeid));
+                UseMaintenenceMaterialTb? UseMaterialTB = await UseMaintenenceInfoRepository.GetUseMaintanceInfo(dto.UseMaintanceID, Int32.Parse(placeid)).ConfigureAwait(false);
                 if(UseMaterialTB is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
-                // 현재 유지보수건에 대해서 해당창고의 해당품목에 해당하는게 몇개가 출고됐는지 조회 - 입고 / 출고 구분로직
-                //int? ThisUseNum = await UseMaintenenceInfoRepository.UseThisMaterialNum(Convert.ToInt32(placeid), UseMaterialTB.MaintenanceTbId, UseMaterialTB.RoomTbId, UseMaterialTB.MaterialTbId).ConfigureAwait(false);
-
-
                 if (dto.Num > UseMaterialTB.Num)
                 {
                     // 출고

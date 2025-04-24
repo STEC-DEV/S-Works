@@ -20,20 +20,14 @@ namespace FamTec.Server.Services.Voc
         private readonly IPlaceInfoRepository PlaceInfoRepository;
         private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
-
-        private readonly IKakaoService KakaoService;
-
-        private readonly ILogService LogService;
-        private readonly IFileService FileService;
-        private readonly ConsoleLogService<VocCommentService> CreateBuilderLogger;
-
-        private readonly IHubContext<BroadcastHub> HubContext;
-
-        // 파일디렉터리
-        private DirectoryInfo? di;
-        private string? VocCommentFileFolderPath;
+        private readonly IKakaoService KakaoService; /* 카카오 알림톡 서비스 */
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly IHubContext<BroadcastHub> HubContext; /* SignalR 허브 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<VocCommentService> CreateBuilderLogger; /* 콘솔로그 */
+        private DirectoryInfo? di; /* 디렉터리 객체 */
+        private string? VocCommentFileFolderPath; /* 디렉터리 경로 */
 
         public VocCommentService(IVocCommentRepository _voccommentrepository,
             IVocInfoRepository _vocinforepository,
@@ -41,10 +35,10 @@ namespace FamTec.Server.Services.Voc
             IKakaoLogInfoRepository _kakaologinforepository,
             IBuildingInfoRepository _buildinginforepository,
             IKakaoService _kakaoservice,
-            ILogService _logservice,
-            IFileService _fileservice,
             IHttpContextAccessor _httpcontextaccessor,
+            IFileService _fileservice,
             IHubContext<BroadcastHub> _hubcontext,
+            ILogService _logservice,
             ConsoleLogService<VocCommentService> _createbuilderlogger)
         {
             this.VocCommentRepository = _voccommentrepository;
@@ -52,13 +46,11 @@ namespace FamTec.Server.Services.Voc
             this.PlaceInfoRepository = _placeinforepository;
             this.KakaoLogInfoRepository = _kakaologinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
-
             this.KakaoService = _kakaoservice;
-            this.HubContext = _hubcontext;
-
             this.HttpContextAccessor = _httpcontextaccessor;
-            this.LogService = _logservice;
             this.FileService = _fileservice;
+            this.HubContext = _hubcontext;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -551,7 +543,6 @@ namespace FamTec.Server.Services.Voc
                 if(BuildingTB is null)
                     return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                //VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, BuildingTB!.PlaceTbId, VocTB.Id);
                 VocCommentFileFolderPath = Path.Combine(Common.FileServer, BuildingTB!.PlaceTbId.ToString(), "Voc", VocTB.Id.ToString(), "VocComment");
 
                 di = new DirectoryInfo(VocCommentFileFolderPath);
@@ -587,7 +578,7 @@ namespace FamTec.Server.Services.Voc
                                     IFormFile? files = FileService.ConvertFormFiles(ImageBytes, image);
                                     if (files is not null)
                                     {
-                                        byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+                                        byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files).ConfigureAwait(false);
 
                                         if (ConvertFile is not null)
                                         {
@@ -650,7 +641,7 @@ namespace FamTec.Server.Services.Voc
                                     IFormFile? files = FileService.ConvertFormFiles(ImageBytes, image);
                                     if (files is not null)
                                     {
-                                        byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+                                        byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files).ConfigureAwait(false);
 
                                         if (ConvertFile is not null)
                                         {
@@ -732,7 +723,6 @@ namespace FamTec.Server.Services.Voc
                 dto.CreateDT = model.CreateDt; // VOC 댓글 작성시간
                 dto.CreateUser = model.CreateUser; // 댓글 작성자
 
-                //VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, placeId, VocTB.Id);
                 VocCommentFileFolderPath = Path.Combine(Common.FileServer, placeId.ToString(), "Voc", VocTB.Id.ToString(), "VocComment");
 
                 if (isMobile)
@@ -752,7 +742,7 @@ namespace FamTec.Server.Services.Voc
                                 IFormFile? files = FileService.ConvertFormFiles(ImageBytes, image);
                                 if(files is not null)
                                 {
-                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files).ConfigureAwait(false);
 
                                     if(ConvertFile is not null)
                                     {
@@ -802,7 +792,7 @@ namespace FamTec.Server.Services.Voc
                                 IFormFile? files = FileService.ConvertFormFiles(ImageBytes, image);
                                 if (files is not null)
                                 {
-                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files).ConfigureAwait(false);
 
                                     if (ConvertFile is not null)
                                     {
@@ -894,7 +884,6 @@ namespace FamTec.Server.Services.Voc
                 List<string> RemoveTemplist = new List<string>();
 
                 // VOC관련한 폴더 경로
-                //VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, placeId, model.VocTbId);
                 VocCommentFileFolderPath = Path.Combine(Common.FileServer, placeId.ToString(), "Voc", model.VocTbId.ToString(), "VocComment");
 
                 di = new DirectoryInfo(VocCommentFileFolderPath);
@@ -1106,7 +1095,5 @@ namespace FamTec.Server.Services.Voc
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
-      
     }
 }

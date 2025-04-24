@@ -13,24 +13,20 @@ namespace FamTec.Server.Services.Building.Key
         private readonly IBuildingGroupItemInfoRepository BuildingGroupItemInfoRepository;
         private readonly IBuildingItemKeyInfoRepository BuildingItemKeyInfoRepository;
         private readonly IBuildingItemValueInfoRepository BuildingItemValueInfoRepository;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<BuildingKeyService> CreateBuilderLogger; /* 콘솔로그 */
 
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<BuildingKeyService> CreateBuilderLogger;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
-
-        public BuildingKeyService(
-            IBuildingGroupItemInfoRepository _buildinggroupiteminforepository,
+        public BuildingKeyService(IBuildingGroupItemInfoRepository _buildinggroupiteminforepository,
             IBuildingItemKeyInfoRepository _buildingItemkeyinforepository,
             IBuildingItemValueInfoRepository _buildingitemvalueinforepository,
-            ILogService _logservice,
             IHttpContextAccessor _httpcontextaccessor,
+            ILogService _logservice,
             ConsoleLogService<BuildingKeyService> _createbuilderlogger)
         {
             this.BuildingGroupItemInfoRepository = _buildinggroupiteminforepository;
             this.BuildingItemKeyInfoRepository = _buildingItemkeyinforepository;
             this.BuildingItemValueInfoRepository = _buildingitemvalueinforepository;
-
             this.HttpContextAccessor = _httpcontextaccessor;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
@@ -164,7 +160,7 @@ namespace FamTec.Server.Services.Building.Key
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                bool? DeleteResult = await BuildingItemKeyInfoRepository.DeleteKeyList(KeyId, creater);
+                bool? DeleteResult = await BuildingItemKeyInfoRepository.DeleteKeyList(KeyId, creater).ConfigureAwait(false);
                 
                 return DeleteResult switch
                 {

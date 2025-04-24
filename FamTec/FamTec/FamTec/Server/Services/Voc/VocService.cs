@@ -2,7 +2,6 @@
 using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Alarm;
-using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.KakaoLog;
 using FamTec.Server.Repository.Place;
@@ -23,26 +22,19 @@ namespace FamTec.Server.Services.Voc
         private readonly IVocInfoRepository VocInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IAlarmInfoRepository AlarmInfoRepository;
-        private readonly IFileService FileService;
         private readonly IUserInfoRepository UserInfoRepository;
-
         private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
         private readonly IAdminUserInfoRepository AdminUserInfoRepository;
-        private readonly IKakaoService KakaoService;
-
         private readonly IPlaceInfoRepository PlaceInfoRepository;
-        private readonly IHubContext<BroadcastHub> HubContext;
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly IKakaoService KakaoService; /* 카카오 알림톡 서비스 */
+        private readonly IWebHostEnvironment WebHostEnvironment; /* 호스팅 서비스 */
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly IHubContext<BroadcastHub> HubContext; /* SignalR 허브 */
+        private ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<VocService> CreateBuilderLogger; /* 콘솔로그 */
+        private DirectoryInfo? di; /* 디렉터리 객체 */
 
-        private readonly IWebHostEnvironment WebHostEnvironment;
-
-        private readonly ConsoleLogService<VocService> CreateBuilderLogger;
-
-        // 파일디렉터리
-        private DirectoryInfo? di;
-        private string? VocFileFolderPath;
-        private ILogService LogService;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
 
         public VocService(IVocInfoRepository _vocinforepository,
             IVocCommentRepository _voccommentrepository,
@@ -52,12 +44,12 @@ namespace FamTec.Server.Services.Voc
             IAdminUserInfoRepository _adminuserinforepository,
             IPlaceInfoRepository _placeinforepository,
             IKakaoLogInfoRepository _kakaologinforepository,
-            IHubContext<BroadcastHub> _hubcontext,
-            IKakaoService _kakaoservice,
             IFileService _fileservice,
-            ILogService _logservice,
+            IKakaoService _kakaoservice,
             IWebHostEnvironment _webhostenvironment,
             IHttpContextAccessor _httpcontextaccessor,
+            IHubContext<BroadcastHub> _hubcontext,
+            ILogService _logservice,
             ConsoleLogService<VocService> _createbuilderlogger)
         {
             this.VocInfoRepository = _vocinforepository;
@@ -66,18 +58,13 @@ namespace FamTec.Server.Services.Voc
             this.AlarmInfoRepository = _alarminforepository;
             this.UserInfoRepository = _userinforepository;
             this.AdminUserInfoRepository = _adminuserinforepository;
-
             this.PlaceInfoRepository = _placeinforepository;
             this.KakaoLogInfoRepository = _kakaologinforepository;
-
-            this.HubContext = _hubcontext;
-            this.KakaoService = _kakaoservice;
-
-            this.WebHostEnvironment = _webhostenvironment;
-
-            this.HttpContextAccessor = _httpcontextaccessor;
-
             this.FileService = _fileservice;
+            this.KakaoService = _kakaoservice;
+            this.WebHostEnvironment = _webhostenvironment;
+            this.HttpContextAccessor = _httpcontextaccessor;
+            this.HubContext = _hubcontext;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -106,7 +93,7 @@ namespace FamTec.Server.Services.Voc
                 // 조건검색 [1]
                 // 1. 해당 사업장에 넘어온 유저 인덱스가 있는지 검사.
                 // 사용자+관리자 해서 아에없으면 바로 Return
-                var PlaceUserList = await AdminUserInfoRepository.GetAdminPlaceList(Convert.ToInt32(placeId));
+                var PlaceUserList = await AdminUserInfoRepository.GetAdminPlaceList(Convert.ToInt32(placeId)).ConfigureAwait(false);
                 if (PlaceUserList is null)
                 {
                     importdata.ForEach(m => m.failYn = true);
@@ -138,7 +125,7 @@ namespace FamTec.Server.Services.Voc
                 // 조건검색 [2] 해당 사업장에 넘어온 건물 인덱스가 있는지 검사 없으면 return
                 // 건물이 일단 Null이면 Rutn
                 // 넘어온 Excel이랑 비교해서 없는값이 있으면 해당값 false 치고 return
-                var BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeId));
+                var BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeId)).ConfigureAwait(false);
                 if (BuildingList is null)
                 {
                     importdata.ForEach(m => m.failYn = true);
@@ -353,12 +340,12 @@ namespace FamTec.Server.Services.Voc
                 using var workbook = new XLWorkbook(filePath);
                 var ws = workbook.Worksheet(1); // 건물정보 Sheet
 
-                var BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(PlaceId));
+                var BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(PlaceId)).ConfigureAwait(false);
                 if (BuildingList is null || BuildingList.Count == 0)
                     return null;
 
-                var UserList = await AdminUserInfoRepository.GetAdminPlaceList(Convert.ToInt32(PlaceId));
-                
+                var UserList = await AdminUserInfoRepository.GetAdminPlaceList(Convert.ToInt32(PlaceId)).ConfigureAwait(false);
+
                 if (UserList is null || UserList.Count == 0)
                     return null;
 
@@ -528,7 +515,6 @@ namespace FamTec.Server.Services.Voc
             }
         }
 
-
         /// <summary>
         /// 사업장별 VOC 리스트 조회
         /// </summary>
@@ -596,8 +582,6 @@ namespace FamTec.Server.Services.Voc
                 return new ResponseList<VocListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<VocListDTO>(), code = 500 };
             }
         }
-
-
 
         /// <summary>
         /// 월간 사업장별 VOC 조회 - V2
@@ -707,8 +691,6 @@ namespace FamTec.Server.Services.Voc
             }
         }
 
-     
-
         /// <summary>
         /// 기간 사업장 VOC 조회 -V2
         /// </summary>
@@ -777,8 +759,6 @@ namespace FamTec.Server.Services.Voc
             }
         }
 
-
-
         /// <summary>
         /// VOC 상세보기 - 직원용
         /// </summary>
@@ -837,7 +817,7 @@ namespace FamTec.Server.Services.Voc
                                 IFormFile? files = FileService.ConvertFormFiles(ImageBytes, image);
                                 if(files is not null)
                                 {
-                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files).ConfigureAwait(false);
 
                                     if (ConvertFile is not null)
                                     {
@@ -884,7 +864,7 @@ namespace FamTec.Server.Services.Voc
                                 IFormFile? files = FileService.ConvertFormFiles(ImageBytes, image);
                                 if (files is not null)
                                 {
-                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files).ConfigureAwait(false);
 
                                     if (ConvertFile is not null)
                                     {
@@ -916,7 +896,6 @@ namespace FamTec.Server.Services.Voc
                         }
                     }
                 }
-
 
                 return new ResponseUnit<VocEmployeeDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
             }

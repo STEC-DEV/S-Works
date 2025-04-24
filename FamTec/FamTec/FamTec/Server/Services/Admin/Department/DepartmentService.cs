@@ -8,19 +8,18 @@ namespace FamTec.Server.Services.Admin.Department
     public class DepartmentService : IDepartmentService
     {
         private readonly IDepartmentInfoRepository DepartmentInfoRepository;
-        private readonly ILogService LogService;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
-        private readonly ConsoleLogService<DepartmentService> CreateBuilderLogger;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<DepartmentService> CreateBuilderLogger; /* 콘솔로그 */
 
         public DepartmentService(IDepartmentInfoRepository _departmentinforepository,
-            ILogService _logservice,
             IHttpContextAccessor _httpcontextaccessor,
+            ILogService _logservice,
             ConsoleLogService<DepartmentService> _createbuilderlogger)
         {
             this.DepartmentInfoRepository = _departmentinforepository;
-            this.LogService = _logservice;
             this.HttpContextAccessor = _httpcontextaccessor;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -73,7 +72,6 @@ namespace FamTec.Server.Services.Admin.Department
                 {
                     return new ResponseUnit<AddDepartmentDTO> { message = "데이터가 처리되지 않았습니다.", data = new AddDepartmentDTO(), code = 404 };
                 }
-               
             }
             catch (Exception ex)
             {
@@ -264,7 +262,6 @@ namespace FamTec.Server.Services.Admin.Department
                 return new ResponseUnit<DepartmentDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new DepartmentDTO(), code = 500 };
             }
         }
-
     
     }
 }

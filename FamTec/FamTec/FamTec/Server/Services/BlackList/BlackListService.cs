@@ -8,22 +8,19 @@ namespace FamTec.Server.Services.BlackList
     public class BlackListService : IBlackListService
     {
         private readonly IBlackListInfoRepository BlackListInfoRepository;
-        private readonly ILogService LogService;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
-        private readonly ConsoleLogService<BlackListService> CreateBuilderLogger;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<BlackListService> CreateBuilderLogger; /* 콘솔로그 */
 
         public BlackListService(IBlackListInfoRepository _blacklistinforepository,
-            ILogService _logservice,
             IHttpContextAccessor _httpcontextaccessor,
-            ConsoleLogService<BlackListService> _createbuilderlogger
-        )
+            ILogService _logservice,
+            ConsoleLogService<BlackListService> _createbuilderlogger)
         {
             this.BlackListInfoRepository = _blacklistinforepository;
-
             this.HttpContextAccessor = _httpcontextaccessor;
-            this.CreateBuilderLogger = _createbuilderlogger;
             this.LogService = _logservice;
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>

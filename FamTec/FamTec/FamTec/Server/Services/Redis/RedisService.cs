@@ -5,18 +5,18 @@ namespace FamTec.Server.Services.Redis
 {
     public class RedisService : IRedisService
     {
-        private readonly IConnectionMultiplexer Muxer;
-        private readonly IDatabase Redis;
-        private readonly ILogService LogService;
+        private readonly IConnectionMultiplexer Muxer; /* Redis */
+        private readonly IDatabase Redis; /* Redis */
         private static readonly TimeSpan TTL = TimeSpan.FromMinutes(3); // 유효시간
-        private readonly ConsoleLogService<RedisService> CreateBuilderLogger;
-        private static readonly Random Randoms = new Random();
+        private static readonly Random Randoms = new Random(); /* 카카오톡 알림톡 인증코드 랜덤값 객체 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<RedisService> CreateBuilderLogger; /* 콘솔로그 */
 
         public RedisService(IConnectionMultiplexer _muxer,
             ILogService _logservice,
             ConsoleLogService<RedisService> _createbuilderlogger)
         {
-            Muxer = _muxer;
+            this.Muxer = _muxer;
             this.Redis = Muxer.GetDatabase();
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;

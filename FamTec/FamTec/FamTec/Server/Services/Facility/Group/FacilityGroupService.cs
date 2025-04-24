@@ -12,33 +12,28 @@ namespace FamTec.Server.Services.Facility.Group
         private readonly IFacilityGroupItemInfoRepository FacilityGroupItemInfoRepository;
         private readonly IFacilityItemKeyInfoRepository FacilityItemKeyInfoRepository;
         private readonly IFacilityItemValueInfoRepository FacilityItemValueInfoRepository;
-
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<FacilityGroupService> CreateBuilderLogger;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<FacilityGroupService> CreateBuilderLogger; /* 콘솔로그 */
 
         public FacilityGroupService(IFacilityGroupItemInfoRepository _facilitygroupiteminforepository,
             IFacilityItemKeyInfoRepository _facilityitemkeyinforepository,
             IFacilityItemValueInfoRepository _facilityitemvalueinforepository,
-            ILogService _logservice,
             IHttpContextAccessor _httpcontextaccessor,
+            ILogService _logservice,
             ConsoleLogService<FacilityGroupService> _createbuilderlogger)
         {
             this.FacilityGroupItemInfoRepository = _facilitygroupiteminforepository;
             this.FacilityItemKeyInfoRepository = _facilityitemkeyinforepository;
             this.FacilityItemValueInfoRepository = _facilityitemvalueinforepository;
-
-            this.LogService = _logservice;
             this.HttpContextAccessor = _httpcontextaccessor;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
         /// 그룹 - 키 - 값 추가 서비스2
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="dto"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<bool>> AddFacilityGroupKeyValueService(List<AddGroupDTO> dto)
         {
@@ -54,7 +49,7 @@ namespace FamTec.Server.Services.Facility.Group
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                int Result = await FacilityGroupItemInfoRepository.AddGroupAsync(dto, creater);
+                int Result = await FacilityGroupItemInfoRepository.AddGroupAsync(dto, creater).ConfigureAwait(false);
 
                 if (Result == 1)
                     return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -78,8 +73,6 @@ namespace FamTec.Server.Services.Facility.Group
         /// <summary>
         /// 그룹 - 키 - 값 추가 서비스
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="dto"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<AddGroupDTO>> AddFacilityGroupService(AddGroupDTO dto)
         {

@@ -7,22 +7,19 @@ namespace FamTec.Server.Services.Alarm
     public class AlarmService : IAlarmService
     {
         private readonly IAlarmInfoRepository AlarmInfoRepository;
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<AlarmService> CreateBuilderLogger;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<AlarmService> CreateBuilderLogger; /* 콘솔로그 */
 
         public AlarmService(IAlarmInfoRepository _alarminforepository,
-            ILogService _logservice,
             IHttpContextAccessor _httpcontextaccessor,
+            ILogService _logservice,
             ConsoleLogService<AlarmService> _createbuilderlogger)
         {
             this.AlarmInfoRepository = _alarminforepository;
-
             this.HttpContextAccessor = _httpcontextaccessor;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
-
         }
 
         /// <summary>

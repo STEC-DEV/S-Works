@@ -12,36 +12,30 @@ namespace FamTec.Server.Services.Building
     {
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IFloorInfoRepository FloorInfoRepository;
-
-        private readonly IFileService FileService;
-        private readonly ILogService LogService;
-
-        // 파일디렉토리
-        private DirectoryInfo? di;
-        private string? PlaceFileFolderPath;
-
-        private readonly ConsoleLogService<BuildingService> CreateBuilderLogger;
-
-        private readonly IWebHostEnvironment WebHostEnvironment;
-        private readonly IHttpContextAccessor HttpContextAccessor;
+        private readonly IWebHostEnvironment WebHostEnvironment; /* 호스트 정보 의존성 주입 */
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<BuildingService> CreateBuilderLogger; /* 콘솔로그 */
+        private DirectoryInfo? di; // 파일디렉토리
+        private string? PlaceFileFolderPath; // 파일디렉터리 경로
 
         public BuildingService(
             IBuildingInfoRepository _buildinginforepository,
             IFloorInfoRepository _floorinforepository,
+            IWebHostEnvironment _webhostenvironment,
+            IHttpContextAccessor _httpcontextaccessor,
             IFileService _fileservice,
             ILogService _logservice,
-            ConsoleLogService<BuildingService> _createbuilderlogger,
-            IHttpContextAccessor _httpcontextaccessor,
-            IWebHostEnvironment _webhostenvironment)
+            ConsoleLogService<BuildingService> _createbuilderlogger)
         {
             this.BuildingInfoRepository = _buildinginforepository;
             this.FloorInfoRepository = _floorinforepository;
-
+            this.WebHostEnvironment = _webhostenvironment;
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.FileService = _fileservice;
             this.LogService = _logservice;
-            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
-            this.WebHostEnvironment = _webhostenvironment;
         }
 
         /// <summary>
@@ -56,7 +50,7 @@ namespace FamTec.Server.Services.Building
                 if (String.IsNullOrWhiteSpace(filePath))
                     return null;
 
-                byte[]? filesBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                byte[]? filesBytes = await System.IO.File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
                 if (filesBytes is not null)
                     return filesBytes;
                 else
@@ -75,10 +69,7 @@ namespace FamTec.Server.Services.Building
         /// <summary>
         /// 건물 엑셀 IMPORT
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="files"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         public async Task<ResponseUnit<bool>> ImportBuildingService(IFormFile files)
         {
             try
@@ -100,7 +91,7 @@ namespace FamTec.Server.Services.Building
 
                 using (var stream = new MemoryStream())
                 {
-                    await files!.CopyToAsync(stream);
+                    await files!.CopyToAsync(stream).ConfigureAwait(false);
                     using (var workbook = new XLWorkbook(stream))
                     {
                         var worksheet = workbook.Worksheet(1);
@@ -267,7 +258,6 @@ namespace FamTec.Server.Services.Building
         /// <summary>
         /// 사업장에 속한 건물 총 개수 반환
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<int?>> TotalBuildingCount()
         {
@@ -298,8 +288,6 @@ namespace FamTec.Server.Services.Building
         /// <summary>
         /// 해당 사업장에 건물추가
         /// </summary>
-        /// <param name="dto"></param>
-        /// <param name="placeidx"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<AddBuildingDTO>> AddBuildingService(AddBuildingDTO dto, IFormFile? files)
         {
@@ -388,7 +376,7 @@ namespace FamTec.Server.Services.Building
                     if(files is not null)
                     {
                         // 파일 넣기
-                        bool? AddFile = await FileService.AddResizeImageFile(NewFileName, PlaceFileFolderPath, files);
+                        bool? AddFile = await FileService.AddResizeImageFile(NewFileName, PlaceFileFolderPath, files).ConfigureAwait(false);
                     }
 
                     return new ResponseUnit<AddBuildingDTO>()
@@ -463,7 +451,6 @@ namespace FamTec.Server.Services.Building
         /// <summary>
         /// 사업장에 등록되어있는 건물리스트 출력
         /// </summary>
-        /// <param name="session"></param>
         /// <returns></returns>
         public async Task<ResponseList<BuildinglistDTO>> GetBuilidngListService()
         {
@@ -514,9 +501,6 @@ namespace FamTec.Server.Services.Building
         /// <summary>
         /// 로그인한 아이디의 사업장의 건물리스트 조회 - 페이지네이션
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="skip"></param>
-        /// <param name="take"></param>
         /// <returns></returns>
         public async Task<ResponseList<BuildinglistDTO>> GetBuildingListPageService(int skip, int take)
         {
@@ -565,7 +549,6 @@ namespace FamTec.Server.Services.Building
         /// <summary>
         /// 로그인한 아이디의 사업장의 건물명 조회
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
         public async Task<ResponseList<PlaceBuildingNameDTO>> GetPlaceBuildingNameService()
         {
@@ -610,7 +593,6 @@ namespace FamTec.Server.Services.Building
         /// <summary>
         /// 건물 상세정보 보기
         /// </summary>
-        /// <param name="buildingId"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<DetailBuildingDTO>> GetDetailBuildingService(int buildingId, bool isMobile)
         {
@@ -697,7 +679,7 @@ namespace FamTec.Server.Services.Building
                             IFormFile? files = FileService.ConvertFormFiles(ImageBytes, model.Image);
                             if (files is not null)
                             {
-                                byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files).ConfigureAwait(false);
                                 if (ConvertFile is not null)
                                 {
                                     dto.ImageName = model.Image;
@@ -736,7 +718,7 @@ namespace FamTec.Server.Services.Building
                             IFormFile? files = FileService.ConvertFormFiles(ImageBytes, model.Image);
                             if (files is not null)
                             {
-                                byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files).ConfigureAwait(false);
                                 if (ConvertFile is not null)
                                 {
                                     dto.ImageName = model.Image;
@@ -777,8 +759,6 @@ namespace FamTec.Server.Services.Building
         /// <summary>
         /// 건물정보 수정
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="dto"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<bool?>> UpdateBuildingService(DetailBuildingDTO dto, IFormFile? files)
         {
@@ -895,7 +875,7 @@ namespace FamTec.Server.Services.Building
                 byte[]? ImageBytes = null;
                 if (!String.IsNullOrWhiteSpace(deleteFileName))
                 {
-                    ImageBytes = await FileService.GetImageFile(PlaceFileFolderPath, deleteFileName);
+                    ImageBytes = await FileService.GetImageFile(PlaceFileFolderPath, deleteFileName).ConfigureAwait(false);
                 }
                 
                 // - DB 실패했을경우 iFormFile을 바이트로 변환하여 DB의 해당명칭으로 다시 저장해야함.
@@ -916,7 +896,7 @@ namespace FamTec.Server.Services.Building
                     if(String.IsNullOrWhiteSpace(model.Image) || files.FileName != model.Image)
                     {
                         // Image가 없거나 혹은 기존 파일명과 다른 경우에만 파일 저장
-                        await FileService.AddResizeImageFile(model.Image!, PlaceFileFolderPath, files);
+                        await FileService.AddResizeImageFile(model.Image!, PlaceFileFolderPath, files).ConfigureAwait(false);
                     }
                 }
 
@@ -980,8 +960,6 @@ namespace FamTec.Server.Services.Building
         /// <summary>
         /// 건물정보 삭제
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="buildingid"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<bool?>> DeleteBuildingService(List<int> buildingid)
         {
@@ -1029,7 +1007,6 @@ namespace FamTec.Server.Services.Building
         /// <summary>
         /// 사업장에 속한 건물-층 리스트 반환
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
         public async Task<ResponseList<PlaceBuildingListDTO>> GetPlaceBuildingService()
         {
@@ -1086,7 +1063,6 @@ namespace FamTec.Server.Services.Building
         /// <summary>
         /// 건물ID로 건물이름 반환
         /// </summary>
-        /// <param name="buildingid"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<string?>> GetBuildingName(int buildingid)
         {
@@ -1111,8 +1087,6 @@ namespace FamTec.Server.Services.Building
         /// <summary>
         /// 자재가 포함되어있는 건물 리스트 반환
         /// </summary>
-        /// <param name="placeid"></param>
-        /// <param name="materialid"></param>
         /// <returns></returns>
         public async Task<ResponseList<PlaceBuildingNameDTO>> GetPlaceAvailableBuildingList(int materialid)
         {
@@ -1127,7 +1101,7 @@ namespace FamTec.Server.Services.Building
                 if (String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseList<PlaceBuildingNameDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetPlaceAvailableBuildingList(Convert.ToInt32(placeidx), materialid);
+                List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetPlaceAvailableBuildingList(Convert.ToInt32(placeidx), materialid).ConfigureAwait(false);
                 if (BuildingList is [_, ..])
                 {
                     List<PlaceBuildingNameDTO> model = BuildingList.Select(e => new PlaceBuildingNameDTO

@@ -13,25 +13,24 @@ namespace FamTec.Server.Services.Admin.Place
 {
     public class AdminPlaceService : IAdminPlaceService
     {
-        private readonly IPlaceInfoRepository PlaceInfoRepository;
         private readonly IAdminPlacesInfoRepository AdminPlaceInfoRepository;
+        private readonly IPlaceInfoRepository PlaceInfoRepository;
         private readonly IAdminUserInfoRepository AdminUserInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IUserInfoRepository UserInfoRepository;
-        private readonly ILogService LogService;
-        private readonly IWebHostEnvironment WebHostEnvironment;
-        private readonly IHttpContextAccessor HttpContextAccessor;
-
-        private readonly ConsoleLogService<AdminPlaceService> CreateBuilderLogger;
+        private readonly IWebHostEnvironment WebHostEnvironment; /* 호스트 정보 의존성 주입 */
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<AdminPlaceService> CreateBuilderLogger; /* 콘솔로그 */
 
         public AdminPlaceService(IAdminPlacesInfoRepository _adminplaceinforepository,
             IPlaceInfoRepository _placeinforepository,
             IAdminUserInfoRepository _adminuserinforepository,
             IBuildingInfoRepository _buildinginforepository,
             IUserInfoRepository _userinforepository,
-            ILogService _logservice,
             IWebHostEnvironment _webhostenvironment,
             IHttpContextAccessor _httpcontextaccessor,
+            ILogService _logservice,
             ConsoleLogService<AdminPlaceService> _createbuilderlogger)
         {
             this.AdminPlaceInfoRepository = _adminplaceinforepository;
@@ -39,9 +38,9 @@ namespace FamTec.Server.Services.Admin.Place
             this.AdminUserInfoRepository = _adminuserinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
             this.UserInfoRepository = _userinforepository;
-            this.LogService = _logservice;
             this.WebHostEnvironment = _webhostenvironment;
             this.HttpContextAccessor = _httpcontextaccessor;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -58,7 +57,7 @@ namespace FamTec.Server.Services.Admin.Place
                 if (String.IsNullOrWhiteSpace(filePath))
                     return null;
 
-                byte[]? filesBytes = await File.ReadAllBytesAsync(filePath);
+                byte[]? filesBytes = await File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
                 if (filesBytes is not null)
                     return filesBytes;
                 else
@@ -406,7 +405,6 @@ namespace FamTec.Server.Services.Admin.Place
             }
         }
 
-
         /// <summary>
         /// 사업장정보 상세조회
         /// </summary>
@@ -541,7 +539,7 @@ namespace FamTec.Server.Services.Admin.Place
                             });
                         }
                     }
-
+                    
                     if(placeadmintb.Any())
                     {
                         bool? result = await AdminPlaceInfoRepository.AddAsync(placeadmintb).ConfigureAwait(false);
@@ -608,7 +606,6 @@ namespace FamTec.Server.Services.Admin.Place
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
-
         }
 
         /// <summary>

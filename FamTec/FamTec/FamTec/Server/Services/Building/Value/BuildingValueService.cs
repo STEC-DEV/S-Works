@@ -10,21 +10,18 @@ namespace FamTec.Server.Services.Building.Value
     {
         private readonly IBuildingItemKeyInfoRepository BuildingItemKeyInfoRepository;
         private readonly IBuildingItemValueInfoRepository BuildingItemValueInfoRepository;
-
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<BuildingValueService> CreateBuilderLogger;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<BuildingValueService> CreateBuilderLogger; /* 콘솔로그 */
 
         public BuildingValueService(IBuildingItemValueInfoRepository _buildingitemvalueinforepository,
             IBuildingItemKeyInfoRepository _buildingitemkeyinforepository,
-            ILogService _logservice,
             IHttpContextAccessor _httpcontextaccessor,
+            ILogService _logservice,
             ConsoleLogService<BuildingValueService> _createbuilderlogger)
         {
             this.BuildingItemValueInfoRepository = _buildingitemvalueinforepository;
             this.BuildingItemKeyInfoRepository = _buildingitemkeyinforepository;
-
             this.HttpContextAccessor = _httpcontextaccessor;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;

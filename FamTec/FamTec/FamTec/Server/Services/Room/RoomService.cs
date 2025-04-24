@@ -12,13 +12,11 @@ namespace FamTec.Server.Services.Room
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IFloorInfoRepository FloorInfoRepository;
         private readonly IRoomInfoRepository RoomInfoRepository;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<RoomService> CreateBuilderLogger; /* 콘솔로그 */
 
-        private readonly IHttpContextAccessor HttpContextAccessor;
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<RoomService> CreateBuilderLogger;
-
-        public RoomService(
-            IBuildingInfoRepository _buildinginforepository,
+        public RoomService(IBuildingInfoRepository _buildinginforepository,
             IFloorInfoRepository _floorinforepository,
             IRoomInfoRepository _roominforepository,
             IHttpContextAccessor _httpcontextaccessor,
@@ -28,7 +26,6 @@ namespace FamTec.Server.Services.Room
             this.BuildingInfoRepository = _buildinginforepository;
             this.FloorInfoRepository = _floorinforepository;
             this.RoomInfoRepository = _roominforepository;
-
             this.HttpContextAccessor = _httpcontextaccessor;
             this.LogService = _logService;
             this.CreateBuilderLogger = _createbuilderlogger;
@@ -270,18 +267,6 @@ namespace FamTec.Server.Services.Room
                     if (DelCheck == true)
                         return new ResponseUnit<bool?>() { message = "해당 정보를 참조하는 데이터가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
-
-                //foreach(int index in del)
-                //{
-                //    List<FacilityTb>? FacilityList = await FacilityInfoRepository.GetAllFacilityList(index);
-                //    if (FacilityList is [_, ..])
-                //        return new ResponseUnit<bool?>() { message = "해당 공간에 속한 장치정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
-
-                //    bool? Inventory = await RoomInfoRepository.RoomDeleteCheck(Convert.ToInt32(placeid), index);
-                //    if (Inventory != true)
-                //        return new ResponseUnit<bool?>() { message = "해당 공간에 속한 자재가 있어 삭제가 불가능합니다.", data = null, code = 200 };
-                //}
-
 
                 bool? DeleteResult = await RoomInfoRepository.DeleteRoomInfo(del, creater).ConfigureAwait(false);
                 return DeleteResult switch

@@ -14,8 +14,6 @@ namespace FamTec.Server.Services.Admin.Account
         /// <returns></returns>
         public Task<ResponseUnit<string?>> AdminLoginService(LoginDTO dto);
 
-
-
         /// <summary>
         /// 관리자 계정 생성
         /// </summary>

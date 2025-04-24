@@ -16,33 +16,29 @@ namespace FamTec.Server.Services.Facility.Type.Network
         private readonly IFloorInfoRepository FloorInfoRepository;
         private readonly IFacilityInfoRepository FacilityInfoRepository;
         private readonly IRoomInfoRepository RoomInfoRepository;
-        private readonly ILogService LogService;
-        private readonly IFileService FileService;
-        private readonly ConsoleLogService<NetworkFacilityService> CreateBuilderLogger;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<NetworkFacilityService> CreateBuilderLogger; /* 콘솔로그 */
+        private DirectoryInfo? di; /* 디렉터리 객체 */
+        private string? NetworkFileFolderPath; /* 디렉터리 경로 */
 
-        private DirectoryInfo? di;
-        private string? NetworkFileFolderPath;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
-
-        public NetworkFacilityService(
-           IFacilityInfoRepository _facilityinforepository,
+        public NetworkFacilityService(IFacilityInfoRepository _facilityinforepository,
            IBuildingInfoRepository _buildinginforepository,
             IFloorInfoRepository _floorinforepository,
            IRoomInfoRepository _roominforepository,
+           IHttpContextAccessor _httpcontextaccessor,
            IFileService _fileservice,
            ILogService _logService,
-           IHttpContextAccessor _httpcontextaccessor,
            ConsoleLogService<NetworkFacilityService> _createbuilderlogger)
         {
             this.FacilityInfoRepository = _facilityinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
             this.FloorInfoRepository = _floorinforepository;
             this.RoomInfoRepository = _roominforepository;
-            
+            this.HttpContextAccessor = _httpcontextaccessor;
             this.FileService = _fileservice;
             this.LogService = _logService;
-            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -168,7 +164,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
                 if (String.IsNullOrWhiteSpace(PlaceId))
                     return null;
 
-                List<RoomTb>? RoomList = await RoomInfoRepository.GetPlaceAllRoomList(Convert.ToInt32(PlaceId));
+                List<RoomTb>? RoomList = await RoomInfoRepository.GetPlaceAllRoomList(Convert.ToInt32(PlaceId)).ConfigureAwait(false);
                 if (RoomList is null || !RoomList.Any())
                     return null;
 
@@ -237,7 +233,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                List<RoomTb>? RoomList = await RoomInfoRepository.GetPlaceAllRoomList(Convert.ToInt32(placeidx));
+                List<RoomTb>? RoomList = await RoomInfoRepository.GetPlaceAllRoomList(Convert.ToInt32(placeidx)).ConfigureAwait(false);
                 if (RoomList is null || !RoomList.Any())
                     return new ResponseUnit<bool>() { message = "위치정보가 존재하지 않습니다.", data = false, code = 204 };
 
@@ -557,11 +553,11 @@ namespace FamTec.Server.Services.Facility.Type.Network
                 if(room is null)
                     return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
 
-                FloorTb? FloorTB = await FloorInfoRepository.GetFloorInfo(room.FloorTbId);
+                FloorTb? FloorTB = await FloorInfoRepository.GetFloorInfo(room.FloorTbId).ConfigureAwait(false);
                 if (FloorTB is null)
                     return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
 
-                BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(FloorTB.BuildingTbId);
+                BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(FloorTB.BuildingTbId).ConfigureAwait(false);
                 if (BuildingTB is null)
                     return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
 
@@ -647,7 +643,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
                             IFormFile? files = FileService.ConvertFormFiles(ImageBytes, model.Image);
                             if (files is not null)
                             {
-                                byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files).ConfigureAwait(false);
 
                                 if (ConvertFile is not null)
                                 {

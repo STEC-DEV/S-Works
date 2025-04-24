@@ -13,25 +13,22 @@ namespace FamTec.Server.Services.Building.Group
         private readonly IBuildingGroupItemInfoRepository BuildingGroupItemInfoRepository;
         private readonly IBuildingItemKeyInfoRepository BuildingItemKeyInfoRepository;
         private readonly IBuildingItemValueInfoRepository BuildingItemValueInfoRepository;
-
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<BuildingGroupService> CreateBuilderLogger;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<BuildingGroupService> CreateBuilderLogger; /* 콘솔로그 */
 
         public BuildingGroupService(IBuildingGroupItemInfoRepository _buildinggroupiteminforepository,
             IBuildingItemKeyInfoRepository _buildingitemkeyinforepository,
             IBuildingItemValueInfoRepository _buildingitemvalueinforepository,
-            ILogService _logservice,
             IHttpContextAccessor _httpcontextaccessor,
+            ILogService _logservice,
             ConsoleLogService<BuildingGroupService> _createbuilderlogger)
         {
             this.BuildingGroupItemInfoRepository = _buildinggroupiteminforepository;
             this.BuildingItemKeyInfoRepository = _buildingitemkeyinforepository;
             this.BuildingItemValueInfoRepository = _buildingitemvalueinforepository;
-
-            this.LogService = _logservice;
             this.HttpContextAccessor = _httpcontextaccessor;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -57,7 +54,7 @@ namespace FamTec.Server.Services.Building.Group
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
 
-                int Result = await BuildingGroupItemInfoRepository.AddGroupAsync(dto, creater, Convert.ToInt32(placeid));
+                int Result = await BuildingGroupItemInfoRepository.AddGroupAsync(dto, creater, Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if(Result == 1)
                     return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다", data = true, code = 200 };
                 else if(Result == -1)
@@ -290,7 +287,6 @@ namespace FamTec.Server.Services.Building.Group
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
-
         
     }
 }

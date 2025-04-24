@@ -8,13 +8,13 @@ namespace FamTec.Server.Services.Unit
     public class UnitService : IUnitService
     {
         private readonly IUnitInfoRepository UnitInfoRepository;
-        private readonly ILogService LogService;
-        private readonly IHttpContextAccessor HttpContextAccessor;
-        private readonly ConsoleLogService<UnitService> CreateBuilderLogger;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<UnitService> CreateBuilderLogger; /* 콘솔로그 */
 
         public UnitService(IUnitInfoRepository _unitinforepository,
-            ILogService _logservice,
             IHttpContextAccessor _httpcontextaccessor,
+            ILogService _logservice,
             ConsoleLogService<UnitService> _createbuilderlogger)
         {
             this.UnitInfoRepository = _unitinforepository;
@@ -84,8 +84,6 @@ namespace FamTec.Server.Services.Unit
                 return new ResponseUnit<UnitsDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UnitsDTO(), code = 500 };
             }
         }
-
-
 
         /// <summary>
         /// 해당 사업장의 단위리스트 조회
@@ -230,7 +228,6 @@ namespace FamTec.Server.Services.Unit
 #endif
                 return new ResponseUnit<UnitsDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
-
         }
     }
 }

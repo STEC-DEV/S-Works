@@ -1,6 +1,5 @@
 ﻿using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Floor;
-using FamTec.Server.Repository.Room;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Floor;
@@ -11,26 +10,20 @@ namespace FamTec.Server.Services.Floor
     {
         private readonly IFloorInfoRepository FloorInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
-        private readonly IRoomInfoRepository RoomInfoRepository;
-
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<FloorService> CreateBuilderLogger;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<FloorService> CreateBuilderLogger; /* 콘솔로그 */
 
         public FloorService(IFloorInfoRepository _floorinforepository,
             IBuildingInfoRepository _buildinginforepository,
-            IRoomInfoRepository _roominforepository,
             ILogService _logservice,
             IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<FloorService> _createbuilderlogger)
         {
             this.FloorInfoRepository = _floorinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
-            this.RoomInfoRepository = _roominforepository;
-
-            this.LogService = _logservice;
             this.HttpContextAccessor = _httpcontextaccessor;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -211,12 +204,5 @@ namespace FamTec.Server.Services.Floor
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
-
     }
 }
-
-
-
-
-

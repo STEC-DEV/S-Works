@@ -1,6 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DevExpress.Emf;
-using FamTec.Client.Pages.Normal.User.UserAdd;
 using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
@@ -19,7 +17,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace FamTec.Server.Services.User
@@ -31,48 +28,41 @@ namespace FamTec.Server.Services.User
         private readonly IAdminPlacesInfoRepository AdminPlaceInfoRepository;
         private readonly IPlaceInfoRepository PlaceInfoRepository;
         private readonly IDepartmentInfoRepository DepartmentInfoRepository;
-
-        private readonly IFileService FileService;
-        private readonly IConfiguration Configuration;
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<UserService> CreateBuilderLogger;
-
-        private readonly IWebHostEnvironment WebHostEnvironment;
-        private readonly IRedisService RedisService;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
-
-        DirectoryInfo? di;
-        string? PlaceFileFolderPath = String.Empty;
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly IRedisService RedisService; /* Redis 서비스 */
+        private readonly IConfiguration Configuration; /* AppSettings.json */
+        private readonly IWebHostEnvironment WebHostEnvironment; /* 호스팅 정보 */
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<UserService> CreateBuilderLogger; /* 콘솔로그 */
+        DirectoryInfo? di; /* 디렉터리 객체 */
+        string? PlaceFileFolderPath = String.Empty; /* 디렉터리 경로 */
 
         public UserService(IUserInfoRepository _userinforepository,
             IAdminUserInfoRepository _adminuserinforepository,
             IAdminPlacesInfoRepository _adminplaceinforepository,
             IPlaceInfoRepository _placeinforpeository,
-            IConfiguration _configuration,
-            IFileService _fileservice,
-            ILogService _logservice,
             IDepartmentInfoRepository _departmentinforepository,
-            ConsoleLogService<UserService> _createbuilderlogger,
+            IFileService _fileservice,
             IRedisService _redisservice,
+            IConfiguration _configuration,
+            IWebHostEnvironment _webhostenvironment,
             IHttpContextAccessor _httpcontextAccessor,
-            IWebHostEnvironment _webhostenvironment)
+            ILogService _logservice,
+            ConsoleLogService<UserService> _createbuilderlogger)
         {
             this.UserInfoRepository = _userinforepository;
             this.AdminUserInfoRepository = _adminuserinforepository;
             this.AdminPlaceInfoRepository = _adminplaceinforepository;
             this.PlaceInfoRepository = _placeinforpeository;
             this.DepartmentInfoRepository = _departmentinforepository;
-
             this.FileService = _fileservice;
+            this.RedisService = _redisservice;
             this.Configuration = _configuration;
+            this.WebHostEnvironment = _webhostenvironment;
+            this.HttpContextAccessor = _httpcontextAccessor;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
-
-            this.HttpContextAccessor = _httpcontextAccessor;
-            this.RedisService = _redisservice;
-
-            this.WebHostEnvironment = _webhostenvironment;
         }
 
         /// <summary>
@@ -88,7 +78,7 @@ namespace FamTec.Server.Services.User
                 if (String.IsNullOrWhiteSpace(filePath))
                     return null;
 
-                byte[]? filesBytes = await File.ReadAllBytesAsync(filePath);
+                byte[]? filesBytes = await File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
                 if (filesBytes is not null)
                     return filesBytes;
                 else
@@ -117,7 +107,7 @@ namespace FamTec.Server.Services.User
                 if (String.IsNullOrWhiteSpace(filePath))
                     return null;
 
-                byte[]? fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                byte[]? fileBytes = await System.IO.File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
                 if (fileBytes is not null)
                     return fileBytes;
                 else
@@ -457,7 +447,6 @@ namespace FamTec.Server.Services.User
                          { "Manager", "Manager" }
                      };
 
-
                     if (roleMapping is null)
                         return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -760,7 +749,6 @@ namespace FamTec.Server.Services.User
 #endif
                 return null;
             }
-            
         }
 
         public async Task<ResponseUnit<string?>> LoginSelectPlaceService(int placeid)
@@ -902,6 +890,7 @@ namespace FamTec.Server.Services.User
                     "VocSecurity",
                     "VocDefault"
                 };
+
                 foreach (var key in checkVocPermToken)
                 {
                     if (String.IsNullOrWhiteSpace(context.Items[key]?.ToString()))
@@ -953,7 +942,6 @@ namespace FamTec.Server.Services.User
                     issuer: Configuration["JWT:Issuer"],
                     audience: Configuration["JWT:Audience"],
                     expires: DateTime.Now.AddDays(1),
-                    //expires: DateTime.Now.AddSeconds(10),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
 
@@ -1075,7 +1063,6 @@ namespace FamTec.Server.Services.User
                     JwtSecurityToken token = new JwtSecurityToken(
                         issuer: Configuration["JWT:Issuer"],
                         audience: Configuration["JWT:Audience"],
-                        //expires: DateTime.Now.AddSeconds(10),
                         expires: DateTime.Now.AddDays(1),
                         claims: authClaims,
                         signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
@@ -1150,7 +1137,6 @@ namespace FamTec.Server.Services.User
 
                     authClaims.Add(new Claim("VocPerms", JsonConvert.SerializeObject(VocPermissions)));
 
-
                     // JWT 인증 페이로드 사인 비밀키
                     var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
 
@@ -1175,7 +1161,6 @@ namespace FamTec.Server.Services.User
             }
         }
         
-
         /// <summary>
         /// 로그인한 사업장의 사용자 LIST 반환
         /// </summary>
@@ -1352,7 +1337,6 @@ namespace FamTec.Server.Services.User
             }
         }
 
-
         public async Task<ResponseUnit<UsersDTO>> GetUserDetails(int id, bool isMobile)
         {
             try
@@ -1435,7 +1419,7 @@ namespace FamTec.Server.Services.User
                                 IFormFile? files = FileService.ConvertFormFiles(ImageBytes, model.Image);
                                 if (files is not null)
                                 {
-                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files).ConfigureAwait(false);
 
                                     if (ConvertFile is not null)
                                     {
@@ -1482,7 +1466,7 @@ namespace FamTec.Server.Services.User
                                 IFormFile? files = FileService.ConvertFormFiles(ImageBytes, model.Image);
                                 if (files is not null)
                                 {
-                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files).ConfigureAwait(false);
 
                                     if (ConvertFile is not null)
                                     {
@@ -1786,7 +1770,7 @@ namespace FamTec.Server.Services.User
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<PlacePermissionDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(Convert.ToInt32(placeid));
+                PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if(PlaceTB is not null)
                 {
                     PlacePermissionDTO model = new PlacePermissionDTO
@@ -1920,7 +1904,7 @@ namespace FamTec.Server.Services.User
 
                     string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-                    var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken);
+                    var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken).ConfigureAwait(false);
                     if (SetRedisCache is null)
                         return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
 
@@ -2035,7 +2019,7 @@ namespace FamTec.Server.Services.User
                     string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
 
-                    var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken);
+                    var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken).ConfigureAwait(false);
                     if (SetRedisCache is null)
                         return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
 
@@ -2217,7 +2201,7 @@ namespace FamTec.Server.Services.User
 
                 string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-                var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(Convert.ToInt32(userIdx), accessToken, sessionId);
+                var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(Convert.ToInt32(userIdx), accessToken, sessionId).ConfigureAwait(false);
                 if (SetRedisCache is null)
                     return new ResponseUnit<TokenDTOV2?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -2620,7 +2604,7 @@ namespace FamTec.Server.Services.User
 
                     string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-                    var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken);
+                    var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken).ConfigureAwait(false);
                     if (SetRedisCache is null)
                         return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
 
@@ -2725,7 +2709,7 @@ namespace FamTec.Server.Services.User
                     string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
 
-                    var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken);
+                    var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken).ConfigureAwait(false);
                     if (SetRedisCache is null)
                         return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
 
@@ -2779,7 +2763,7 @@ namespace FamTec.Server.Services.User
 
                 int userId = Convert.ToInt32(userIdx);
 
-                bool DelResult = await RedisService.DeleteRefreshTokenAsync(userId, dto.sessionId);
+                bool DelResult = await RedisService.DeleteRefreshTokenAsync(userId, dto.sessionId).ConfigureAwait(false);
                 if (DelResult)
                     return new ResponseUnit<bool>() { message = "로그아웃 되었습니다.", data = true, code = 200 };
                 else

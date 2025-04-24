@@ -9,7 +9,6 @@ using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FamTec.Server.Services.Maintenance
 {
@@ -18,34 +17,30 @@ namespace FamTec.Server.Services.Maintenance
         private readonly IMaintanceRepository MaintanceRepository;
         private readonly IFacilityInfoRepository FacilityInfoRepository;
         private readonly IUserInfoRepository UserInfoRepository;
-
-        private readonly IFileService FileService;
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<MaintanceService> CreateBuilderLogger;
-
-        private string? MaintanceFileFolderPath;
-        private DirectoryInfo? di;
-
-        IHubContext<BroadcastHub> HubContext;
-        private readonly IHttpContextAccessor HttpContextAccessor;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<MaintanceService> CreateBuilderLogger; /* 콘솔로그 */
+        private DirectoryInfo? di; /* 디렉터리 객체 */
+        private string? MaintanceFileFolderPath; /* 디렉터리 경로 */
+        IHubContext<BroadcastHub> HubContext; /* SignalR 허브 */
 
         public MaintanceService(IMaintanceRepository _maintancerepository,
             IFacilityInfoRepository _facilityinforepository,
             IUserInfoRepository _userinforepository,
+            IHttpContextAccessor _httpcontextaccessor,
+            IHubContext<BroadcastHub> _hubcontext,
             IFileService _fileservice,
             ILogService _logservice,
-            IHubContext<BroadcastHub> _hubcontext,
-            IHttpContextAccessor _httpcontextaccessor,
             ConsoleLogService<MaintanceService> _createbuilderlogger)
         {
             this.MaintanceRepository = _maintancerepository;
             this.FacilityInfoRepository = _facilityinforepository;
             this.UserInfoRepository = _userinforepository;
-
+            this.HttpContextAccessor = _httpcontextaccessor;
+            this.HubContext = _hubcontext;
             this.FileService = _fileservice;
             this.LogService = _logservice;
-            this.HubContext = _hubcontext;
-            this.HttpContextAccessor = _httpcontextaccessor;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -69,7 +64,7 @@ namespace FamTec.Server.Services.Maintenance
 
                 DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
 
-                List<MaintenanceDaysDTO>? model = await MaintanceRepository.GetMaintenanceDaysData(NowDate, Convert.ToInt32(placeidx));
+                List<MaintenanceDaysDTO>? model = await MaintanceRepository.GetMaintenanceDaysData(NowDate, Convert.ToInt32(placeidx)).ConfigureAwait(false);
 
 
                 return new ResponseList<MaintenanceDaysDTO>() { message = "OK", data = model, code = 200 };
@@ -108,7 +103,7 @@ namespace FamTec.Server.Services.Maintenance
                 // 현재년도의 마지막 12년도의 일의 11시59분59초
                 DateTime lastDayOfDecember = new DateTime(DateTime.Now.Year, 12, DateTime.DaysInMonth(DateTime.Now.Year, 12), 23, 59, 59);
 
-                List<MaintanceYearPriceDTO>? model = await MaintanceRepository.GetMaintenanceYearData(firstDayOfYear, lastDayOfDecember, Convert.ToInt32(placeid));
+                List<MaintanceYearPriceDTO>? model = await MaintanceRepository.GetMaintenanceYearData(firstDayOfYear, lastDayOfDecember, Convert.ToInt32(placeid)).ConfigureAwait(false);
 
                 if (model is [_, ..])
                     return new ResponseList<MaintanceYearPriceDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
@@ -175,8 +170,7 @@ namespace FamTec.Server.Services.Maintenance
 
                 DateTime EndOfWeek = ToDays.AddDays(1).AddTicks(-1);
 
-
-                List<MaintanceWeekCount>? WeekListData = await MaintanceRepository.GetMaintanceDashBoardData(startOfWeek, EndOfWeek, Convert.ToInt32(placeid));
+                List<MaintanceWeekCount>? WeekListData = await MaintanceRepository.GetMaintanceDashBoardData(startOfWeek, EndOfWeek, Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if (WeekListData is null)
                 {
                     ResponseList<MaintanceWeekCount> model = new ResponseList<MaintanceWeekCount>()
@@ -829,7 +823,6 @@ namespace FamTec.Server.Services.Maintenance
                 if (String.IsNullOrWhiteSpace(UserIdx) || String.IsNullOrWhiteSpace(updater) || String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                //MaintanceFileFolderPath = String.Format(@"{0}\\{1}\\Maintance", Common.FileServer, placeid.ToString());
                 MaintanceFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Maintance");
 
                 di = new DirectoryInfo(MaintanceFileFolderPath);
@@ -960,7 +953,5 @@ namespace FamTec.Server.Services.Maintenance
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
-
     }
 }

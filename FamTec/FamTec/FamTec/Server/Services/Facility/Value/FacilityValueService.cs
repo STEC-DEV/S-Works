@@ -10,20 +10,20 @@ namespace FamTec.Server.Services.Facility.Value
     {
         private readonly IFacilityItemKeyInfoRepository FacilityItemKeyInfoRepository;
         private readonly IFacilityItemValueInfoRepository FacilityItemValueInfoRepository;
-        private readonly ILogService LogService;
-        private readonly IHttpContextAccessor HttpContextAccessor;
-        private readonly ConsoleLogService<FacilityValueService> CreateBuilderLogger;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<FacilityValueService> CreateBuilderLogger; /* 콘솔로그 */
 
         public FacilityValueService(IFacilityItemKeyInfoRepository _facilityitemkeyinforepository,
             IFacilityItemValueInfoRepository _facilityitemvalueinforepository,
-            ILogService _logservice,
             IHttpContextAccessor _httpcontextaccessor,
+            ILogService _logservice,
             ConsoleLogService<FacilityValueService> _createbuilderlogger)
         {
             this.FacilityItemKeyInfoRepository = _facilityitemkeyinforepository;
             this.FacilityItemValueInfoRepository = _facilityitemvalueinforepository;
-            this.LogService = _logservice;
             this.HttpContextAccessor = _httpcontextaccessor;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;            
         }
 

@@ -17,12 +17,10 @@ namespace FamTec.Server.Services.Store
         private readonly IInventoryInfoRepository InventoryInfoRepository;
         private readonly IStoreInfoRepository StoreInfoRepository;
         private readonly IMaterialInfoRepository MaterialInfoRepository;
-
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<InVentoryService> CreateBuilderLogger;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
-        IHubContext<BroadcastHub> HubContext;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성주입 */
+        IHubContext<BroadcastHub> HubContext; /* SignalR 허브 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<InVentoryService> CreateBuilderLogger; /* 콘솔로그 */
 
         public InVentoryService(IInventoryInfoRepository _inventoryinforepository,
             IStoreInfoRepository _storeinforepository,
@@ -35,9 +33,9 @@ namespace FamTec.Server.Services.Store
             this.InventoryInfoRepository = _inventoryinforepository;
             this.StoreInfoRepository = _storeinforepository;
             this.MaterialInfoRepository = _materialinforepository;
-            this.LogService = _logservice;
-            this.HubContext = _hubcontext;
             this.HttpContextAccessor = _httpcontextaccessor;
+            this.HubContext = _hubcontext;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -369,7 +367,7 @@ namespace FamTec.Server.Services.Store
                         dto.TotalStockNum = dto.InventoryList.OrderBy(m => m.INOUT_DATE).LastOrDefault()?.CurrentNum ?? 0;
 
                         // 이월재고 수량
-                        dto.LastMonthStock = await InventoryInfoRepository.GetCarryOverNum(Convert.ToInt32(placeid), dto.ID!.Value, startDate);
+                        dto.LastMonthStock = await InventoryInfoRepository.GetCarryOverNum(Convert.ToInt32(placeid), dto.ID!.Value, startDate).ConfigureAwait(false);
                     }
                 }
                 
@@ -447,7 +445,7 @@ namespace FamTec.Server.Services.Store
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<InOutLocationDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                InOutLocationDTO? model = await InventoryInfoRepository.GetLocationMaterialInventoryInfo(Convert.ToInt32(placeid), MaterialId, RoomId);
+                InOutLocationDTO? model = await InventoryInfoRepository.GetLocationMaterialInventoryInfo(Convert.ToInt32(placeid), MaterialId, RoomId).ConfigureAwait(false);
                 if (model is not null)
                     return new ResponseUnit<InOutLocationDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
@@ -554,7 +552,7 @@ namespace FamTec.Server.Services.Store
                 if (String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseList<MaterialWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<MaterialTb>? MaterialList = await MaterialInfoRepository.GetPlaceAllMaterialList(Convert.ToInt32(placeidx));
+                List<MaterialTb>? MaterialList = await MaterialInfoRepository.GetPlaceAllMaterialList(Convert.ToInt32(placeidx)).ConfigureAwait(false);
                 if (MaterialList is null || !MaterialList.Any())
                     return new ResponseList<MaterialWeekCountDTO>() { message = "자재가 존재하지 않습니다.", data = null, code = 200 };
 
@@ -577,7 +575,7 @@ namespace FamTec.Server.Services.Store
                 DateTime EndOfWeek = startOfWeek.AddDays(7);
 
                 List<int> MaterialIds = MaterialList.Select(m => m.Id).ToList();
-                List<MaterialWeekCountDTO>? model = await StoreInfoRepository.GetDashBoardData(startOfWeek, EndOfWeek, MaterialIds);
+                List<MaterialWeekCountDTO>? model = await StoreInfoRepository.GetDashBoardData(startOfWeek, EndOfWeek, MaterialIds).ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                 {

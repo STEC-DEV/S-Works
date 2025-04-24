@@ -10,20 +10,20 @@ namespace FamTec.Server.Services.KakaoLog
     {
         private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<KakaoLogService> CreateBuilderLogger;
-        private readonly IHttpContextAccessor HttpContextAccessor;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<KakaoLogService> CreateBuilderLogger; /* 콘솔로그 */
+
         public KakaoLogService(IKakaoLogInfoRepository _kakaologinforepository,
             IBuildingInfoRepository _buildinginforepository,
-            ILogService _logservice,
             IHttpContextAccessor _httpcontextaccessor,
+            ILogService _logservice,
             ConsoleLogService<KakaoLogService> _createbuilderlogger)
         {
             this.KakaoLogInfoRepository = _kakaologinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
-         
-            this.LogService = _logservice;
             this.HttpContextAccessor = _httpcontextaccessor;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -224,8 +224,6 @@ namespace FamTec.Server.Services.KakaoLog
 #endif
                 return new ResponseList<KakaoLogListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
-        }
-
-      
+        }     
     }
 }

@@ -19,16 +19,13 @@ namespace FamTec.Server.Services.Admin.Account
         private readonly IUserInfoRepository UserInfoRepository;
         private readonly IAdminUserInfoRepository AdminUserInfoRepository;
         private readonly IDepartmentInfoRepository DepartmentInfoRepository;
-        private IFileService FileService;
-
-        private readonly IConfiguration Configuration;
-        private readonly ILogService LogService;
-
-        private readonly IRedisService RedisService;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
-
-        private readonly ConsoleLogService<AdminAccountService> CreateBuilderLogger;
+        
+        private IFileService FileService; /* 이미지 서비스 */
+        private readonly IConfiguration Configuration; /* Appsettings.json 의존성 주입*/
+        private readonly IRedisService RedisService; /* Redis 캐시 */
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<AdminAccountService> CreateBuilderLogger; /* 콘솔로그 */
         DirectoryInfo? di;
 
         public AdminAccountService(IUserInfoRepository _userinfoRepository,
@@ -36,29 +33,25 @@ namespace FamTec.Server.Services.Admin.Account
             IDepartmentInfoRepository _departmentinfoRepository,
             IFileService _fileservice,
             IConfiguration _configuration,
-            ILogService _logservice,
             IRedisService _redisservice,
             IHttpContextAccessor _httpcontextaccessor,
+            ILogService _logservice,
             ConsoleLogService<AdminAccountService> _createbuilderlogger)
         {
             this.UserInfoRepository = _userinfoRepository;
             this.AdminUserInfoRepository = _admininfoRepository;
             this.DepartmentInfoRepository = _departmentinfoRepository;
-
             this.FileService = _fileservice;
             this.Configuration = _configuration;
-            this.LogService = _logservice;
             this.RedisService = _redisservice;
             this.HttpContextAccessor = _httpcontextaccessor;
+            this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
         /// 관리자 이미지 변경
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="adminid"></param>
-        /// <param name="files"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<bool?>> UpdateAdminImageService(int adminid, IFormFile? files)
         {
@@ -91,8 +84,6 @@ namespace FamTec.Server.Services.Admin.Account
         /// <summary>
         /// 매니저 정보 수정
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="dto"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<bool?>> UpdateAdminService(UpdateManagerDTO dto)
         {
@@ -140,8 +131,6 @@ namespace FamTec.Server.Services.Admin.Account
         /// <summary>
         /// 관리자 접속화면 서비스
         /// </summary>
-        /// <param name="userid"></param>
-        /// <param name="password"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<string?>> AdminLoginService(LoginDTO dto)
         {
@@ -220,8 +209,6 @@ namespace FamTec.Server.Services.Admin.Account
         /// <summary>
         /// 관리자 아이디 생성 서비스
         /// </summary>
-        /// <param name="dto"></param>
-        /// <param name="session"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<int?>> AdminRegisterService(AddManagerDTO dto, IFormFile? files)
         {
@@ -241,9 +228,7 @@ namespace FamTec.Server.Services.Admin.Account
                 // 새로운 파일명칭 생성 - 없으면 String.Empty;
                 string NewFileName = files is not null ? FileService.SetNewFileName(useridx, files) : String.Empty;
 
-
                 // 관리자 관련한 폴더가 없으면 만듬
-                //string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
                 string AdminFileFolderPath = Path.Combine(Common.FileServer, "Administrator");
 
                 di = new DirectoryInfo(AdminFileFolderPath);
@@ -293,7 +278,6 @@ namespace FamTec.Server.Services.Admin.Account
                 model.UpdateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater;
                 model.Image = files is not null ? NewFileName : null;
                 
-
                 UsersTb? userresult = await UserInfoRepository.AddAsync(model).ConfigureAwait(false);
                 if (userresult is null)
                     return new ResponseUnit<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
@@ -335,7 +319,6 @@ namespace FamTec.Server.Services.Admin.Account
                     {
                         FileService.DeleteImageFile(AdminFileFolderPath, model.Image);
                     }
-
                     return new ResponseUnit<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                 }
             }
@@ -352,8 +335,6 @@ namespace FamTec.Server.Services.Admin.Account
         /// <summary>
         /// 관리자 삭제
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="useridx"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<bool?>> DeleteAdminService(List<int> adminidx)
         {
@@ -547,7 +528,6 @@ namespace FamTec.Server.Services.Admin.Account
         /// <summary>
         /// 아이디 중복검사
         /// </summary>
-        /// <param name="userid"></param>
         /// <returns></returns>
         public async Task<ResponseUnit<bool?>> UserIdCheckService(string userid)
         {
@@ -555,15 +535,9 @@ namespace FamTec.Server.Services.Admin.Account
             {
                 UsersTb? UserIdCheck = await UserInfoRepository.UserIdCheck(userid).ConfigureAwait(false);
                 if (UserIdCheck is not null)
-                {
-                    // 이미 사용중인 아이디
                     return new ResponseUnit<bool?>() { message = "이미 사용중인 아이디입니다.", data = false, code = 200 };
-                }
                 else
-                {
-                    // 가능
                     return new ResponseUnit<bool?>() { message = "사용가능한 아이디입니다..", data = true, code = 200 };
-                }
             }
             catch(Exception ex)
             {
@@ -660,6 +634,7 @@ namespace FamTec.Server.Services.Admin.Account
                     refreshToken = refresh,
                     sessionId = sessionId
                 };
+
                 return new ResponseUnit<TokenDTOV2>() { message = "로그인 성공(관리자)", data = returnToken, code = 200 };
             }
             catch(Exception ex)

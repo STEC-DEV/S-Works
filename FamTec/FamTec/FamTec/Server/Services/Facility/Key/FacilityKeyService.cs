@@ -12,24 +12,21 @@ namespace FamTec.Server.Services.Facility.Key
         private readonly IFacilityGroupItemInfoRepository FacilityGroupItemInfoRepository;
         private readonly IFacilityItemKeyInfoRepository FacilityItemKeyInfoRepository;
         private readonly IFacilityItemValueInfoRepository FacilityItemValueInfoRepository;
-
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<FacilityKeyService> CreateBuilderLogger;
-
-        private readonly IHttpContextAccessor HttpContextAccessor;
+        private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<FacilityKeyService> CreateBuilderLogger; /* 콘솔로그 */
 
         public FacilityKeyService(
             IFacilityGroupItemInfoRepository _facilitygroupiteminforepository,
             IFacilityItemKeyInfoRepository _facilityitemkeyinforepository,
             IFacilityItemValueInfoRepository _facilityitemvalueinforepository,
-            ILogService _logservice,
             IHttpContextAccessor _httpcontextaccessor,
+            ILogService _logservice,
             ConsoleLogService<FacilityKeyService> _createbuilderlogger)
         {
             this.FacilityGroupItemInfoRepository = _facilitygroupiteminforepository;
             this.FacilityItemKeyInfoRepository = _facilityitemkeyinforepository;
             this.FacilityItemValueInfoRepository = _facilityitemvalueinforepository;
-
             this.HttpContextAccessor = _httpcontextaccessor;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
@@ -185,7 +182,6 @@ namespace FamTec.Server.Services.Facility.Key
                     }
                 }
                 return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-
             }
             catch(Exception ex)
             {
