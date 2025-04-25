@@ -1,10 +1,9 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
+﻿using FamTec.Server.Helpers;
 using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Maintenence;
 using FamTec.Server.Repository.User;
 using FamTec.Shared.Model;
-using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
@@ -49,25 +48,25 @@ namespace FamTec.Server.Services.Maintenance
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaintenanceDaysDTO>?> GetMaintenanceDaysList()
+        public async Task<ResponseModel<List<MaintenanceDaysDTO>>?> GetMaintenanceDaysList()
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<MaintenanceDaysDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintenanceDaysDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<MaintenanceDaysDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintenanceDaysDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
 
                 List<MaintenanceDaysDTO>? model = await MaintanceRepository.GetMaintenanceDaysData(NowDate, Convert.ToInt32(placeidx)).ConfigureAwait(false);
 
 
-                return new ResponseList<MaintenanceDaysDTO>() { message = "OK", data = model, code = 200 };
+                return new ResponseModel<List<MaintenanceDaysDTO>>() { message = "OK", data = model, code = 200 };
             }
             catch(Exception ex)
             {
@@ -75,7 +74,7 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<MaintenanceDaysDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<MaintenanceDaysDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -84,18 +83,18 @@ namespace FamTec.Server.Services.Maintenance
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaintanceYearPriceDTO>?> GetMaintenanceYearPriceList()
+        public async Task<ResponseModel<List<MaintanceYearPriceDTO>>?> GetMaintenanceYearPriceList()
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<MaintanceYearPriceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceYearPriceDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseList<MaintanceYearPriceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceYearPriceDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 현재 년도의 1월 1일
                 DateTime firstDayOfYear = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0);
@@ -106,11 +105,11 @@ namespace FamTec.Server.Services.Maintenance
                 List<MaintanceYearPriceDTO>? model = await MaintanceRepository.GetMaintenanceYearData(firstDayOfYear, lastDayOfDecember, Convert.ToInt32(placeid)).ConfigureAwait(false);
 
                 if (model is [_, ..])
-                    return new ResponseList<MaintanceYearPriceDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseModel<List<MaintanceYearPriceDTO>>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else if(model.Count == 0)
-                    return new ResponseList<MaintanceYearPriceDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 204 };
+                    return new ResponseModel<List<MaintanceYearPriceDTO>>() { message = "요청이 정상 처리되었습니다.", data = model, code = 204 };
                 else
-                    return new ResponseList<MaintanceYearPriceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseModel<List<MaintanceYearPriceDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
             catch(Exception ex)
             {
@@ -118,51 +117,22 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<MaintanceYearPriceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<MaintanceYearPriceDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
-        public async Task<ResponseList<MaintanceWeekCount>?> GetMaintanceDashBoardDataService()
+        public async Task<ResponseModel<List<MaintanceWeekCount>>?> GetMaintanceDashBoardDataService()
         {
             try
             {
-                #region Regacy
-                /*
-                if (context is null)
-                    return new ResponseList<MaintanceWeekCount>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-                if(String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseList<MaintanceWeekCount>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-
-                // 현재 요일 (0: 일요일, 1: 월요일, 6: 토요일)
-                DayOfWeek currentDayOfWeek = NowDate.DayOfWeek;
-
-                // 현재 날짜가 있는 주 의 첫날(월요일)을 구하기 위해 현재 요일에서 DayOfWeek.Month를 뺌
-                int daysToSubtract = (int)currentDayOfWeek - (int)DayOfWeek.Monday;
-
-                // 일요일인 경우, 첫날을 월요일로 설정하기 위해 7을 더함.
-                if (daysToSubtract < 0)
-                {
-                    daysToSubtract += 7;
-                }
-
-                // 월요일
-                DateTime startOfWeek = NowDate.AddDays(-daysToSubtract);
-                DateTime EndOfWeek = startOfWeek.AddDays(7);
-                */
-                #endregion
-
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<MaintanceWeekCount>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceWeekCount>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseList<MaintanceWeekCount>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceWeekCount>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 DateTime ToDays = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
 
@@ -173,7 +143,7 @@ namespace FamTec.Server.Services.Maintenance
                 List<MaintanceWeekCount>? WeekListData = await MaintanceRepository.GetMaintanceDashBoardData(startOfWeek, EndOfWeek, Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if (WeekListData is null)
                 {
-                    ResponseList<MaintanceWeekCount> model = new ResponseList<MaintanceWeekCount>()
+                    ResponseModel<List<MaintanceWeekCount>> model = new ResponseModel<List<MaintanceWeekCount>>()
                     {
                         message = "요청이 정상처리되었습니다.",
                         data = new List<MaintanceWeekCount>(),
@@ -184,7 +154,7 @@ namespace FamTec.Server.Services.Maintenance
                 }
                 else
                 {
-                    ResponseList<MaintanceWeekCount> model = new ResponseList<MaintanceWeekCount>()
+                    ResponseModel<List<MaintanceWeekCount>> model = new ResponseModel<List<MaintanceWeekCount>>()
                     {
                         message = "요청이 정상처리되었습니다.",
                         data = WeekListData,
@@ -200,29 +170,29 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<MaintanceWeekCount>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<MaintanceWeekCount>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
-        public async Task<ResponseUnit<bool?>> AddMaintanceImageService(int id, IFormFile? files)
+        public async Task<ResponseModel<bool?>> AddMaintanceImageService(int id, IFormFile? files)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if(String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 bool? ImageAddResult = await MaintanceRepository.AddMaintanceImageAsync(id, Int32.Parse(placeid), files).ConfigureAwait(false);
                 return ImageAddResult switch
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
             }
             catch(Exception ex)
@@ -231,7 +201,7 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -241,21 +211,21 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<FailResult?>> AddMaintanceService(AddMaintenanceDTO dto)
+        public async Task<ResponseModel<FailResult?>> AddMaintanceService(AddMaintenanceDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
-                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? userid = Convert.ToString(context.Items["UserIdx"]);
 
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(userid))
-                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (dto.Type is 0) // 자체작업
                 {
@@ -268,29 +238,29 @@ namespace FamTec.Server.Services.Maintenance
                         // 유지보수 상태 알림
                         await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
 
-                        return new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
+                        return new ResponseModel<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
                     }
                     else if (MaintanceId!.ReturnResult == 0)
                     {
-                        return new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = MaintanceId, code = 422 };
+                        return new ResponseModel<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = MaintanceId, code = 422 };
                     }
                     else if (MaintanceId!.ReturnResult == -1)
                     {
-                        return new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = MaintanceId, code = 409 };
+                        return new ResponseModel<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = MaintanceId, code = 409 };
                     }
                     else if (MaintanceId!.ReturnResult == -2)
                     {
-                        return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 };
+                        return new ResponseModel<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 };
                     }
                     else
                     {
-                        return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 };
+                        return new ResponseModel<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 };
                     }
                 }
                 else if (dto.Type is 1) // 외주작업
                 {
                     if (dto.TotalPrice is 0)
-                        return new ResponseUnit<FailResult?> { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<FailResult?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                     FailResult? MaintanceId = await MaintanceRepository.AddOutSourcingMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid)).ConfigureAwait(false);
 
@@ -299,20 +269,20 @@ namespace FamTec.Server.Services.Maintenance
                         // 유지보수 상태 알림 - 외주작업은 자재를 안쓰기때문에 소켓 1개
                         await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
 
-                        return new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
+                        return new ResponseModel<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
                     }
                     else if(MaintanceId!.ReturnResult == -2)
                     {
-                        return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 };
+                        return new ResponseModel<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 };
                     }
                     else
                     {
-                        return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 };
+                        return new ResponseModel<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 };
                     }
                 }
                 else
                 {
-                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
             }
             catch (Exception ex)
@@ -321,7 +291,7 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -331,21 +301,21 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<FailResult?>> AddSupMaintanceService(AddMaintanceMaterialDTO dto)
+        public async Task<ResponseModel<FailResult?>> AddSupMaintanceService(AddMaintanceMaterialDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
-                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? userid = Convert.ToString(context.Items["UserIdx"]);
 
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(userid))
-                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 FailResult? MaintanceId = await MaintanceRepository.AddMaintanceMaterialAsync(dto, creater, Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if(MaintanceId!.ReturnResult > 0)
@@ -355,23 +325,23 @@ namespace FamTec.Server.Services.Maintenance
                     // 유지보수 상태 알림
                     await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
 
-                    return new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
+                    return new ResponseModel<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
                 }
                 else if(MaintanceId!.ReturnResult == 0)
                 {
-                    return new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = MaintanceId, code = 422 };
+                    return new ResponseModel<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = MaintanceId, code = 422 };
                 }
                 else if(MaintanceId!.ReturnResult == -1)
                 {
-                    return new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = MaintanceId, code = 409 };
+                    return new ResponseModel<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = MaintanceId, code = 409 };
                 }
                 else if(MaintanceId!.ReturnResult == -2)
                 {
-                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 };
+                    return new ResponseModel<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 };
                 }
                 else
                 {
-                    return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 };
+                    return new ResponseModel<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 };
                 }
             }
             catch(Exception ex)
@@ -380,7 +350,7 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -390,19 +360,19 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteMaintenanceStoreRecordService(DeleteMaintanceDTO dto)
+        public async Task<ResponseModel<bool?>> DeleteMaintenanceStoreRecordService(DeleteMaintanceDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? deleter = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(deleter))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
                 bool? DeleteResult = await MaintanceRepository.deleteMaintenanceStoreRecord(dto, Int32.Parse(placeid), deleter).ConfigureAwait(false);
                 if(DeleteResult == true)
@@ -413,15 +383,15 @@ namespace FamTec.Server.Services.Maintenance
                     // 유지보수 상태 알림
                     await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
 
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                    return new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else if(DeleteResult == false)
                 {
-                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 200 };
+                    return new ResponseModel<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
             }
             catch(Exception ex)
@@ -430,7 +400,7 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -440,20 +410,20 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteMaintenanceRecordService(DeleteMaintanceDTO2 dto)
+        public async Task<ResponseModel<bool?>> DeleteMaintenanceRecordService(DeleteMaintanceDTO2 dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? deleter = Convert.ToString(context.Items["Name"]);
 
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(deleter))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
                 bool? DeleteResult = await MaintanceRepository.deleteMaintenanceRecord(dto, Int32.Parse(placeid), deleter).ConfigureAwait(false);
 
@@ -465,15 +435,15 @@ namespace FamTec.Server.Services.Maintenance
                     // 유지보수 상태 알림
                     await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
 
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                    return new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else if(DeleteResult == false)
                 {
-                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
+                    return new ResponseModel<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
             }
             catch(Exception ex)
@@ -482,7 +452,7 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다", data = null, code = 500 };
             }
         }
 
@@ -492,31 +462,31 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="facilityid"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaintanceListDTO>> GetMaintanceHistoryService(int facilityid)
+        public async Task<ResponseModel<List<MaintanceListDTO>>> GetMaintanceHistoryService(int facilityid)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<MaintanceListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceListDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if(String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseList<MaintanceListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceListDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 // 여기 더 추가해야함
                 
                 FacilityTb? VaildFacility = await FacilityInfoRepository.GetFacilityInfo(facilityid).ConfigureAwait(false);
                 if(VaildFacility is null)
-                    return new ResponseList<MaintanceListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceListDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<MaintanceListDTO>? dto = await MaintanceRepository.GetFacilityHistoryList(facilityid, Int32.Parse(placeid)).ConfigureAwait(false);
                 
 
                 if (dto is not null && dto.Any())
-                    return new ResponseList<MaintanceListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<List<MaintanceListDTO>>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 else
-                    return new ResponseList<MaintanceListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<List<MaintanceListDTO>>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
 
             }
             catch(Exception ex)
@@ -525,7 +495,7 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<MaintanceListDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<MaintanceListDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -538,24 +508,24 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="category"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaintanceHistoryDTO>?> GetDateHistoryList(DateTime StartDate, DateTime EndDate, List<string> category, List<int> type)
+        public async Task<ResponseModel<List<MaintanceHistoryDTO>>?> GetDateHistoryList(DateTime StartDate, DateTime EndDate, List<string> category, List<int> type)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? UserId = Convert.ToString(context.Items["UserIdx"]);
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 
                 if(String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserId))
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 UsersTb? UserTB = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserId));
                 if(UserTB is null)
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // -- USER 권한검사
                 // 권한과 명칭을 쌍으로 매핑
@@ -579,14 +549,14 @@ namespace FamTec.Server.Services.Maintenance
                 List<string> PermCheck = category.Except(UserPerm).ToList();
 
                 if (PermCheck.Count() > 0)
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "권한이 일치하지 않습니다.", data = null, code = 401 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "권한이 일치하지 않습니다.", data = null, code = 401 };
 
                 List<MaintanceHistoryDTO>? model = await MaintanceRepository.GetDateHistoryList(Convert.ToInt32(placeid), StartDate, EndDate, category, type).ConfigureAwait(false);
 
                 if (model is not null && model.Any())
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "데이터가 존재하지 않습니다.", data = model, code = 200 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "데이터가 존재하지 않습니다.", data = model, code = 200 };
             }
             catch(Exception ex)
             {
@@ -594,7 +564,7 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<MaintanceHistoryDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -607,24 +577,24 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="category"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaintanceHistoryDTO>?> GetMonthHistoryList(string searchdate, List<string> category, List<int> type)
+        public async Task<ResponseModel<List<MaintanceHistoryDTO>>?> GetMonthHistoryList(string searchdate, List<string> category, List<int> type)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? UserId = Convert.ToString(context.Items["UserIdx"]);
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
 
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserId))
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 UsersTb? UserTB = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserId));
                 if (UserTB is null)
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // -- USER 권한검사
                 // 권한과 명칭을 쌍으로 매핑
@@ -648,7 +618,7 @@ namespace FamTec.Server.Services.Maintenance
                 List<string> PermCheck = category.Except(UserPerm).ToList();
 
                 if (PermCheck.Count() > 0)
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "권한이 일치하지 않습니다.", data = null, code = 401 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "권한이 일치하지 않습니다.", data = null, code = 401 };
 
 
                 string[] splitDate = searchdate.Split('-');
@@ -660,19 +630,19 @@ namespace FamTec.Server.Services.Maintenance
                 // 년도 숫자값 맞는지 검사
                 bool checkDate = int.TryParse(year, out checkResult);
                 if (!checkDate)
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 월 숫자값 맞는지 검사
                 checkDate = int.TryParse(month, out checkResult);
                 if(!checkDate)
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<MaintanceHistoryDTO>? model = await MaintanceRepository.GetMonthHistoryList(Convert.ToInt32(placeid), category, type, Convert.ToInt32(year), Convert.ToInt32(month)).ConfigureAwait(false);
 
                 if (model is not null && model.Any())
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
-                    return new ResponseList<MaintanceHistoryDTO>() { message = "데이터가 존재하지 않습니다.", data = model, code = 200 };
+                    return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "데이터가 존재하지 않습니다.", data = model, code = 200 };
             }
             catch(Exception ex)
             {
@@ -680,7 +650,7 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<MaintanceHistoryDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<MaintanceHistoryDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -691,24 +661,24 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="category"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<ResponseList<AllMaintanceHistoryDTO>?> GetAllHistoryList(List<string> category, List<int> type)
+        public async Task<ResponseModel<List<AllMaintanceHistoryDTO>>?> GetAllHistoryList(List<string> category, List<int> type)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<AllMaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AllMaintanceHistoryDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? UserId = Convert.ToString(context.Items["UserIdx"]);
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserId))
-                    return new ResponseList<AllMaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AllMaintanceHistoryDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
                 UsersTb? UserTB = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserId));
                 if (UserTB is null)
-                    return new ResponseList<AllMaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AllMaintanceHistoryDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // -- USER 권한검사
                 // 권한과 명칭을 쌍으로 매핑
@@ -732,15 +702,15 @@ namespace FamTec.Server.Services.Maintenance
                 List<string> PermCheck = category.Except(UserPerm).ToList();
 
                 if (PermCheck.Count() > 0)
-                    return new ResponseList<AllMaintanceHistoryDTO>() { message = "권한이 일치하지 않습니다.", data = null, code = 401 };
+                    return new ResponseModel<List<AllMaintanceHistoryDTO>>() { message = "권한이 일치하지 않습니다.", data = null, code = 401 };
 
 
                 List<AllMaintanceHistoryDTO>? model = await MaintanceRepository.GetAllHistoryList(Convert.ToInt32(placeid), category, type).ConfigureAwait(false);
 
                 if (model is not null && model.Any())
-                    return new ResponseList<AllMaintanceHistoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseModel<List<AllMaintanceHistoryDTO>>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
-                    return new ResponseList<AllMaintanceHistoryDTO>() { message = "데이터가 존재하지 않습니다.", data = model, code = 200 };
+                    return new ResponseModel<List<AllMaintanceHistoryDTO>>() { message = "데이터가 존재하지 않습니다.", data = model, code = 200 };
 
             }
             catch (Exception ex)
@@ -749,7 +719,7 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<AllMaintanceHistoryDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<AllMaintanceHistoryDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -759,26 +729,26 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="MaintanceID"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<DetailMaintanceDTO?>> GetDetailService(int MaintanceID, bool isMobile)
+        public async Task<ResponseModel<DetailMaintanceDTO?>> GetDetailService(int MaintanceID, bool isMobile)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<DetailMaintanceDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<DetailMaintanceDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<DetailMaintanceDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<DetailMaintanceDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 수정임
                 DetailMaintanceDTO? model = await MaintanceRepository.DetailMaintanceList(MaintanceID, Int32.Parse(placeid), isMobile).ConfigureAwait(false);
 
                 if (model is not null)
-                    return new ResponseUnit<DetailMaintanceDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseModel<DetailMaintanceDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
-                    return new ResponseUnit<DetailMaintanceDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<DetailMaintanceDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                
             }
             catch(Exception ex)
@@ -787,7 +757,7 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<DetailMaintanceDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<DetailMaintanceDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -797,7 +767,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateMaintenanceService(UpdateMaintenanceDTO dto, IFormFile? files)
+        public async Task<ResponseModel<bool?>> UpdateMaintenanceService(UpdateMaintenanceDTO dto, IFormFile? files)
         {
             try
             {
@@ -812,7 +782,7 @@ namespace FamTec.Server.Services.Maintenance
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
@@ -821,7 +791,7 @@ namespace FamTec.Server.Services.Maintenance
                 DateTime ThisDate = DateTime.Now;
 
                 if (String.IsNullOrWhiteSpace(UserIdx) || String.IsNullOrWhiteSpace(updater) || String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 MaintanceFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Maintance");
 
@@ -831,7 +801,7 @@ namespace FamTec.Server.Services.Maintenance
                 MaintenenceHistoryTb? model = await MaintanceRepository.GetMaintenanceInfo(dto.MaintanceID).ConfigureAwait(false);
 
                 if(model is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Name = dto.WorkName!; // 유지보수명
                 model.Worker = dto.Worker!; // 작업자
@@ -902,7 +872,7 @@ namespace FamTec.Server.Services.Maintenance
                     await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
 
                     // 성공하면 그걸로 끝
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                    return new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else
                 {
@@ -941,7 +911,7 @@ namespace FamTec.Server.Services.Maintenance
                         }
                     }
 
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
             }
             catch(Exception ex)
@@ -950,7 +920,7 @@ namespace FamTec.Server.Services.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
     }

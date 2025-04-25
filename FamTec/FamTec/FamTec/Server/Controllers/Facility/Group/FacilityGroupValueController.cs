@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Facility.Value;
 using FamTec.Shared.Server.DTO;
@@ -44,7 +45,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (String.IsNullOrWhiteSpace(dto.Value))
                     return NoContent();
 
-                ResponseUnit<AddValueDTO>? model = await FacilityValueService.AddValueService(dto).ConfigureAwait(false);
+                ResponseModel<AddValueDTO>? model = await FacilityValueService.AddValueService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -80,7 +81,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (String.IsNullOrWhiteSpace(dto.ItemValue))
                     return NoContent();
 
-                ResponseUnit<UpdateValueDTO> model = await FacilityValueService.UpdateValueService(dto).ConfigureAwait(false);
+                ResponseModel<UpdateValueDTO> model = await FacilityValueService.UpdateValueService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -106,7 +107,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
-                ResponseUnit<bool?> model = await FacilityValueService.DeleteValueService(valueid).ConfigureAwait(false);
+                ResponseModel<bool?> model = await FacilityValueService.DeleteValueService(valueid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

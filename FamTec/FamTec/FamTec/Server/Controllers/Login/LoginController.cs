@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Admin.Account;
 using FamTec.Server.Services.Admin.Place;
@@ -15,7 +16,7 @@ namespace FamTec.Server.Controllers.Login
     [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class LoginController : ApiControllerBase
     {
         private readonly IAdminAccountService AdminAccountService;
         private readonly IAdminPlaceService AdminPlaceService;
@@ -55,8 +56,8 @@ namespace FamTec.Server.Controllers.Login
                     return NoContent();
                 if (String.IsNullOrWhiteSpace(dto.UserPassword))
                     return NoContent();
-                
-                ResponseUnit<string?> model = await AdminAccountService.AdminLoginService(dto).ConfigureAwait(false);
+
+                ResponseModel<string?> model = await AdminAccountService.AdminLoginService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest(model);
@@ -126,7 +127,7 @@ namespace FamTec.Server.Controllers.Login
                 if (String.IsNullOrWhiteSpace(dto.UserPassword))
                     return NoContent();
 
-                ResponseUnit<string?> model = await UserService.GetQRLogin(dto).ConfigureAwait(false);
+                ResponseModel<string?> model = await UserService.GetQRLogin(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -172,7 +173,7 @@ namespace FamTec.Server.Controllers.Login
                 if(String.IsNullOrWhiteSpace(dto.UserPassword))
                     return NoContent();
 
-                ResponseUnit<string?> model = await UserService.UserLoginService(dto).ConfigureAwait(false);
+                ResponseModel<string?> model = await UserService.UserLoginService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -209,14 +210,8 @@ namespace FamTec.Server.Controllers.Login
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksList().ConfigureAwait(false);
-                if (model is null)
-                    return BadRequest();
-
-                if (model.code == 200)
-                    return Ok(model);
-                else
-                    return BadRequest();
+                ResponseModel<List<AdminPlaceDTO>> model = await AdminPlaceService.GetMyWorksList().ConfigureAwait(false);
+                return FromService(model);
             }
             catch(Exception ex)
             {
@@ -226,7 +221,6 @@ namespace FamTec.Server.Controllers.Login
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
-           
         }
 
 
@@ -245,7 +239,7 @@ namespace FamTec.Server.Controllers.Login
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<string?> model = await UserService.LoginSelectPlaceService(placeid).ConfigureAwait(false);
+                ResponseModel<string?> model = await UserService.LoginSelectPlaceService(placeid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -290,7 +284,7 @@ namespace FamTec.Server.Controllers.Login
                 if (String.IsNullOrWhiteSpace(dto.UserPassword))
                     return NoContent();
 
-                ResponseUnit<TokenDTOV2>? model = await UserService.WebUserLoginService(dto).ConfigureAwait(false);
+                ResponseModel<TokenDTOV2>? model = await UserService.WebUserLoginService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

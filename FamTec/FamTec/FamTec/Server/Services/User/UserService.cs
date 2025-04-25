@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using FamTec.Server.Helpers;
 using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
@@ -129,14 +130,14 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> ImportUserService(IFormFile? file)
+        public async Task<ResponseModel<bool>> ImportUserService(IFormFile? file)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 400 };
+                    return new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 400 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
@@ -144,7 +145,7 @@ namespace FamTec.Server.Services.User
                 DateTime ThisDate = DateTime.Now;
 
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 List<ExcelUserInfo> userlist = new List<ExcelUserInfo>();
 
@@ -158,15 +159,15 @@ namespace FamTec.Server.Services.User
                         int total = worksheet.LastRowUsed().RowNumber(); // Row 개수 반환
 
                         if (worksheet.Cell("A2").GetValue<string>().Trim() != "*아이디")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("B2").GetValue<string>().Trim() != "이름")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("C2").GetValue<string>().Trim() != "이메일")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("D2").GetValue<string>().Trim() != "전화번호")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("E2").GetValue<string>().Trim() != "직책")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
 
                         for (int i = 3; i <= total; i++)
                         {
@@ -176,7 +177,7 @@ namespace FamTec.Server.Services.User
 
                             if (String.IsNullOrWhiteSpace(Data.UserID))
                             {
-                                return new ResponseUnit<bool>() { message = "시트의 아이디는 공백이 될 수 없습니다.", data = false, code = 204 };
+                                return new ResponseModel<bool>() { message = "시트의 아이디는 공백이 될 수 없습니다.", data = false, code = 204 };
                                 //Data.UserID = Guid.NewGuid().ToString(); // 공백 또는 Null이면 대체값이라도 들어가게
                             }
 
@@ -216,13 +217,13 @@ namespace FamTec.Server.Services.User
                         }
 
                         if (userlist is not [_, ..])
-                            return new ResponseUnit<bool>() { message = "등록할 사용자 정보가 없습니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "등록할 사용자 정보가 없습니다.", data = false, code = 204 };
 
                         // 엑셀에 중복된 데이터를 기입했는지 검사
                         var excelCheck = userlist.GroupBy(x => x.UserID).Where(p => p.Count() > 1).ToList();
                         if (excelCheck.Count() > 0)
                         {
-                            return new ResponseUnit<bool>
+                            return new ResponseModel<bool>
                             {
                                 message = $"사용자 ID는 중복이 될 수 없습니다. {excelCheck.Count}개의 중복이 있습니다. 중복 제거후 다시 시도하세요.",
                                 data = false,
@@ -241,7 +242,7 @@ namespace FamTec.Server.Services.User
                             if (dbCheck.Count() > 0)
                             {
                                 // DB에 중복된 데이터가 하나 이상 있음.
-                                return new ResponseUnit<bool>() { message = $"이미 사용중인 아이디가 {dbCheck.Count()}개 있습니다 중복 제거후 다시 시도하세요.", data = false, code = 200 };
+                                return new ResponseModel<bool>() { message = $"이미 사용중인 아이디가 {dbCheck.Count()}개 있습니다 중복 제거후 다시 시도하세요.", data = false, code = 200 };
                             }
                         }
 
@@ -290,9 +291,9 @@ namespace FamTec.Server.Services.User
 
                         return AddResult switch
                         {
-                            true => new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                            false => new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                            _ => new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 }
+                            true => new ResponseModel<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                            false => new ResponseModel<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                            _ => new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 }
                         };
                     }
                 }
@@ -303,31 +304,31 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                return new ResponseModel<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
 
 
-        public async Task<ResponseUnit<string?>> GetQRLogin(QRLoginDTO dto)
+        public async Task<ResponseModel<string?>> GetQRLogin(QRLoginDTO dto)
         {
             try
             {
                 if (String.IsNullOrWhiteSpace(dto.UserId) || String.IsNullOrWhiteSpace(dto.UserPassword))
-                    return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                 
                 if(dto.placeid is 0)
-                    return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 UsersTb? UserTB = await UserInfoRepository.GetUserInfo(dto.UserId, dto.UserPassword).ConfigureAwait(false);
                 if (UserTB is null)
-                    return new ResponseUnit<string?>() { message = "존재하지 않는 사용자입니다.", data = null, code = 204 };
+                    return new ResponseModel<string?>() { message = "존재하지 않는 사용자입니다.", data = null, code = 204 };
 
                 PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(dto.placeid).ConfigureAwait(false);
                 if (PlaceTB is null)
-                    return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 if (PlaceTB.Status == false)
-                    return new ResponseUnit<string?>() { message = "해약된 사업장은 접근이 불가능합니다.", data = null, code = 201 };
+                    return new ResponseModel<string?>() { message = "해약된 사업장은 접근이 불가능합니다.", data = null, code = 201 };
 
 
 
@@ -414,14 +415,14 @@ namespace FamTec.Server.Services.User
                         signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
 
                     string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-                    return new ResponseUnit<string?>() { message = "로그인 성공(유저).", data = accessToken, code = 200 };
+                    return new ResponseModel<string?>() { message = "로그인 성공(유저).", data = accessToken, code = 200 };
                 }
                 else
                 {
                     // 관리자
                     AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(UserTB.Id).ConfigureAwait(false);
                     if (admintb is null || String.IsNullOrWhiteSpace(admintb.Type))
-                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                     var authClaims = new List<Claim>
                     {
@@ -448,7 +449,7 @@ namespace FamTec.Server.Services.User
                      };
 
                     if (roleMapping is null)
-                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                     string? role = String.Empty;
                     if (roleMapping.TryGetValue(admintb.Type, out var mappedRole))
@@ -457,7 +458,7 @@ namespace FamTec.Server.Services.User
                     }
                     else
                     {
-                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                     }
 
                     authClaims.Add(new Claim("Role", role));
@@ -528,7 +529,7 @@ namespace FamTec.Server.Services.User
                         signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
 
                     string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-                    return new ResponseUnit<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 200 };
+                    return new ResponseModel<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 200 };
                 }
             }
             catch(Exception ex)
@@ -537,7 +538,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
        
@@ -751,37 +752,37 @@ namespace FamTec.Server.Services.User
             }
         }
 
-        public async Task<ResponseUnit<string?>> LoginSelectPlaceService(int placeid)
+        public async Task<ResponseModel<string?>> LoginSelectPlaceService(int placeid)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if(context is null)
-                    return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? adminidx = Convert.ToString(context.Items["AdminIdx"]);
                 if (adminidx is null)
-                    return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 List<AdminPlaceTb>? adminplace = await AdminPlaceInfoRepository.GetMyWorksList(Convert.ToInt32(adminidx)).ConfigureAwait(false);
                 if (adminplace is null || !adminplace.Any())
-                    return new ResponseUnit<string?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
+                    return new ResponseModel<string?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
 
                 AdminPlaceTb? selectplace = adminplace.FirstOrDefault(m => m.PlaceTbId == placeid);
                 if(selectplace is null)
-                    return new ResponseUnit<string?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
+                    return new ResponseModel<string?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
 
                 PlaceTb? placeInfo = await PlaceInfoRepository.GetByPlaceInfo(placeid).ConfigureAwait(false);
                 if (placeInfo is null || placeInfo.Name is null)
-                    return new ResponseUnit<string?>() { message = "사업장이 존재하지 않습니다.", data = null, code = 404 };
+                    return new ResponseModel<string?>() { message = "사업장이 존재하지 않습니다.", data = null, code = 404 };
 
                 /*
                  * 해약된 사업장 로그인못하게 
                  * Status(계약상태) true : 계약 / false : 해약
                  */
                 if (placeInfo.Status == false)
-                    return new ResponseUnit<string?>() { message = "해약된 사업장은 접근이 불가능합니다.", data = null, code = 200 };
+                    return new ResponseModel<string?>() { message = "해약된 사업장은 접근이 불가능합니다.", data = null, code = 200 };
 
                 /* USER TOKEN 검사 */
                 var checkUserToken = new[]
@@ -792,7 +793,7 @@ namespace FamTec.Server.Services.User
                 foreach (var key in checkUserToken)
                 {
                     if (String.IsNullOrWhiteSpace(context.Items[key]?.ToString()))
-                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
 
                 var authClaims = new List<Claim>
@@ -829,7 +830,7 @@ namespace FamTec.Server.Services.User
                 }
                 else
                 {
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
 
                 authClaims.Add(new Claim("Role", role));
@@ -856,7 +857,7 @@ namespace FamTec.Server.Services.User
                 foreach (var key in checkPermToken)
                 {
                     if (String.IsNullOrWhiteSpace(context.Items[key]?.ToString()))
-                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
 
                 var userPermissions = new JObject
@@ -894,7 +895,7 @@ namespace FamTec.Server.Services.User
                 foreach (var key in checkVocPermToken)
                 {
                     if (String.IsNullOrWhiteSpace(context.Items[key]?.ToString()))
-                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
 
                 var vocPermissions = new JObject
@@ -915,7 +916,7 @@ namespace FamTec.Server.Services.User
                 foreach (var key in checkPermToken)
                 {
                     if (String.IsNullOrWhiteSpace(context.Items[key]?.ToString()))
-                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
 
                 var placePermissions = new JObject
@@ -947,7 +948,7 @@ namespace FamTec.Server.Services.User
 
                 string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-                return new ResponseUnit<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 200 };
+                return new ResponseModel<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 200 };
             }
             catch (Exception ex)
             {
@@ -955,7 +956,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -964,13 +965,13 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<string?>> UserLoginService(LoginDTO dto)
+        public async Task<ResponseModel<string?>> UserLoginService(LoginDTO dto)
         {
             try
             {
                 UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID!, dto.UserPassword!).ConfigureAwait(false);
                 if (usertb is null)
-                    return new ResponseUnit<string?>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 400 };
+                    return new ResponseModel<string?>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 400 };
 
                 bool? AdminYN = usertb.AdminYn;
                 if(AdminYN == false) // 일반유저
@@ -978,14 +979,14 @@ namespace FamTec.Server.Services.User
                     PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(usertb.PlaceTbId!.Value).ConfigureAwait(false);
 
                     if (placetb is null)
-                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                     /*
                     * 해약된 사업장 로그인못하게 
                     * Status(계약상태) true : 계약 / false : 해약
                     */
                     if (placetb.Status == false)
-                        return new ResponseUnit<string?>() { message = "해약된 사업장은 접근이 불가능합니다.", data = null, code = 200 };
+                        return new ResponseModel<string?>() { message = "해약된 사업장은 접근이 불가능합니다.", data = null, code = 200 };
 
                     var authClaims = new List<Claim>
                     {
@@ -1068,14 +1069,14 @@ namespace FamTec.Server.Services.User
                         signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
 
                     string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-                    return new ResponseUnit<string?>() { message = "로그인 성공(유저).", data = accessToken, code = 200 };
+                    return new ResponseModel<string?>() { message = "로그인 성공(유저).", data = accessToken, code = 200 };
                 }
                 else // 관리자
                 {
                     // 위에만큼 담는데 (사업장 은 빼고)
                     AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(usertb.Id);
                     if(admintb is null || String.IsNullOrWhiteSpace(admintb.Type))
-                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                     var authClaims = new List<Claim>
                     {
@@ -1096,7 +1097,7 @@ namespace FamTec.Server.Services.User
                         _ => null
                     };
                     if(String.IsNullOrWhiteSpace(adminType))
-                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                     
                     authClaims.Add(new Claim("Role", admintb.Type));
                     authClaims.Add(new Claim(ClaimTypes.Role, adminType));
@@ -1148,7 +1149,7 @@ namespace FamTec.Server.Services.User
                             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
 
                         string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-                        return new ResponseUnit<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 201 };
+                        return new ResponseModel<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 201 };
                 }
             }
             catch (Exception ex)
@@ -1157,7 +1158,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
         
@@ -1166,24 +1167,24 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async Task<ResponseList<ListUser>> GetPlaceUserList()
+        public async Task<ResponseModel<List<ListUser>>> GetPlaceUserList()
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<ListUser>() { message = "잘못된 요청입니다.", data = new List<ListUser>(), code = 404 };
+                    return new ResponseModel<List<ListUser>>() { message = "잘못된 요청입니다.", data = new List<ListUser>(), code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 if(String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<ListUser>() { message = "잘못된 요청입니다.", data = new List<ListUser>(), code = 404 };
+                    return new ResponseModel<List<ListUser>> () { message = "잘못된 요청입니다.", data = new List<ListUser>(), code = 404 };
 
                 List<UsersTb>? model = await UserInfoRepository.GetPlaceUserList(Convert.ToInt32(placeidx)).ConfigureAwait(false);
 
                 if (model is [_, ..])
                 {
-                    return new ResponseList<ListUser>()
+                    return new ResponseModel<List<ListUser>>()
                     {
                         message = "요청이 정상 처리되었습니다",
                         data = model.Select(e => new ListUser()
@@ -1202,7 +1203,7 @@ namespace FamTec.Server.Services.User
                 }
                 else
                 {
-                    return new ResponseList<ListUser>() { message = "데이터가 존재하지 않습니다.", data = new List<ListUser>(), code = 200 };
+                    return new ResponseModel<List<ListUser>> { message = "데이터가 존재하지 않습니다.", data = new List<ListUser>(), code = 200 };
                 }
                
             }
@@ -1212,7 +1213,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<ListUser>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<ListUser>(), code = 500 };
+                return new ResponseModel<List<ListUser>> { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<ListUser>(), code = 500 };
             }
         }
 
@@ -1222,14 +1223,14 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<UsersDTO>> AddUserService(UsersDTO dto, IFormFile? files)
+        public async Task<ResponseModel<UsersDTO>> AddUserService(UsersDTO dto, IFormFile? files)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseModel<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 string? Creater = Convert.ToString(context.Items["Name"]);
                 string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
@@ -1238,18 +1239,18 @@ namespace FamTec.Server.Services.User
                 DateTime ThisDate = DateTime.Now;
                 
                 if (String.IsNullOrWhiteSpace(Creater) || String.IsNullOrWhiteSpace(PlaceIdx) || String.IsNullOrWhiteSpace(UserIdx))
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseModel<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 UsersTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx)).ConfigureAwait(false);
                 if (TokenChk is null)
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseModel<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 if (TokenChk.PermUser != 2)
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseModel<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 UsersTb? CheckUserId = await UserInfoRepository.UserIdCheck(dto.USERID!).ConfigureAwait(false);
                 if (CheckUserId is not null)
-                    return new ResponseUnit<UsersDTO>() { message = "이미 존재하는 아이디입니다.", data = null, code = 204 };
+                    return new ResponseModel<UsersDTO>() { message = "이미 존재하는 아이디입니다.", data = null, code = 204 };
                 
                 string NewFileName = String.Empty;
                 if (files is not null)
@@ -1316,15 +1317,15 @@ namespace FamTec.Server.Services.User
                         bool? AddFile = await FileService.AddResizeImageFile(NewFileName, PlaceFileFolderPath, files).ConfigureAwait(false);
                     }
 
-                    return new ResponseUnit<UsersDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<UsersDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else if(result == false)
                 {
-                    return new ResponseUnit<UsersDTO>() { message = "중복된 아이디입니다.", data = dto, code = 204 };
+                    return new ResponseModel<UsersDTO>() { message = "중복된 아이디입니다.", data = dto, code = 204 };
                 }
                 else
                 {
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseModel<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
                 }
             }
             catch(Exception ex)
@@ -1333,33 +1334,33 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
-        public async Task<ResponseUnit<UsersDTO>> GetUserDetails(int id, bool isMobile)
+        public async Task<ResponseModel<UsersDTO>> GetUserDetails(int id, bool isMobile)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseModel<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
                 if (String.IsNullOrWhiteSpace(UserIdx))
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseModel<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseModel<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 UsersTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx)).ConfigureAwait(false);
                 if (TokenChk is null)
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseModel<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 if (TokenChk.PermUser < 1)
-                    return new ResponseUnit<UsersDTO>() { message = "접근 권한이 없습니다.", data = new UsersDTO(), code = 200 };
+                    return new ResponseModel<UsersDTO>() { message = "접근 권한이 없습니다.", data = new UsersDTO(), code = 200 };
 
                 UsersTb? model = await UserInfoRepository.GetUserIndexInfo(id).ConfigureAwait(false);
 
@@ -1445,7 +1446,7 @@ namespace FamTec.Server.Services.User
                             }
                         }
 
-                        return new ResponseUnit<UsersDTO>()
+                        return new ResponseModel<UsersDTO>()
                         {
                             message = "요청이 정상 처리되었습니다.",
                             data = dto,
@@ -1492,7 +1493,7 @@ namespace FamTec.Server.Services.User
                             }
                         }
 
-                        return new ResponseUnit<UsersDTO>()
+                        return new ResponseModel<UsersDTO>()
                         {
                             message = "요청이 정상 처리되었습니다.",
                             data = dto,
@@ -1502,7 +1503,7 @@ namespace FamTec.Server.Services.User
                 }
                 else
                 {
-                    return new ResponseUnit<UsersDTO>() { message = "데이터가 존재하지 않습니다.", data = new UsersDTO(), code = 200 };
+                    return new ResponseModel<UsersDTO>() { message = "데이터가 존재하지 않습니다.", data = new UsersDTO(), code = 200 };
                 }
             }
             catch(Exception ex)
@@ -1511,7 +1512,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UsersDTO(), code = 500 };
+                return new ResponseModel<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UsersDTO(), code = 500 };
             }
         }
 
@@ -1521,33 +1522,33 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteUserService(List<int> del)
+        public async Task<ResponseModel<bool?>> DeleteUserService(List<int> del)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 삭제체크
                 foreach (int id in del) 
                 {
                     bool? DelCheck = await UserInfoRepository.DelUserCheck(id).ConfigureAwait(false);
                     if (DelCheck == true)
-                        return new ResponseUnit<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                        return new ResponseModel<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
 
                 bool? DeleteResult = await UserInfoRepository.DeleteUserInfo(del, creater).ConfigureAwait(false);
                 return DeleteResult switch
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
             }
             catch (Exception ex)
@@ -1556,7 +1557,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -1566,7 +1567,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<UsersDTO>> UpdateUserService(UsersDTO dto, IFormFile? files)
+        public async Task<ResponseModel<UsersDTO>> UpdateUserService(UsersDTO dto, IFormFile? files)
         {
             try
             {
@@ -1581,7 +1582,7 @@ namespace FamTec.Server.Services.User
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseModel<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
                 
                 string? Name = Convert.ToString(context.Items["Name"]);
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
@@ -1590,7 +1591,7 @@ namespace FamTec.Server.Services.User
                 DateTime ThisDate = DateTime.Now;
 
                 if (String.IsNullOrWhiteSpace(Name) || String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserIdx))
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseModel<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 PlaceFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Users");
 
@@ -1599,7 +1600,7 @@ namespace FamTec.Server.Services.User
 
                 UsersTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID!.Value).ConfigureAwait(false);
                 if (model is null)
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseModel<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 model.UserId = dto.USERID!.ToLower()!;
                 model.Password = dto.PASSWORD!;
@@ -1703,7 +1704,7 @@ namespace FamTec.Server.Services.User
                 if (updatemodel is not null)
                 {
                     // 성공했으면 그걸로 끝
-                    return new ResponseUnit<UsersDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<UsersDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
                 {
@@ -1737,7 +1738,7 @@ namespace FamTec.Server.Services.User
                         }
                     }
 
-                    return new ResponseUnit<UsersDTO>() { message = "요청이 처리되지 않았습니다.", data = dto, code = 200 };
+                    return new ResponseModel<UsersDTO>() { message = "요청이 처리되지 않았습니다.", data = dto, code = 200 };
                 }
             }
             catch(Exception ex)
@@ -1746,7 +1747,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UsersDTO(), code = 500 };
+                return new ResponseModel<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UsersDTO(), code = 500 };
             }
         }
 
@@ -1757,18 +1758,18 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<PlacePermissionDTO?>> GetMenuPermService()
+        public async Task<ResponseModel<PlacePermissionDTO?>> GetMenuPermService()
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<PlacePermissionDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<PlacePermissionDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<PlacePermissionDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<PlacePermissionDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if(PlaceTB is not null)
@@ -1788,10 +1789,10 @@ namespace FamTec.Server.Services.User
                         PermEnergy = PlaceTB.PermEnergy,
                         PermVoc = PlaceTB.PermVoc
                     };
-                    return new ResponseUnit<PlacePermissionDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseModel<PlacePermissionDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 }
                 else
-                    return new ResponseUnit<PlacePermissionDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<PlacePermissionDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
             }
             catch(Exception ex)
             {
@@ -1799,7 +1800,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<PlacePermissionDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<PlacePermissionDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -1808,16 +1809,16 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<TokenDTOV2>?> WebUserLoginService(LoginDTO dto)
+        public async Task<ResponseModel<TokenDTOV2>?> WebUserLoginService(LoginDTO dto)
         {
             try
             {
                 if (String.IsNullOrWhiteSpace(dto.UserID) || String.IsNullOrWhiteSpace(dto.UserPassword))
-                    return new ResponseUnit<TokenDTOV2>() { message = "필수항목을 확인해주세요.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "필수항목을 확인해주세요.", data = null, code = 404 };
 
                 var UserTB = await UserInfoRepository.GetUserInfo(dto.UserID, dto.UserPassword).ConfigureAwait(false);
                 if (UserTB is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 404 };
 
                 bool AdminYn = UserTB.AdminYn;
                 if(AdminYn) // 관리자
@@ -1827,7 +1828,7 @@ namespace FamTec.Server.Services.User
 
                     var AdminTB = await AdminUserInfoRepository.GetAdminUserInfo(UserTB.Id).ConfigureAwait(false);
                     if (AdminTB is null || String.IsNullOrWhiteSpace(AdminTB.Type))
-                        return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                     var authClaims = new List<Claim>
                     {
@@ -1849,7 +1850,7 @@ namespace FamTec.Server.Services.User
                     };
 
                     if (String.IsNullOrWhiteSpace(adminType))
-                        return new ResponseUnit<TokenDTOV2>() { message = "관리자 권한이 없습니다.", data = null, code = 403 };
+                        return new ResponseModel<TokenDTOV2>() { message = "관리자 권한이 없습니다.", data = null, code = 403 };
 
                     authClaims.Add(new Claim("Role", AdminTB.Type));
                     authClaims.Add(new Claim(ClaimTypes.Role, adminType));
@@ -1906,7 +1907,7 @@ namespace FamTec.Server.Services.User
 
                     var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken).ConfigureAwait(false);
                     if (SetRedisCache is null)
-                        return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+                        return new ResponseModel<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
 
                     var (access, refresh, sessionId) = SetRedisCache.Value;
 
@@ -1916,20 +1917,20 @@ namespace FamTec.Server.Services.User
                         refreshToken = refresh,
                         sessionId = sessionId
                     };
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 성공(관리자)", data = returnToken, code = 200 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 성공(관리자)", data = returnToken, code = 200 };
                 }
                 else // 일반유저
                 {
                     var PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(UserTB.PlaceTbId!.Value).ConfigureAwait(false);
                     if (PlaceTB is null)
-                        return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                     /*
                         해약된 사업장 로그인 안됨
                         Status(계약상태) true : 계약 / false : 해약
                      */
                     if (PlaceTB.Status == false)
-                        return new ResponseUnit<TokenDTOV2>() { message = "해약된 사업장은 접속이 불가능합니다.", data = null, code = 403 };
+                        return new ResponseModel<TokenDTOV2>() { message = "해약된 사업장은 접속이 불가능합니다.", data = null, code = 403 };
 
                     /*
                      * 기초정보
@@ -2021,7 +2022,7 @@ namespace FamTec.Server.Services.User
 
                     var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken).ConfigureAwait(false);
                     if (SetRedisCache is null)
-                        return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+                        return new ResponseModel<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
 
                     var (access, refresh, sessionId) = SetRedisCache.Value;
 
@@ -2031,7 +2032,7 @@ namespace FamTec.Server.Services.User
                         refreshToken = refresh,
                         sessionId = sessionId
                     };
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 성공(유저)", data = returnToken, code = 200 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 성공(유저)", data = returnToken, code = 200 };
                 }
 
             }
@@ -2041,7 +2042,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -2051,47 +2052,47 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<TokenDTOV2?>> WebLoginSelectPlaceService(int placeid, string sessionId)
+        public async Task<ResponseModel<TokenDTOV2?>> WebLoginSelectPlaceService(int placeid, string sessionId)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 if (placeid is 0)
-                    return new ResponseUnit<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 if (String.IsNullOrWhiteSpace(sessionId))
-                    return new ResponseUnit<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? adminIdx = Convert.ToString(context.Items["AdminIdx"]);
                 if (String.IsNullOrWhiteSpace(adminIdx))
-                    return new ResponseUnit<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 var AdminPlaceTbList = await AdminPlaceInfoRepository.GetMyWorksList(Convert.ToInt32(adminIdx)).ConfigureAwait(false);
                 if (AdminPlaceTbList is null || !AdminPlaceTbList.Any())
-                    return new ResponseUnit<TokenDTOV2?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 403 };
 
                 AdminPlaceTb? SelectPlaceTB = AdminPlaceTbList.FirstOrDefault(m => m.PlaceTbId == placeid);
                 if (SelectPlaceTB is null)
-                    return new ResponseUnit<TokenDTOV2?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 403 };
 
                 PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(placeid).ConfigureAwait(false);
                 if (PlaceTB is null || PlaceTB.Name is null)
-                    return new ResponseUnit<TokenDTOV2?>() { message = "사업장이 존재하지 않습니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2?>() { message = "사업장이 존재하지 않습니다.", data = null, code = 404 };
 
                 /*
                  * 해약된 사업장 로그인 못하게
                  * Status(계약상태) true : 계약 / false : 해약
                  */
                 if (PlaceTB.Status == false)
-                    return new ResponseUnit<TokenDTOV2?>() { message = "해약된 사업장은 접속이 불가능합니다.", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2?>() { message = "해약된 사업장은 접속이 불가능합니다.", data = null, code = 403 };
 
                 string? userIdx = context.Items["UserIdx"]?.ToString();
                 if(String.IsNullOrWhiteSpace(userIdx))
-                    return new ResponseUnit<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                 /*
                  * 기본 정보
                  */
@@ -2126,7 +2127,7 @@ namespace FamTec.Server.Services.User
                 }
                 else
                 {
-                    return new ResponseUnit<TokenDTOV2?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
 
                 authClaim.Add(new Claim("Role", role));
@@ -2203,7 +2204,7 @@ namespace FamTec.Server.Services.User
 
                 var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(Convert.ToInt32(userIdx), accessToken, sessionId).ConfigureAwait(false);
                 if (SetRedisCache is null)
-                    return new ResponseUnit<TokenDTOV2?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 var (access, refresh, session) = SetRedisCache.Value;
 
@@ -2214,7 +2215,7 @@ namespace FamTec.Server.Services.User
                     sessionId = session
                 };
 
-                return new ResponseUnit<TokenDTOV2?>() { message = "로그인 성공(관리자)", data = returnToken, code = 200 };
+                return new ResponseModel<TokenDTOV2?>() { message = "로그인 성공(관리자)", data = returnToken, code = 200 };
 
             }
             catch(Exception ex)
@@ -2223,7 +2224,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<TokenDTOV2?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<TokenDTOV2?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -2232,15 +2233,15 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<TokenDTOV2>?> WebLoginRefreshTokenService(RefreshTokenDTOV2 dto)
+        public async Task<ResponseModel<TokenDTOV2>?> WebLoginRefreshTokenService(RefreshTokenDTOV2 dto)
         {
             try
             {
                 if (dto is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if(String.IsNullOrWhiteSpace(dto.UserIdx) || String.IsNullOrWhiteSpace(dto.PlaceIdx) || String.IsNullOrWhiteSpace(dto.refreshToken) || String.IsNullOrWhiteSpace(dto.sessionId))
-                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 int userIdx = Convert.ToInt32(dto.UserIdx);
                 int placeIdx = Convert.ToInt32(dto.PlaceIdx);
@@ -2248,20 +2249,20 @@ namespace FamTec.Server.Services.User
 
                 var UserTB = await UserInfoRepository.GetUserIndexInfo(userIdx).ConfigureAwait(false);
                 if (UserTB is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 var PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(placeIdx).ConfigureAwait(false);
                 if(PlaceTB is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (PlaceTB.Status == false)
-                    return new ResponseUnit<TokenDTOV2>() { message = "해약된 사업장은 접근불가능합니다.", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2>() { message = "해약된 사업장은 접근불가능합니다.", data = null, code = 403 };
 
                 bool AdminYn = UserTB.AdminYn;
                 if (AdminYn) //관리자
                 {
                     AdminTb? AdminTB = await AdminUserInfoRepository.GetAdminUserInfo(UserTB.Id).ConfigureAwait(false);
                     if (AdminTB is null)
-                        return new ResponseUnit<TokenDTOV2>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 404 };
+                        return new ResponseModel<TokenDTOV2>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 404 };
 
                     /*
                     * 기본정보
@@ -2289,7 +2290,7 @@ namespace FamTec.Server.Services.User
                     };
 
                     if (String.IsNullOrWhiteSpace(adminType))
-                        return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                     authClaims.Add(new Claim("Role", AdminTB.Type));
                     authClaims.Add(new Claim(ClaimTypes.Role, adminType));
@@ -2365,7 +2366,7 @@ namespace FamTec.Server.Services.User
 
                     var newRefreshToken = await RedisService.WebRotateUserpageRefreshTokenAsync(userIdx, dto.refreshToken, dto.sessionId);
                     if (String.IsNullOrWhiteSpace(newRefreshToken))
-                        return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+                        return new ResponseModel<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
 
                     var returnDto = new TokenDTOV2
                     {
@@ -2373,7 +2374,7 @@ namespace FamTec.Server.Services.User
                         refreshToken = newRefreshToken,
                         sessionId = dto.sessionId
                     };
-                    return new ResponseUnit<TokenDTOV2>() { message = "요청이 정상 처리되었습니다.", data = returnDto, code = 200 };
+                    return new ResponseModel<TokenDTOV2>() { message = "요청이 정상 처리되었습니다.", data = returnDto, code = 200 };
                 }
                 else // 일반사용자
                 {
@@ -2462,7 +2463,7 @@ namespace FamTec.Server.Services.User
 
                     var newRefreshToken = await RedisService.WebRotateUserpageRefreshTokenAsync(userIdx, dto.refreshToken, dto.sessionId);
                     if (String.IsNullOrWhiteSpace(newRefreshToken))
-                        return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+                        return new ResponseModel<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
 
                     var returnDto = new TokenDTOV2
                     {
@@ -2471,7 +2472,7 @@ namespace FamTec.Server.Services.User
                         sessionId = dto.sessionId
                     };
 
-                    return new ResponseUnit<TokenDTOV2>() { message = "요청이 정상 처리되었습니다.", data = returnDto, code = 200 };
+                    return new ResponseModel<TokenDTOV2>() { message = "요청이 정상 처리되었습니다.", data = returnDto, code = 200 };
                 }
             }
             catch(Exception ex)
@@ -2480,7 +2481,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -2489,29 +2490,29 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<TokenDTOV2>?> WebQRLoginService(QRLoginDTO dto)
+        public async Task<ResponseModel<TokenDTOV2>?> WebQRLoginService(QRLoginDTO dto)
         {
             try
             {
                 if (dto is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (dto.placeid == 0)
-                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if(String.IsNullOrWhiteSpace(dto.UserId) || String.IsNullOrWhiteSpace(dto.UserPassword))
-                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 var UserTB = await UserInfoRepository.GetUserInfo(dto.UserId, dto.UserPassword).ConfigureAwait(false);
                 if(UserTB is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 404 };
 
                 var PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(dto.placeid).ConfigureAwait(false);
                 if (PlaceTB is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 if (PlaceTB.Status == false)
-                    return new ResponseUnit<TokenDTOV2>() { message = "해약된 사업장은 접속이 불가능합니다.", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2>() { message = "해약된 사업장은 접속이 불가능합니다.", data = null, code = 403 };
 
                 if(UserTB.AdminYn)
                 {
@@ -2519,7 +2520,7 @@ namespace FamTec.Server.Services.User
                     AdminTb? AdminTB = await AdminUserInfoRepository.GetAdminUserInfo(UserTB.Id).ConfigureAwait(false);
 
                     if (AdminTB is null)
-                        return new ResponseUnit<TokenDTOV2>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 404 };
+                        return new ResponseModel<TokenDTOV2>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 404 };
 
                     /*
                      * 기본정보
@@ -2547,7 +2548,7 @@ namespace FamTec.Server.Services.User
                     };
 
                     if (String.IsNullOrWhiteSpace(adminType))
-                        return new ResponseUnit<TokenDTOV2>() { message = "관리자 권한이 없습니다.", data = null, code = 403 };
+                        return new ResponseModel<TokenDTOV2>() { message = "관리자 권한이 없습니다.", data = null, code = 403 };
 
                     authClaims.Add(new Claim("Role", AdminTB.Type));
                     authClaims.Add(new Claim(ClaimTypes.Role, adminType));
@@ -2606,7 +2607,7 @@ namespace FamTec.Server.Services.User
 
                     var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken).ConfigureAwait(false);
                     if (SetRedisCache is null)
-                        return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+                        return new ResponseModel<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
 
                     var (access, refresh, session) = SetRedisCache.Value;
 
@@ -2617,7 +2618,7 @@ namespace FamTec.Server.Services.User
                         sessionId = session
                     };
 
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 성공(관리자).", data = returnDto, code = 200 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 성공(관리자).", data = returnDto, code = 200 };
                 }
                 else
                 {
@@ -2711,7 +2712,7 @@ namespace FamTec.Server.Services.User
 
                     var SetRedisCache = await RedisService.SetWebUserpageAccessAsync(UserTB.Id, accessToken).ConfigureAwait(false);
                     if (SetRedisCache is null)
-                        return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+                        return new ResponseModel<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
 
                     var (access, refresh, session) = SetRedisCache.Value;
 
@@ -2721,7 +2722,7 @@ namespace FamTec.Server.Services.User
                         refreshToken = refresh,
                         sessionId = session
                     };
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 성공(유저)", data = returnToken, code = 200 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 성공(유저)", data = returnToken, code = 200 };
 
                 }
 
@@ -2733,7 +2734,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -2742,32 +2743,32 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> WebLogoutService(LogoutDTO dto)
+        public async Task<ResponseModel<bool>> WebLogoutService(LogoutDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 if(dto is null)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 if (String.IsNullOrWhiteSpace(dto.sessionId))
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 string? userIdx = Convert.ToString(context.Items["UserIdx"]);
                 if (String.IsNullOrWhiteSpace(userIdx))
-                    return new ResponseUnit<bool>() { message = "요청이 잘못되었습니다.", data = false, code = 404 };
+                    return new ResponseModel<bool>() { message = "요청이 잘못되었습니다.", data = false, code = 404 };
 
                 int userId = Convert.ToInt32(userIdx);
 
                 bool DelResult = await RedisService.DeleteRefreshTokenAsync(userId, dto.sessionId).ConfigureAwait(false);
                 if (DelResult)
-                    return new ResponseUnit<bool>() { message = "로그아웃 되었습니다.", data = true, code = 200 };
+                    return new ResponseModel<bool>() { message = "로그아웃 되었습니다.", data = true, code = 200 };
                 else
-                    return new ResponseUnit<bool>() { message = "이미 로그아웃 처리된 아이디입니다.", data = true, code = 403 };
+                    return new ResponseModel<bool>() { message = "이미 로그아웃 처리된 아이디입니다.", data = true, code = 403 };
             }
             catch(Exception ex)
             {
@@ -2775,7 +2776,7 @@ namespace FamTec.Server.Services.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                return new ResponseModel<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
     }

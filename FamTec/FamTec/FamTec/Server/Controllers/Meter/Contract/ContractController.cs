@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Meter.Contract;
 using FamTec.Shared.Server.DTO;
@@ -44,7 +45,7 @@ namespace FamTec.Server.Controllers.Meter.Contract
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                ResponseUnit<AddContractDTO> model = await ContractService.AddContractService(dto).ConfigureAwait(false);
+                ResponseModel<AddContractDTO> model = await ContractService.AddContractService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -78,7 +79,7 @@ namespace FamTec.Server.Controllers.Meter.Contract
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<ContractDTO>? model = await ContractService.GetAllContractListService().ConfigureAwait(false);
+                ResponseModel<List<ContractDTO>>? model = await ContractService.GetAllContractListService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Meter;
 using FamTec.Shared.Server.DTO;
@@ -54,7 +55,7 @@ namespace FamTec.Server.Controllers.Meter
                     }
                 }
 
-                ResponseUnit<AddMeterDTO> model = await MeterService.AddMeterService(dto);
+                ResponseModel<AddMeterDTO> model = await MeterService.AddMeterService(dto);
                 if (model is null)
                     return BadRequest();
 

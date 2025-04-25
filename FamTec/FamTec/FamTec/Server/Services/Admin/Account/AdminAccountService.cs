@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Admin.AdminUser;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.User;
 using FamTec.Server.Services.Redis;
@@ -53,22 +54,22 @@ namespace FamTec.Server.Services.Admin.Account
         /// 관리자 이미지 변경
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateAdminImageService(int adminid, IFormFile? files)
+        public async Task<ResponseModel<bool?>> UpdateAdminImageService(int adminid, IFormFile? files)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
 
                 bool? ImageAddResult = await AdminUserInfoRepository.UpdateAdminImageInfo(adminid, files).ConfigureAwait(false);
 
                 return ImageAddResult switch
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
             }
             catch(Exception ex)
@@ -77,7 +78,7 @@ namespace FamTec.Server.Services.Admin.Account
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -85,37 +86,37 @@ namespace FamTec.Server.Services.Admin.Account
         /// 매니저 정보 수정
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateAdminService(UpdateManagerDTO dto)
+        public async Task<ResponseModel<bool?>> UpdateAdminService(UpdateManagerDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
 
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(UserIdx))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(dto.AdminIndex!.Value).ConfigureAwait(false);
                 if (admintb is null) // 받아온 dto의 관리자ID에 해당하는 관리자가 없을때
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 계정정보 변경을 위해 UserTB 조회
                 UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId).ConfigureAwait(false);
                 if (usertb is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
                 dto.UserId = dto.UserId!.ToLower(); // UserID 소문자로 변환
                 bool? UpdateResult = await AdminUserInfoRepository.UpdateAdminInfo(dto, UserIdx, creater).ConfigureAwait(false);
                 return UpdateResult switch
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
             }
             catch (Exception ex)
@@ -124,7 +125,7 @@ namespace FamTec.Server.Services.Admin.Account
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -132,25 +133,25 @@ namespace FamTec.Server.Services.Admin.Account
         /// 관리자 접속화면 서비스
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<string?>> AdminLoginService(LoginDTO dto)
+        public async Task<ResponseModel<string?>> AdminLoginService(LoginDTO dto)
         {
             try
             {
                 UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID!, dto.UserPassword!).ConfigureAwait(false);
                 
                 if(usertb is null)
-                    return new ResponseUnit<string?>() { message = "로그인 실패 (로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+                    return new ResponseModel<string?>() { message = "로그인 실패 (로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
 
                 if(usertb.AdminYn != true)
-                    return new ResponseUnit<string?>() { message = "로그인 실패 (해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+                    return new ResponseModel<string?>() { message = "로그인 실패 (해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
 
                 AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(usertb.Id).ConfigureAwait(false);
                 if(admintb is null)
-                    return new ResponseUnit<string?>() { message = "로그인 실패 (해당 사용자는 관리자가 아닙니다.)", data = null, code = 401 };
+                    return new ResponseModel<string?>() { message = "로그인 실패 (해당 사용자는 관리자가 아닙니다.)", data = null, code = 401 };
 
                 DepartmentsTb? departmenttb = await DepartmentInfoRepository.GetDepartmentInfo(admintb.DepartmentTbId).ConfigureAwait(false);
                 if(departmenttb is null)
-                    return new ResponseUnit<string?>() { message = "로그인 실패 (로그인 정보가 올바르지 않습니다.)", data = null, code = 200 };
+                    return new ResponseModel<string?>() { message = "로그인 실패 (로그인 정보가 올바르지 않습니다.)", data = null, code = 200 };
                 
                 List<Claim> authClaims = new List<Claim>();
 
@@ -194,7 +195,7 @@ namespace FamTec.Server.Services.Admin.Account
                 string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
                 // 로그인 성공
-                return new ResponseUnit<string?>() { message = "관리자 로그인 성공.", data = accessToken, code = 200 };
+                return new ResponseModel<string?>() { message = "관리자 로그인 성공.", data = accessToken, code = 200 };
             }
             catch (Exception ex) 
             {
@@ -202,7 +203,7 @@ namespace FamTec.Server.Services.Admin.Account
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<string?>() { message = "로그인 실패 (서버에서 요청을 처리하지 못하였습니다.)", data = null, code = 500 };
+                return new ResponseModel<string?>() { message = "로그인 실패 (서버에서 요청을 처리하지 못하였습니다.)", data = null, code = 500 };
             }
         }
 
@@ -210,20 +211,20 @@ namespace FamTec.Server.Services.Admin.Account
         /// 관리자 아이디 생성 서비스
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<int?>> AdminRegisterService(AddManagerDTO dto, IFormFile? files)
+        public async Task<ResponseModel<int?>> AdminRegisterService(AddManagerDTO dto, IFormFile? files)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
                 if (context is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
+                    return new ResponseModel<int?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
 
                 string? useridx = Convert.ToString(context.Items["UserIdx"]);
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? UserType = Convert.ToString(context.Items["Role"]);
 
                 if (String.IsNullOrWhiteSpace(useridx) || String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(UserType))
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 새로운 파일명칭 생성 - 없으면 String.Empty;
                 string NewFileName = files is not null ? FileService.SetNewFileName(useridx, files) : String.Empty;
@@ -236,7 +237,7 @@ namespace FamTec.Server.Services.Admin.Account
 
                 UsersTb? AlreadyCheck = await UserInfoRepository.UserIdCheck(!String.IsNullOrWhiteSpace(dto.UserId) ? dto.UserId.Trim() : dto.UserId!).ConfigureAwait(false);
                 if (AlreadyCheck is not null)
-                    return new ResponseUnit<int?>() { message = "이미 존재하는 아이디입니다.", data = null, code = 204 };
+                    return new ResponseModel<int?>() { message = "이미 존재하는 아이디입니다.", data = null, code = 204 };
 
                 DateTime ThisTime = DateTime.Now;
 
@@ -280,7 +281,7 @@ namespace FamTec.Server.Services.Admin.Account
                 
                 UsersTb? userresult = await UserInfoRepository.AddAsync(model).ConfigureAwait(false);
                 if (userresult is null)
-                    return new ResponseUnit<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
+                    return new ResponseModel<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                 
                 if (files is not null)
                 {
@@ -310,7 +311,7 @@ namespace FamTec.Server.Services.Admin.Account
                 // 요청이 정상 처리되었을 경우
                 if (adminresult is not null)
                 {
-                    return new ResponseUnit<int?> { message = "요청이 정상 처리되었습니다.", data = adminresult.Id, code = 200 };
+                    return new ResponseModel<int?> { message = "요청이 정상 처리되었습니다.", data = adminresult.Id, code = 200 };
                 }
                 else
                 {
@@ -319,7 +320,7 @@ namespace FamTec.Server.Services.Admin.Account
                     {
                         FileService.DeleteImageFile(AdminFileFolderPath, model.Image);
                     }
-                    return new ResponseUnit<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
+                    return new ResponseModel<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                 }
             }
             catch(Exception ex)
@@ -328,7 +329,7 @@ namespace FamTec.Server.Services.Admin.Account
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<int?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<int?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -336,43 +337,43 @@ namespace FamTec.Server.Services.Admin.Account
         /// 관리자 삭제
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteAdminService(List<int> adminidx)
+        public async Task<ResponseModel<bool?>> DeleteAdminService(List<int> adminidx)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 foreach(int AdminID in adminidx)
                 {
                     AdminTb? adminTB = await AdminUserInfoRepository.GetAdminIdInfo(AdminID).ConfigureAwait(false);
                     if(adminTB is null)
-                        return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                        return new ResponseModel<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                     
                     UsersTb? UserTB = await UserInfoRepository.GetUserIndexInfo(adminTB.UserTbId).ConfigureAwait(false);
                     if(UserTB is null)
-                        return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                        return new ResponseModel<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                     
                     if (UserTB.Job!.Trim().Equals("시스템관리자")) // 시스템 관리자 삭제못하게 막음.
                     {
-                        return new ResponseUnit<bool?>() { message = "시스템관리자는 삭제 불가능합니다.", data = null, code = 404 };
+                        return new ResponseModel<bool?>() { message = "시스템관리자는 삭제 불가능합니다.", data = null, code = 404 };
                     }
                 }
 
                 bool? result = await AdminUserInfoRepository.DeleteAdminsInfo(adminidx, creater).ConfigureAwait(false);
                 return result switch
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
             }
             catch (Exception ex)
@@ -381,7 +382,7 @@ namespace FamTec.Server.Services.Admin.Account
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
 
@@ -390,21 +391,21 @@ namespace FamTec.Server.Services.Admin.Account
         /// </summary>
         /// <param name="adminidx"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<DManagerDTO>> DetailAdminService(int adminidx, bool isMobile)
+        public async Task<ResponseModel<DManagerDTO>> DetailAdminService(int adminidx, bool isMobile)
         {
             try
             {
                 AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(adminidx).ConfigureAwait(false);
                 if (admintb is null)
-                    return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
+                    return new ResponseModel<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
 
                 DepartmentsTb? departmenttb = await DepartmentInfoRepository.GetDepartmentInfo(admintb.DepartmentTbId).ConfigureAwait(false);
                 if (departmenttb is null)
-                    return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
+                    return new ResponseModel<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
 
                 UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId).ConfigureAwait(false);
                 if(usertb is null)
-                    return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
+                    return new ResponseModel<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
 
                 DManagerDTO? dto = (from admin in Enumerable.Repeat(admintb, 1) // List 대신 반복(Repeat)을 사용하여 JOIN
                                     join department in Enumerable.Repeat(departmenttb, 1)
@@ -425,7 +426,7 @@ namespace FamTec.Server.Services.Admin.Account
                                     }).FirstOrDefault();
 
                 if(dto is null)
-                    return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
+                    return new ResponseModel<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
 
                 string AdminFileName = Path.Combine(Common.FileServer, "Administrator");
 
@@ -513,7 +514,7 @@ namespace FamTec.Server.Services.Admin.Account
                     }
                 }
                 
-                return new ResponseUnit<DManagerDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                return new ResponseModel<DManagerDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
             }
             catch (Exception ex)
             {
@@ -521,7 +522,7 @@ namespace FamTec.Server.Services.Admin.Account
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<DManagerDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new DManagerDTO(), code = 500 };
+                return new ResponseModel<DManagerDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new DManagerDTO(), code = 500 };
             }
         }
 
@@ -529,15 +530,15 @@ namespace FamTec.Server.Services.Admin.Account
         /// 아이디 중복검사
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UserIdCheckService(string userid)
+        public async Task<ResponseModel<bool?>> UserIdCheckService(string userid)
         {
             try
             {
                 UsersTb? UserIdCheck = await UserInfoRepository.UserIdCheck(userid).ConfigureAwait(false);
                 if (UserIdCheck is not null)
-                    return new ResponseUnit<bool?>() { message = "이미 사용중인 아이디입니다.", data = false, code = 200 };
+                    return new ResponseModel<bool?>() { message = "이미 사용중인 아이디입니다.", data = false, code = 200 };
                 else
-                    return new ResponseUnit<bool?>() { message = "사용가능한 아이디입니다..", data = true, code = 200 };
+                    return new ResponseModel<bool?>() { message = "사용가능한 아이디입니다..", data = true, code = 200 };
             }
             catch(Exception ex)
             {
@@ -545,7 +546,7 @@ namespace FamTec.Server.Services.Admin.Account
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -554,34 +555,34 @@ namespace FamTec.Server.Services.Admin.Account
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<TokenDTOV2>?> WebAdminLoginService(LoginDTO dto)
+        public async Task<ResponseModel<TokenDTOV2>?> WebAdminLoginService(LoginDTO dto)
         {
             try
             {
                 if (dto is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
 
                 if(String.IsNullOrWhiteSpace(dto.UserID) || String.IsNullOrWhiteSpace(dto.UserPassword))
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
 
                 var userTB = await UserInfoRepository.GetUserInfo(dto.UserID, dto.UserPassword).ConfigureAwait(false);
 
                 if (userTB is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
 
                 if (userTB.AdminYn != true)
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
 
                 var adminTB = await AdminUserInfoRepository.GetAdminUserInfo(userTB.Id).ConfigureAwait(false);
                 if(adminTB is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
 
                 if(String.IsNullOrWhiteSpace(adminTB.Type))
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
 
                 var departmentTB = await DepartmentInfoRepository.GetDeleteDepartmentInfo(adminTB.DepartmentTbId).ConfigureAwait(false);
                 if(adminTB is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
 
                 List<Claim> authClaims = new List<Claim>
                 {
@@ -624,7 +625,7 @@ namespace FamTec.Server.Services.Admin.Account
 
                 var SetRedisCache = await RedisService.SetWebSettingpageAccessAsync(userTB.Id, accessToken);
                 if (SetRedisCache is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
 
                 var (access, refresh, sessionId) = SetRedisCache.Value;
 
@@ -635,7 +636,7 @@ namespace FamTec.Server.Services.Admin.Account
                     sessionId = sessionId
                 };
 
-                return new ResponseUnit<TokenDTOV2>() { message = "로그인 성공(관리자)", data = returnToken, code = 200 };
+                return new ResponseModel<TokenDTOV2>() { message = "로그인 성공(관리자)", data = returnToken, code = 200 };
             }
             catch(Exception ex)
             {
@@ -643,7 +644,7 @@ namespace FamTec.Server.Services.Admin.Account
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -651,34 +652,34 @@ namespace FamTec.Server.Services.Admin.Account
         /// [웹] - 관리자 화면 재발급 토큰 서비스 (V2)
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<TokenDTOV2>?> WebAdminLoginRefreshTokenService(RefreshTokenSettingDTOV2 dto)
+        public async Task<ResponseModel<TokenDTOV2>?> WebAdminLoginRefreshTokenService(RefreshTokenSettingDTOV2 dto)
         {
             try
             {
                 if (dto is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (String.IsNullOrWhiteSpace(dto.userIdx) || String.IsNullOrWhiteSpace(dto.refreshToken) || String.IsNullOrWhiteSpace(dto.sessionId))
-                    return new ResponseUnit<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<TokenDTOV2>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 var userTB = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(dto.userIdx)).ConfigureAwait(false);
 
                 if (userTB is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
 
                 if (userTB.AdminYn != true)
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
 
                 var adminTB = await AdminUserInfoRepository.GetAdminUserInfo(userTB.Id).ConfigureAwait(false);
                 if (adminTB is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
 
                 if (String.IsNullOrWhiteSpace(adminTB.Type))
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 실패(해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
 
                 var departmentTB = await DepartmentInfoRepository.GetDeleteDepartmentInfo(adminTB.DepartmentTbId).ConfigureAwait(false);
                 if (adminTB is null)
-                    return new ResponseUnit<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
+                    return new ResponseModel<TokenDTOV2>() { message = "로그인 실패(로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
 
                 List<Claim> authClaims = new List<Claim>
                 {
@@ -721,7 +722,7 @@ namespace FamTec.Server.Services.Admin.Account
 
                 var newRefreshToken = await RedisService.WebRotateSettingpageRefreshTokenAsync(userTB.Id, dto.refreshToken, dto.sessionId);
                 if (String.IsNullOrWhiteSpace(newRefreshToken))
-                    return new ResponseUnit<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
+                    return new ResponseModel<TokenDTOV2>() { message = "양식이 잘못되었습니다.", data = null, code = 403 };
 
                 var returnDto = new TokenDTOV2
                 {
@@ -730,7 +731,7 @@ namespace FamTec.Server.Services.Admin.Account
                     sessionId = dto.sessionId
                 };
 
-                return new ResponseUnit<TokenDTOV2>() { message = "요청이 정상 처리되었습니다.", data = returnDto, code = 200 };
+                return new ResponseModel<TokenDTOV2>() { message = "요청이 정상 처리되었습니다.", data = returnDto, code = 200 };
             }
             catch(Exception ex)
             {
@@ -738,7 +739,7 @@ namespace FamTec.Server.Services.Admin.Account
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<TokenDTOV2>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
     }

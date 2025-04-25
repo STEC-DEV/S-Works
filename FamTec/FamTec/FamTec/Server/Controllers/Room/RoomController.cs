@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Room;
 using FamTec.Shared.Server.DTO;
@@ -37,7 +38,7 @@ namespace FamTec.Server.Controllers.Room
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<PlaceRoomListDTO>? model = await RoomService.GetPlaceAllGroupRoomInfo().ConfigureAwait(false);
+                ResponseModel<List<PlaceRoomListDTO>>? model = await RoomService.GetPlaceAllGroupRoomInfo().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -74,7 +75,7 @@ namespace FamTec.Server.Controllers.Room
                 if (roomid is 0)
                     return NoContent();
 
-                ResponseUnit<string?> model = await RoomService.GetRoomNameService(roomid).ConfigureAwait(false);
+                ResponseModel<string?> model = await RoomService.GetRoomNameService(roomid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -115,7 +116,7 @@ namespace FamTec.Server.Controllers.Room
                 if (dto.FloorID is null)
                     return NoContent();
 
-                ResponseUnit<RoomDTO> model = await RoomService.AddRoomService(dto).ConfigureAwait(false);
+                ResponseModel<RoomDTO> model = await RoomService.AddRoomService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -148,7 +149,7 @@ namespace FamTec.Server.Controllers.Room
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<RoomListDTO> model = await RoomService.GetRoomListService().ConfigureAwait(false);
+                ResponseModel<List<RoomListDTO>> model = await RoomService.GetRoomListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -188,7 +189,7 @@ namespace FamTec.Server.Controllers.Room
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                ResponseUnit<bool?> model = await RoomService.UpdateRoomService(dto).ConfigureAwait(false);
+                ResponseModel<bool?> model = await RoomService.UpdateRoomService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -227,7 +228,7 @@ namespace FamTec.Server.Controllers.Room
                 if (idx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await RoomService.DeleteRoomService(idx).ConfigureAwait(false);
+                ResponseModel<bool?> model = await RoomService.DeleteRoomService(idx).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)

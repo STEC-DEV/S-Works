@@ -1,17 +1,18 @@
-﻿using FamTec.Shared.Server.DTO;
+﻿using FamTec.Server.Helpers;
+using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility.Group;
 
 namespace FamTec.Server.Services.Facility.Value
 {
     public interface IFacilityValueService
     {
-        public Task<ResponseUnit<AddValueDTO>> AddValueService(AddValueDTO dto);
+        public Task<ResponseModel<AddValueDTO>> AddValueService(AddValueDTO dto);
 
         // value - 업데이트 (단일)
-        public Task<ResponseUnit<UpdateValueDTO>> UpdateValueService(UpdateValueDTO dto);
+        public Task<ResponseModel<UpdateValueDTO>> UpdateValueService(UpdateValueDTO dto);
 
         // value - 삭제 (단일)
-        public Task<ResponseUnit<bool?>> DeleteValueService(int valueid);
+        public Task<ResponseModel<bool?>> DeleteValueService(int valueid);
 
     }
 }

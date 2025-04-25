@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using FamTec.Server.Helpers;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Floor;
@@ -214,14 +215,14 @@ namespace FamTec.Server.Services.Facility.Type.Fire
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> ImportFireFacilityService(IFormFile? file)
+        public async Task<ResponseModel<bool>> ImportFireFacilityService(IFormFile? file)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
@@ -229,11 +230,11 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                 DateTime ThisDate = DateTime.Now;
 
                 if(String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 List<RoomTb>? RoomList = await RoomInfoRepository.GetPlaceAllRoomList(Convert.ToInt32(placeidx)).ConfigureAwait(false);
                 if (RoomList is null || !RoomList.Any())
-                    return new ResponseUnit<bool>() { message = "위치정보가 존재하지 않습니다.", data = false, code = 204 };
+                    return new ResponseModel<bool>() { message = "위치정보가 존재하지 않습니다.", data = false, code = 204 };
 
                 List<ExcelFacilityInfo> Facilitylist = new List<ExcelFacilityInfo>();
 
@@ -246,21 +247,21 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                         var worksheet = workbook.Worksheet(2);
 
                         if (worksheet.Cell("A2").GetValue<string>().Trim() != "*위치번호")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("B2").GetValue<string>().Trim() != "*설비이름")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("C2").GetValue<string>().Trim() != "형식")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("D2").GetValue<string>().Trim() != "규격용량")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("E2").GetValue<string>().Trim() != "수량")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("F2").GetValue<string>().Trim() != "내용년수")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("G2").GetValue<string>().Trim() != "설치년월")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("H2").GetValue<string>().Trim() != "교체년월")
-                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                            return new ResponseModel<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
 
                         int total = worksheet.LastRowUsed().RowNumber(); // Row 개수 반환
 
@@ -271,22 +272,22 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                             // 공간인덱스
                             string? DataTypeCheck = worksheet.Cell("A" + i).GetValue<string>().Trim();
                             if (String.IsNullOrWhiteSpace(DataTypeCheck))
-                                return new ResponseUnit<bool>() { message = "설비의 위치번호가 유효하지 않습니다.", data = false, code = 204 };
+                                return new ResponseModel<bool>() { message = "설비의 위치번호가 유효하지 않습니다.", data = false, code = 204 };
 
                             Data.RoomId = int.TryParse(DataTypeCheck, out int parsedValue) ? parsedValue : (int?)null;
                             if (Data.RoomId is null)
-                                return new ResponseUnit<bool>() { message = "데이터의 형식이 올바르지 않습니다.", data = false, code = 204 };
+                                return new ResponseModel<bool>() { message = "데이터의 형식이 올바르지 않습니다.", data = false, code = 204 };
 
                             // 사업장에 없는 RoomID가 있는지 검사
                             bool containsRoomId = RoomList?.Any(room => room.Id == Data.RoomId) ?? false;
                             if (!containsRoomId)
-                                return new ResponseUnit<bool>() { message = "해당사업장에 없는 위치번호가 존재합니다.", data = false, code = 204 };
+                                return new ResponseModel<bool>() { message = "해당사업장에 없는 위치번호가 존재합니다.", data = false, code = 204 };
 
                             // 설비이름
                             Data.Name = Convert.ToString(worksheet.Cell("B" + i).GetValue<string>().Trim());
                             if (String.IsNullOrWhiteSpace(Data.Name))
                             {
-                                return new ResponseUnit<bool>() { message = "설비의 이름은 공백이 될 수 없습니다.", data = false, code = 204 };
+                                return new ResponseModel<bool>() { message = "설비의 이름은 공백이 될 수 없습니다.", data = false, code = 204 };
                             }
 
                             // 형식
@@ -321,7 +322,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                                 DateTime? ConvertDate = DateTime.TryParse(DateCheck, out DateTime parsedDate) ? parsedDate : (DateTime?)null;
                                 if (ConvertDate is null)
                                 {
-                                    return new ResponseUnit<bool>() { message = "yyyy-MM-dd 타입의 날짜만 입력가능합니다.", data = false, code = 204 };
+                                    return new ResponseModel<bool>() { message = "yyyy-MM-dd 타입의 날짜만 입력가능합니다.", data = false, code = 204 };
                                 }
                                 else
                                 {
@@ -341,7 +342,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                                 DateTime? ConvertDate = DateTime.TryParse(DateCheck, out DateTime parsedDate) ? parsedDate : (DateTime?)null;
                                 if (ConvertDate is null)
                                 {
-                                    return new ResponseUnit<bool>() { message = "yyyy-MM-dd 타입의 날짜만 입력가능합니다.", data = false, code = 204 };
+                                    return new ResponseModel<bool>() { message = "yyyy-MM-dd 타입의 날짜만 입력가능합니다.", data = false, code = 204 };
                                 }
                                 else
                                 {
@@ -376,8 +377,8 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                         bool AddResult = await FacilityInfoRepository.AddFacilityList(model).ConfigureAwait(false);
                         return AddResult switch
                         {
-                            true => new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                            false => new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 }
+                            true => new ResponseModel<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                            false => new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 }
                         };
                     }
                 }
@@ -393,30 +394,30 @@ namespace FamTec.Server.Services.Facility.Type.Fire
             }
         }
 
-        public async Task<ResponseUnit<FacilityDTO>> AddFireFacilityService(FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseModel<FacilityDTO>> AddFireFacilityService(FacilityDTO dto, IFormFile? files)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
-                    return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
+                    return new ResponseModel<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 if (string.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
+                    return new ResponseModel<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
                 DateTime ThisTime = DateTime.Now;
 
                 RoomTb? RoomInfo = await RoomInfoRepository.GetRoomInfo(dto.RoomId!.Value).ConfigureAwait(false);
                 if (RoomInfo is null)
-                    return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
+                    return new ResponseModel<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
                 string? creator = Convert.ToString(context.Items["Name"]);
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
 
                 if (String.IsNullOrWhiteSpace(creator) || String.IsNullOrWhiteSpace(UserIdx))
-                    return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
+                    return new ResponseModel<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
                 string? NewFileName = String.Empty;
                 if (files is not null)
@@ -458,7 +459,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                         bool? AddFile = await FileService.AddResizeImageFile(NewFileName, FireFileFolderPath, files).ConfigureAwait(false);
                     }
 
-                    return new ResponseUnit<FacilityDTO>()
+                    return new ResponseModel<FacilityDTO>()
                     {
                         message = "요청이 정상 처리되었습니다.",
                         data = new FacilityDTO()
@@ -479,7 +480,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                     };
                 }
                 else
-                    return new ResponseUnit<FacilityDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FacilityDTO(), code = 500 };
+                    return new ResponseModel<FacilityDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FacilityDTO(), code = 500 };
             }
             catch (Exception ex)
             {
@@ -487,7 +488,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<FacilityDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FacilityDTO(), code = 500 };
+                return new ResponseModel<FacilityDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FacilityDTO(), code = 500 };
             }
         }
 
@@ -496,28 +497,28 @@ namespace FamTec.Server.Services.Facility.Type.Fire
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<FacilityListDTO>> GetFireFacilityListService()
+        public async Task<ResponseModel<List<FacilityListDTO>>> GetFireFacilityListService()
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<FacilityListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<List<FacilityListDTO>>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<FacilityListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<List<FacilityListDTO>>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 List<FacilityListDTO>? model = await FacilityInfoRepository.GetPlaceFireFacilityList(Convert.ToInt32(placeidx)).ConfigureAwait(false);
 
                 if (model is [_, ..])
                 {
-                    return new ResponseList<FacilityListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseModel<List<FacilityListDTO>>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 }
                 else
                 {
-                    return new ResponseList<FacilityListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<FacilityListDTO>(), code = 200 };
+                    return new ResponseModel<List<FacilityListDTO>>() { message = "데이터가 존재하지 않습니다.", data = new List<FacilityListDTO>(), code = 200 };
                 }
             }
             catch (Exception ex)
@@ -526,38 +527,38 @@ namespace FamTec.Server.Services.Facility.Type.Fire
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<FacilityListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<FacilityListDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
-        public async Task<ResponseUnit<FacilityDetailDTO>> GetFireDetailFacilityService(int facilityId, bool isMobile)
+        public async Task<ResponseModel<FacilityDetailDTO>> GetFireDetailFacilityService(int facilityId, bool isMobile)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<FacilityDetailDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<FacilityDetailDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(facilityId).ConfigureAwait(false);
                 if(model is null)
-                    return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
+                    return new ResponseModel<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
 
                 RoomTb? room = await RoomInfoRepository.GetRoomInfo(model.RoomTbId).ConfigureAwait(false);
                 if(room is null)
-                    return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
+                    return new ResponseModel<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
 
                 FloorTb? FloorTB = await FloorInfoRepository.GetFloorInfo(room.FloorTbId).ConfigureAwait(false);
                 if (FloorTB is null)
-                    return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
+                    return new ResponseModel<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
 
                 BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(FloorTB.BuildingTbId).ConfigureAwait(false);
                 if (BuildingTB is null)
-                    return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
+                    return new ResponseModel<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
 
                 FacilityDetailDTO dto = new FacilityDetailDTO();
                 dto.Id = model.Id;
@@ -627,7 +628,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                         dto.ImageName = null;
                         dto.Image = null;
                     }
-                    return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<FacilityDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
                 {
@@ -674,7 +675,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                         dto.ImageName = null;
                         dto.Image = null;
                     }
-                    return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<FacilityDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
             }
             catch (Exception ex)
@@ -683,11 +684,11 @@ namespace FamTec.Server.Services.Facility.Type.Fire
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<FacilityDetailDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<FacilityDetailDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
-        public async Task<ResponseUnit<bool?>> UpdateFireFacilityService(FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseModel<bool?>> UpdateFireFacilityService(FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -704,14 +705,14 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
 
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserIdx))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 이미지 변경 or 삭제
                 FireFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Fire");
@@ -722,7 +723,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                 FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID!.Value).ConfigureAwait(false);
                 
                 if(model is null || model.Category.Trim() != "소방")
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Category = "소방"; // 카테고리
                 model.Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!; // 설비명칭
@@ -798,7 +799,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                 if (updateBuilding == true)
                 {
                     // 성공했으면 그걸로 끝
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                    return new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else
                 {
@@ -836,7 +837,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
 #endif
                         }
                     }
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
             }
             catch (Exception ex)
@@ -845,39 +846,39 @@ namespace FamTec.Server.Services.Facility.Type.Fire
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
-        public async Task<ResponseUnit<bool?>> DeleteFireFacilityService(List<int> delIdx)
+        public async Task<ResponseModel<bool?>> DeleteFireFacilityService(List<int> delIdx)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || delIdx is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]); // 토큰 사업장 검사
 
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 삭제가능여부 체크
                 foreach (int id in delIdx)
                 {
                     bool? DelCheck = await FacilityInfoRepository.DelFacilityCheck(id).ConfigureAwait(false);
                     if (DelCheck == true)
-                        return new ResponseUnit<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                        return new ResponseModel<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
 
                 bool? DeleteResult = await FacilityInfoRepository.DeleteFacilityInfo(delIdx, creater).ConfigureAwait(false);
                 return DeleteResult switch
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
             }
             catch (Exception ex)
@@ -886,7 +887,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
     }

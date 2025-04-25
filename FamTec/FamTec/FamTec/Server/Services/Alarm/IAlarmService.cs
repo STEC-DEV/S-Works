@@ -1,4 +1,4 @@
-﻿using FamTec.Shared.Server.DTO;
+﻿using FamTec.Server.Helpers;
 using FamTec.Shared.Server.DTO.Alarm;
 
 namespace FamTec.Server.Services.Alarm
@@ -10,27 +10,27 @@ namespace FamTec.Server.Services.Alarm
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<AlarmDTO>> GetAllAlarmService();
+        public Task<ResponseModel<List<AlarmDTO>>> GetAllAlarmService();
 
         /// <summary>
         /// 사용자의 안읽음 알람 조회 - 2주 이전건 출력안됨
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<AlarmDTO>> GetAllAlarmByDateService(DateTime StartDate);
+        public Task<ResponseModel<List<AlarmDTO>>> GetAllAlarmByDateService(DateTime StartDate);
 
         /// <summary>
         /// 사용자의 알람 전체 삭제
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> AllAlarmDelete();
+        public Task<ResponseModel<bool?>> AllAlarmDelete();
 
         /// <summary>
         /// 알람 삭제
         /// </summary>
         /// <param name="alarmid"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> AlarmDelete(int? alarmid);
+        public Task<ResponseModel<bool?>> AlarmDelete(int? alarmid);
     }
 }

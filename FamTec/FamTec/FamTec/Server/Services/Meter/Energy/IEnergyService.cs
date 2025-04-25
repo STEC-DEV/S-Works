@@ -1,4 +1,4 @@
-﻿using FamTec.Shared.Server.DTO;
+﻿using FamTec.Server.Helpers;
 using FamTec.Shared.Server.DTO.Meter.Energy;
 
 namespace FamTec.Server.Services.Meter.Energy
@@ -11,7 +11,7 @@ namespace FamTec.Server.Services.Meter.Energy
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<AddEnergyDTO>> AddEnergyService(AddEnergyDTO dto);
+        public Task<ResponseModel<AddEnergyDTO>> AddEnergyService(AddEnergyDTO dto);
 
   
 

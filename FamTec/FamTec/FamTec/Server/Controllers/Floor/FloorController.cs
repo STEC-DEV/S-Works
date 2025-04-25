@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
 using FamTec.Server.Middleware;
 using System.ComponentModel.DataAnnotations;
+using FamTec.Server.Helpers;
 
 namespace FamTec.Server.Controllers.Floor
 {
@@ -43,7 +44,7 @@ namespace FamTec.Server.Controllers.Floor
                 if (dto.BuildingTBID is null)
                     return NoContent();
 
-                ResponseUnit<FloorDTO> model = await FloorService.AddFloorService(dto).ConfigureAwait(false);
+                ResponseModel<FloorDTO> model = await FloorService.AddFloorService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -73,7 +74,7 @@ namespace FamTec.Server.Controllers.Floor
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<FloorDTO> model = await FloorService.GetFloorListService(buildingid).ConfigureAwait(false);
+                ResponseModel<List<FloorDTO>> model = await FloorService.GetFloorListService(buildingid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -107,7 +108,7 @@ namespace FamTec.Server.Controllers.Floor
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                ResponseUnit<bool?> model = await FloorService.UpdateFloorService(dto).ConfigureAwait(false);
+                ResponseModel<bool?> model = await FloorService.UpdateFloorService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -136,7 +137,7 @@ namespace FamTec.Server.Controllers.Floor
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<bool?> model = await FloorService.DeleteFloorService(idx).ConfigureAwait(false);
+                ResponseModel<bool?> model = await FloorService.DeleteFloorService(idx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

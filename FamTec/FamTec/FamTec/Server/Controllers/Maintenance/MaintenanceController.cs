@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Maintenance;
 using FamTec.Server.Services.UseMaintenence;
@@ -55,7 +56,7 @@ namespace FamTec.Server.Controllers.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<MaintenanceDaysDTO>? model = await MaintanceService.GetMaintenanceDaysList().ConfigureAwait(false);
+                ResponseModel<List<MaintenanceDaysDTO>>? model = await MaintanceService.GetMaintenanceDaysList().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -88,13 +89,13 @@ namespace FamTec.Server.Controllers.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<MaintanceYearPriceDTO>? model = await MaintanceService.GetMaintenanceYearPriceList().ConfigureAwait(false);
+                ResponseModel<List<MaintanceYearPriceDTO>>? model = await MaintanceService.GetMaintenanceYearPriceList().ConfigureAwait(false);
                 if (model == null)
                     return BadRequest();
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)
-                    return Ok(new ResponseList<MaintanceYearPriceDTO>() { message = "값이 존재하지 않습니다.", data = null, code = 200 });
+                    return Ok(new ResponseModel<List<MaintanceYearPriceDTO>>() { message = "값이 존재하지 않습니다.", data = null, code = 200 });
                 else
                     return BadRequest();
             }
@@ -122,7 +123,7 @@ namespace FamTec.Server.Controllers.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<MaintanceWeekCount>? model = await MaintanceService.GetMaintanceDashBoardDataService().ConfigureAwait(false);
+                ResponseModel<List<MaintanceWeekCount>>? model = await MaintanceService.GetMaintanceDashBoardDataService().ConfigureAwait(false);
 
                 if (model == null)
                     return BadRequest();
@@ -170,7 +171,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     }
                 }
 
-                ResponseUnit<bool?> model = await UseMaintenenceService.UpdateUseMaintanceService(dto).ConfigureAwait(false);
+                ResponseModel<bool?> model = await UseMaintenenceService.UpdateUseMaintanceService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -234,7 +235,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     return BadRequest();
                 }
 
-                ResponseUnit<FailResult?> model = await MaintanceService.AddSupMaintanceService(dto).ConfigureAwait(false);
+                ResponseModel<FailResult?> model = await MaintanceService.AddSupMaintanceService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -280,7 +281,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_10)
-                        return Ok(new ResponseUnit<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                        return Ok(new ResponseModel<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
@@ -292,12 +293,12 @@ namespace FamTec.Server.Controllers.Maintenance
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseModel<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
 
-                ResponseUnit<bool?> model = await MaintanceService.UpdateMaintenanceService(dto, files).ConfigureAwait(false);
+                ResponseModel<bool?> model = await MaintanceService.UpdateMaintenanceService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -331,7 +332,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_10)
-                        return Ok(new ResponseUnit<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                        return Ok(new ResponseModel<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
@@ -343,12 +344,12 @@ namespace FamTec.Server.Controllers.Maintenance
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseModel<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
 
-                ResponseUnit<bool?> model = await MaintanceService.AddMaintanceImageService(id, files).ConfigureAwait(false);
+                ResponseModel<bool?> model = await MaintanceService.AddMaintanceImageService(id, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -410,7 +411,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     }
                 }
 
-                ResponseUnit<FailResult?> model = await MaintanceService.AddMaintanceService(dto).ConfigureAwait(false);
+                ResponseModel<FailResult?> model = await MaintanceService.AddMaintanceService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -448,7 +449,7 @@ namespace FamTec.Server.Controllers.Maintenance
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<MaintanceListDTO> model = await MaintanceService.GetMaintanceHistoryService(facilityid).ConfigureAwait(false);
+                ResponseModel<List<MaintanceListDTO>> model = await MaintanceService.GetMaintanceHistoryService(facilityid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -480,7 +481,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<DetailMaintanceDTO?> model = await MaintanceService.GetDetailService(Maintanceid, isMobile).ConfigureAwait(false);
+                ResponseModel<DetailMaintanceDTO?> model = await MaintanceService.GetDetailService(Maintanceid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -516,7 +517,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (dto.MaintanceID is null || !dto.MaintanceID.Any())
                     return NoContent();
 
-                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceRecordService(dto).ConfigureAwait(false);
+                ResponseModel<bool?> model = await MaintanceService.DeleteMaintenanceRecordService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -555,7 +556,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     return NoContent();
 
 
-                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceStoreRecordService(delInfo).ConfigureAwait(false);
+                ResponseModel<bool?> model = await MaintanceService.DeleteMaintenanceStoreRecordService(delInfo).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -601,7 +602,7 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 category.ForEach(s => s = s.Trim());
 
-                ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHistoryList(StartDate, EndDate, category, type).ConfigureAwait(false);
+                ResponseModel<List<MaintanceHistoryDTO>>? model = await MaintanceService.GetDateHistoryList(StartDate, EndDate, category, type).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -645,7 +646,7 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 category.ForEach(s => s = s.Trim());
 
-                ResponseList<AllMaintanceHistoryDTO>? model = await MaintanceService.GetAllHistoryList(category, type).ConfigureAwait(false);
+                ResponseModel<List<AllMaintanceHistoryDTO>>? model = await MaintanceService.GetAllHistoryList(category, type).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -703,7 +704,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     CreateBuilderLogger.ConsoleText("월간조회");
 #endif
                     // 월간 Service API 호출
-                    ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetMonthHistoryList(searchdate, category, type);
+                    ResponseModel<List<MaintanceHistoryDTO>>? model = await MaintanceService.GetMonthHistoryList(searchdate, category, type);
 
                     if (model is null)
                         return BadRequest();
@@ -720,7 +721,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     CreateBuilderLogger.ConsoleText("기간조회");
 #endif
                     // 기간 Service API 호출
-                    ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHistoryList(StartDate!.Value, EndDate!.Value, category, type).ConfigureAwait(false);
+                    ResponseModel<List<MaintanceHistoryDTO>>? model = await MaintanceService.GetDateHistoryList(StartDate!.Value, EndDate!.Value, category, type).ConfigureAwait(false);
 
                     if (model is null)
                         return BadRequest();

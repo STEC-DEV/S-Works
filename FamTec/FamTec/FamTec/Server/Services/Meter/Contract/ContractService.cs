@@ -1,6 +1,6 @@
-﻿using FamTec.Server.Repository.Meter.Contract;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Repository.Meter.Contract;
 using FamTec.Shared.Model;
-using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Meter.Contract;
 
 namespace FamTec.Server.Services.Meter.Contract
@@ -26,24 +26,24 @@ namespace FamTec.Server.Services.Meter.Contract
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddContractDTO>> AddContractService(AddContractDTO dto)
+        public async Task<ResponseModel<AddContractDTO>> AddContractService(AddContractDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
-                    return new ResponseUnit<AddContractDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<AddContractDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 string? Creater = Convert.ToString(context.Items["Name"]);
 
                 if(String.IsNullOrWhiteSpace(placeidx) || String.IsNullOrWhiteSpace(Creater))
-                    return new ResponseUnit<AddContractDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<AddContractDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 ContractTypeTb? ContractInfo = await ContractInfoRepository.GetContractName(Int32.Parse(placeidx), dto.Name!);
                 if (ContractInfo is not null)
-                    return new ResponseUnit<AddContractDTO>() { message = "이미 존재하는 계약종류 입니다.", data = null, code = 201 };
+                    return new ResponseModel<AddContractDTO>() { message = "이미 존재하는 계약종류 입니다.", data = null, code = 201 };
 
                 ContractTypeTb model = new ContractTypeTb
                 {
@@ -58,15 +58,15 @@ namespace FamTec.Server.Services.Meter.Contract
                 ContractTypeTb? AddInfo = await ContractInfoRepository.AddAsync(model);
                 if(AddInfo is not null)
                 {
-                    return new ResponseUnit<AddContractDTO>() { message = "요청이 정상 처리되었습니다.", data = new AddContractDTO() { Name = AddInfo.Name }, code = 200 };
+                    return new ResponseModel<AddContractDTO>() { message = "요청이 정상 처리되었습니다.", data = new AddContractDTO() { Name = AddInfo.Name }, code = 200 };
                 }
                 else
-                    return new ResponseUnit<AddContractDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseModel<AddContractDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<AddContractDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500};
+                return new ResponseModel<AddContractDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500};
             }
         }
 
@@ -75,18 +75,18 @@ namespace FamTec.Server.Services.Meter.Contract
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<ContractDTO>> GetAllContractListService()
+        public async Task<ResponseModel<List<ContractDTO>>> GetAllContractListService()
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<ContractDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<ContractDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 if(String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<ContractDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<ContractDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<ContractTypeTb>? model = await ContractInfoRepository.GetAllContractList(Int32.Parse(placeidx));
                 if(model is not null && model.Any())
@@ -97,17 +97,17 @@ namespace FamTec.Server.Services.Meter.Contract
                         Name = e.Name
                     }).ToList();
 
-                    return new ResponseList<ContractDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<List<ContractDTO>>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
                 {
-                    return new ResponseList<ContractDTO>() { message = "요청이 정상 처리되었습니다.", data = new List<ContractDTO>(), code = 200 };
+                    return new ResponseModel<List<ContractDTO>>() { message = "요청이 정상 처리되었습니다.", data = new List<ContractDTO>(), code = 200 };
                 }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<ContractDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<ContractDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Building.Key;
 using FamTec.Shared.Server.DTO;
@@ -58,7 +59,7 @@ namespace FamTec.Server.Controllers.Building.Group
                     }
                 }
 
-                ResponseUnit<AddKeyDTO> model = await BuildingKeyService.AddKeyService(dto).ConfigureAwait(false);
+                ResponseModel<AddKeyDTO> model = await BuildingKeyService.AddKeyService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -97,7 +98,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (String.IsNullOrWhiteSpace(dto.Itemkey))
                     return NoContent();
 
-                ResponseUnit<UpdateKeyDTO> model = await BuildingKeyService.UpdateKeyService(dto).ConfigureAwait(false);
+                ResponseModel<UpdateKeyDTO> model = await BuildingKeyService.UpdateKeyService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -135,7 +136,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (keylist.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyListService(keylist).ConfigureAwait(false);
+                ResponseModel<bool?> model = await BuildingKeyService.DeleteKeyListService(keylist).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -172,7 +173,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 CreateBuilderLogger.ConsoleText($" {HttpContext.Request.Path.Value}");
 #endif
 
-                ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyService(keyid).ConfigureAwait(false);
+                ResponseModel<bool?> model = await BuildingKeyService.DeleteKeyService(keyid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

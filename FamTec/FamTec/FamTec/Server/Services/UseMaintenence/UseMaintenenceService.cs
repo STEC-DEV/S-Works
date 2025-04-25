@@ -1,7 +1,7 @@
-﻿using FamTec.Server.Hubs;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Hubs;
 using FamTec.Server.Repository.UseMaintenence;
 using FamTec.Shared.Model;
-using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.UseMaintenenceMaterial;
 using Microsoft.AspNetCore.SignalR;
@@ -36,36 +36,36 @@ namespace FamTec.Server.Services.UseMaintenence
         /// <param name="usematerialid"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ResponseUnit<UseMaterialDetailDTO>> GetDetailUseMaterialService(int usematerialid, int materialid, int roomid)
+        public async Task<ResponseModel<UseMaterialDetailDTO>> GetDetailUseMaterialService(int usematerialid, int materialid, int roomid)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if(String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if(usematerialid > 0)
                 {
                     // 수정건
                     UseMaterialDetailDTO? model = await UseMaintenenceInfoRepository.GetDetailUseStoreList(usematerialid, Int32.Parse(placeid)).ConfigureAwait(false);
                     if (model is not null)
-                        return new ResponseUnit<UseMaterialDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                        return new ResponseModel<UseMaterialDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                     else
-                        return new ResponseUnit<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
                 else
                 {
                     // 신규건
                     UseMaterialDetailDTO? model = await UseMaintenenceInfoRepository.New_GetDetailUseStoreList(materialid, roomid, Int32.Parse(placeid)).ConfigureAwait(false);
                     if (model is not null)
-                        return new ResponseUnit<UseMaterialDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                        return new ResponseModel<UseMaterialDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                     else
-                        return new ResponseUnit<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
             }
             catch (Exception ex)
@@ -74,7 +74,7 @@ namespace FamTec.Server.Services.UseMaintenence
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<UseMaterialDetailDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<UseMaterialDetailDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -84,23 +84,23 @@ namespace FamTec.Server.Services.UseMaintenence
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateDetailUseMaterialService(UpdateMaintenanceMaterialDTO dto)
+        public async Task<ResponseModel<bool?>> UpdateDetailUseMaterialService(UpdateMaintenanceMaterialDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? updater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(updater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 UseMaintenenceMaterialTb? UseMaterialTB = await UseMaintenenceInfoRepository.GetUseMaintanceInfo(dto.UseMaintanceID, Int32.Parse(placeid)).ConfigureAwait(false);
                 if(UseMaterialTB is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
                 if (dto.Num > UseMaterialTB.Num)
                 {
@@ -110,7 +110,7 @@ namespace FamTec.Server.Services.UseMaintenence
                     
 
                     if (UseAvailableNum is null)
-                        return new ResponseUnit<bool?>() { message = "품목의 개수가 부족합니다.", data = false, code = 204 };
+                        return new ResponseModel<bool?>() { message = "품목의 개수가 부족합니다.", data = false, code = 204 };
 
 
                     if (UseAvailableNum >= (dto.Num - UseMaterialTB.Num))
@@ -125,25 +125,25 @@ namespace FamTec.Server.Services.UseMaintenence
                             // 유지보수 상태 알림
                             await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
 
-                            return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                            return new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                         }
                         else if (UpdateResult == -1)
                         {
-                            return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 201 };
+                            return new ResponseModel<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 201 };
                         }
                         else if (UpdateResult == -2)
                         {
-                            return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                            return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                         }
                         else
                         {
-                            return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                            return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                         }
                     }
                     else
                     {
                         // 가용수량보다 부족해서 안됨
-                        return new ResponseUnit<bool?>() { message = "품목의 개수가 부족합니다.", data = false, code = 204 };
+                        return new ResponseModel<bool?>() { message = "품목의 개수가 부족합니다.", data = false, code = 204 };
                     }
                 }
                 else if (dto.Num < UseMaterialTB.Num)
@@ -158,25 +158,25 @@ namespace FamTec.Server.Services.UseMaintenence
                         // 유지보수 상태 알림
                         await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
 
-                        return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                        return new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                     }
                     else if (UpdateResult == -1)
                     {
-                        return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 201 };
+                        return new ResponseModel<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 201 };
                     }
                     else if (UpdateResult == -2)
                     {
-                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                     }
                     else
                     {
-                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                        return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                     }
                 }
                 else
                 {
                     // 아무것도 아님
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+                    return new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
                 }
             }
             catch(Exception ex)
@@ -185,23 +185,23 @@ namespace FamTec.Server.Services.UseMaintenence
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
-        public async Task<ResponseUnit<bool?>> UpdateUseMaintanceService(UpdateMaintancematerialDTO dto)
+        public async Task<ResponseModel<bool?>> UpdateUseMaintanceService(UpdateMaintancematerialDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? updater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(updater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 int result = await UseMaintenenceInfoRepository.UpdateUseMaintance(dto, Convert.ToInt32(placeid), updater).ConfigureAwait(false);
                 if (result == 1)
@@ -212,16 +212,16 @@ namespace FamTec.Server.Services.UseMaintenence
                     // 유지보수 상태 알림
                     await HubContext.Clients.Group($"{placeid}_MaintenanceStatus").SendAsync("ReceiveMaintenanceStatusStatus", "유지보수 상태가 변경되었습니다.").ConfigureAwait(false);
 
-                    return new ResponseUnit<bool?>() { message = "요청이 정상처리되었습니다.", data = true, code = 200 };
+                    return new ResponseModel<bool?>() { message = "요청이 정상처리되었습니다.", data = true, code = 200 };
                 }
                 else if (result == -1)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 else if (result == -2)
-                    return new ResponseUnit<bool?>() { message = "수량이 부족합니다.", data = false, code = 204 };
+                    return new ResponseModel<bool?>() { message = "수량이 부족합니다.", data = false, code = 204 };
                 else if (result == -3)
-                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 401 };
+                    return new ResponseModel<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 401 };
                 else
-                    return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                    return new ResponseModel<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
             catch(Exception ex)
             {
@@ -229,7 +229,7 @@ namespace FamTec.Server.Services.UseMaintenence
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
     }

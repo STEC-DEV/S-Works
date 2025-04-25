@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Admin.AdminPlaces;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Place;
@@ -81,20 +82,20 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="context">JWT 토큰</param>
         /// <returns>ResponseList<AllPlaceDTO></returns>
-        public async Task<ResponseList<AllPlaceDTO>> GetAllWorksService()
+        public async Task<ResponseModel<List<AllPlaceDTO>>> GetAllWorksService()
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<AllPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AllPlaceDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? AdminId = Convert.ToString(context.Items["AdminIdx"]);
                 string? Role = Convert.ToString(context.Items["Role"]);
                 
                 if (String.IsNullOrWhiteSpace(AdminId) || String.IsNullOrWhiteSpace(Role))
-                    return new ResponseList<AllPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AllPlaceDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<PlaceTb> placetb = new List<PlaceTb>();
                 if (Role.Trim() == "매니저")
@@ -122,16 +123,16 @@ namespace FamTec.Server.Services.Admin.Place
                                 CancelDt = e.CancelDt
                             }).ToList();
 
-                            return new ResponseList<AllPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = PlaceData, code = 200 };
+                            return new ResponseModel<List<AllPlaceDTO>>() { message = "요청이 정상 처리되었습니다.", data = PlaceData, code = 200 };
                         }
                         else
                         {
-                            return new ResponseList<AllPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
+                            return new ResponseModel<List<AllPlaceDTO>>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
                         }
                     }
                     else
                     {
-                        return new ResponseList<AllPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
+                        return new ResponseModel<List<AllPlaceDTO>>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
                     }
                 }
                 else
@@ -149,11 +150,11 @@ namespace FamTec.Server.Services.Admin.Place
                             CancelDt = e.CancelDt
                         }).ToList();
 
-                        return new ResponseList<AllPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = PlaceData, code = 200 };
+                        return new ResponseModel<List<AllPlaceDTO>>() { message = "요청이 정상 처리되었습니다.", data = PlaceData, code = 200 };
                     }
                     else
                     {
-                        return new ResponseList<AllPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
+                        return new ResponseModel<List<AllPlaceDTO>>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
                     }
                 }
             }
@@ -163,7 +164,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<AllPlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<AllPlaceDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -172,7 +173,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async Task<ResponseList<AdminPlaceDTO>> GetMyWorksService(int adminid)
+        public async Task<ResponseModel<List<AdminPlaceDTO>>> GetMyWorksService(int adminid)
         {
             try
             {
@@ -180,7 +181,7 @@ namespace FamTec.Server.Services.Admin.Place
 
                 if (model is not null && model.Any())
                 {
-                    return new ResponseList<AdminPlaceDTO>()
+                    return new ResponseModel<List<AdminPlaceDTO>>()
                     {
                         message = "요청이 정상 처리되었습니다.",
                         data = model,
@@ -188,7 +189,7 @@ namespace FamTec.Server.Services.Admin.Place
                     };
                 }
                 
-                return new ResponseList<AdminPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
+                return new ResponseModel<List<AdminPlaceDTO>>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
             }
             catch (Exception ex)
             {
@@ -196,33 +197,32 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<AdminPlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<AdminPlaceDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
         /// <summary>
         /// 해당 관리자의 서비스 사업장목록 보기
         /// </summary>
-        /// <param name="adminid"></param>
         /// <returns></returns>
-        public async Task<ResponseList<AdminPlaceDTO>> GetMyWorksList()
+        public async Task<ResponseModel<List<AdminPlaceDTO>>> GetMyWorksList()
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<AdminPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AdminPlaceDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? adminidx = Convert.ToString(context.Items["AdminIdx"]);
                 if(String.IsNullOrWhiteSpace(adminidx))
-                    return new ResponseList<AdminPlaceDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AdminPlaceDTO>>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 List<AdminPlaceDTO>? model = await AdminPlaceInfoRepository.LoginSelectPlaceList(Int32.Parse(adminidx)).ConfigureAwait(false);
 
                 if (model is not null &&  model.Any())
                 {
-                    return new ResponseList<AdminPlaceDTO>()
+                    return new ResponseModel<List<AdminPlaceDTO>>()
                     {
                         message = "요청이 정상 처리되었습니다.",
                         data = model,
@@ -230,7 +230,7 @@ namespace FamTec.Server.Services.Admin.Place
                     };
                 }
 
-                return new ResponseList<AdminPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
+                return new ResponseModel<List<AdminPlaceDTO>>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
             }
             catch (Exception ex)
             {
@@ -238,7 +238,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<AdminPlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<AdminPlaceDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -246,16 +246,16 @@ namespace FamTec.Server.Services.Admin.Place
         /// 관리자정보 전체조회
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseList<ManagerListDTO>> GetAllManagerListService()
+        public async Task<ResponseModel<List<ManagerListDTO>>> GetAllManagerListService()
         {
             try
             {
                 List<ManagerListDTO>? model = await AdminUserInfoRepository.GetAllAdminUserList().ConfigureAwait(false);
 
                 if(model is not null && model.Any())
-                    return new ResponseList<ManagerListDTO> { message = "데이터가 정상 처리되었습니다.", data = model, code = 200 };
-                else 
-                    return new ResponseList<ManagerListDTO> { message = "조회된 결과가 없습니다.", data = null, code = 200 };
+                    return new ResponseModel<List<ManagerListDTO>> { message = "데이터가 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseModel<List<ManagerListDTO>> { message = "조회된 결과가 없습니다.", data = null, code = 200 };
             }
             catch(Exception ex)
             {
@@ -263,7 +263,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<ManagerListDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<ManagerListDTO>> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -273,23 +273,23 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="dto">사업장 추가 DTO</param>
         /// <returns>추가된 사업장ID</returns>
-        public async Task<ResponseUnit<int?>> AddPlaceService(AddPlaceDTO dto)
+        public async Task<ResponseModel<int?>> AddPlaceService(AddPlaceDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<int?> { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<int?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? Creater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(Creater))
-                    return new ResponseUnit<int?> { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<int?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // UK 검사
                 bool? UKCheck = await PlaceInfoRepository.PlaceUKCheck(dto.ContractNum!).ConfigureAwait(false);
                 if (UKCheck != true)
-                    return new ResponseUnit<int?> { message = "이미 사용한 이력이 있는 코드입니다.", data = null, code = 202 };
+                    return new ResponseModel<int?> { message = "이미 사용한 이력이 있는 코드입니다.", data = null, code = 202 };
 
                 DateTime ThisTime = DateTime.Now;
 
@@ -322,9 +322,9 @@ namespace FamTec.Server.Services.Admin.Place
                 PlaceTb? place_result = await PlaceInfoRepository.AddPlaceInfo(place).ConfigureAwait(false);
 
                 if (place_result is not null)
-                    return new ResponseUnit<int?> { message = "요청이 정상 처리되었습니다.", data = place_result.Id, code = 200 };
+                    return new ResponseModel<int?> { message = "요청이 정상 처리되었습니다.", data = place_result.Id, code = 200 };
                 else
-                    return new ResponseUnit<int?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseModel<int?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
             catch (Exception ex)
             {
@@ -332,7 +332,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<int?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<int?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -342,27 +342,27 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="dto">수정할 DTO</param>
         /// <returns></returns>
-        public async Task<ResponseUnit<UpdatePlaceDTO>> UpdatePlaceService(UpdatePlaceDTO dto)
+        public async Task<ResponseModel<UpdatePlaceDTO>> UpdatePlaceService(UpdatePlaceDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
                 if (dto is null)
-                    return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 DateTime ThisTime = DateTime.Now;
 
                 PlaceTb? model = await PlaceInfoRepository.GetByPlaceInfo(dto.PlaceInfo.Id!.Value).ConfigureAwait(false);
                 if(model is null)
-                    return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Name = !String.IsNullOrWhiteSpace(dto.PlaceInfo.Name) ? dto.PlaceInfo.Name.Trim() : dto.PlaceInfo.Name!;
                 model.Tel = !String.IsNullOrWhiteSpace(dto.PlaceInfo.Tel) ? dto.PlaceInfo.Tel.Trim() : dto.PlaceInfo.Tel!;
@@ -390,9 +390,9 @@ namespace FamTec.Server.Services.Admin.Place
                 bool? UpdatePlaceResult = await PlaceInfoRepository.EditPlaceInfo(model).ConfigureAwait(false);
                 return UpdatePlaceResult switch
                 {
-                    true => new ResponseUnit<UpdatePlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 },
-                    false => new ResponseUnit<UpdatePlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
-                    _ => new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<UpdatePlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 },
+                    false => new ResponseModel<UpdatePlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
+                    _ => new ResponseModel<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
             }
             catch(Exception ex)
@@ -401,7 +401,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<UpdatePlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<UpdatePlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -410,16 +410,16 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<PlaceDetailDTO>> GetPlaceService(int placeid)
+        public async Task<ResponseModel<PlaceDetailDTO>> GetPlaceService(int placeid)
         {
             try
             {
                 PlaceDetailDTO? model = await AdminPlaceInfoRepository.GetWorksInfo(placeid).ConfigureAwait(false);
 
                 if (model is not null)
-                    return new ResponseUnit<PlaceDetailDTO> { message = "요청이 정상 처리되었습니다.", data = model, code = 200};
+                    return new ResponseModel<PlaceDetailDTO> { message = "요청이 정상 처리되었습니다.", data = model, code = 200};
                 else
-                    return new ResponseUnit<PlaceDetailDTO> { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<PlaceDetailDTO> { message = "잘못된 요청입니다.", data = null, code = 404 };
             }
             catch(Exception ex)
             {
@@ -427,7 +427,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<PlaceDetailDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<PlaceDetailDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -437,18 +437,18 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="placemanager">추가할 관리자 정보 DTO</param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> AddPlaceManagerService(AddPlaceManagerDTO<ManagerListDTO> placemanager)
+        public async Task<ResponseModel<bool?>> AddPlaceManagerService(AddPlaceManagerDTO<ManagerListDTO> placemanager)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (placemanager is null || context is null)
-                    return new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? Creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(Creater))
-                    return new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 int placeid = placemanager.PlaceId!.Value;
                 List<ManagerListDTO> placeManagers = placemanager.PlaceManager!;
@@ -462,7 +462,7 @@ namespace FamTec.Server.Services.Admin.Place
                     {
                         AdminPlaceTb? alreadyCheck = await AdminPlaceInfoRepository.GetPlaceAdminInfo(manager.Id!.Value, placeid).ConfigureAwait(false);
                         if(alreadyCheck is not null)
-                            return new ResponseUnit<bool?>() { message = "해당 관리자는 이미 포함되어있습니다.", data = false, code = 202 };
+                            return new ResponseModel<bool?>() { message = "해당 관리자는 이미 포함되어있습니다.", data = false, code = 202 };
                     }
 
                     List<AdminPlaceTb> adminPlaceList = placeManagers.Select(manager => new AdminPlaceTb
@@ -480,14 +480,14 @@ namespace FamTec.Server.Services.Admin.Place
                         bool? result = await AdminPlaceInfoRepository.AddAsync(adminPlaceList).ConfigureAwait(false);
                         return result switch
                         {
-                            true => new ResponseUnit<bool?> { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                            false => new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                            _ => new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 }
+                            true => new ResponseModel<bool?> { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                            false => new ResponseModel<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                            _ => new ResponseModel<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 }
                         };
                     }
                 }
                 
-                return new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
+                return new ResponseModel<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
             }
             catch(Exception ex)
             {
@@ -495,7 +495,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                return new ResponseModel<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
 
@@ -504,18 +504,18 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> AddManagerPlaceSerivce(AddManagerPlaceDTO dto)
+        public async Task<ResponseModel<bool?>> AddManagerPlaceSerivce(AddManagerPlaceDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (dto is null || context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 DateTime ThisTime = DateTime.Now;
 
@@ -545,19 +545,19 @@ namespace FamTec.Server.Services.Admin.Place
                         bool? result = await AdminPlaceInfoRepository.AddAsync(placeadmintb).ConfigureAwait(false);
                         return result switch
                         {
-                            true => new ResponseUnit<bool?> { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                            false => new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                            _ => new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 }
+                            true => new ResponseModel<bool?> { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                            false => new ResponseModel<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                            _ => new ResponseModel<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 }
                         };
                     }
                     else
                     {
-                        return new ResponseUnit<bool?>() { message = "데이터가 잘못되었습니다.", data = true, code = 200 };
+                        return new ResponseModel<bool?>() { message = "데이터가 잘못되었습니다.", data = true, code = 200 };
                     }
                 }
                 else
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                    return new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }  
             }
             catch(Exception ex)
@@ -566,7 +566,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
 
@@ -574,18 +574,18 @@ namespace FamTec.Server.Services.Admin.Place
         /// 해당 사업장에 관리자 삭제
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeleteManagerPlaceService(AddPlaceManagerDTO<ManagerListDTO> dto)
+        public async Task<ResponseModel<bool?>> DeleteManagerPlaceService(AddPlaceManagerDTO<ManagerListDTO> dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (dto is null || context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<int> adminidx = dto.PlaceManager!.Select(m => m.Id!.Value).ToList();
 
@@ -593,9 +593,9 @@ namespace FamTec.Server.Services.Admin.Place
                 
                 return RemoveResult switch
                 {
-                    true => new ResponseUnit<bool?> { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                    _ => new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<bool?> { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseModel<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseModel<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
             }
             catch (Exception ex)
@@ -604,7 +604,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -615,28 +615,28 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="placeidx">삭제할 사업장 인덱스</param>
         /// <returns>TRUE & FALSE</returns>
-        public async Task<ResponseUnit<bool?>> DeletePlaceService(List<int> placeidx)
+        public async Task<ResponseModel<bool?>> DeletePlaceService(List<int> placeidx)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 // 해당 사업장인덱스와 AdminPlaceTb의 PlaceTbID 외래키로 검색해서 있는지 검사 - 삭제조건 [1]
                 List<AdminPlaceTb>? adminplaceetb = await AdminPlaceInfoRepository.SelectPlaceAdminList(placeidx).ConfigureAwait(false);
                 if(adminplaceetb is not null && adminplaceetb.Any())
-                    return new ResponseUnit<bool?>() { message = "해당 사업장에 할당되어있는 관리자가 있어 삭제가 불가능합니다.", data = false, code = 204 };
+                    return new ResponseModel<bool?>() { message = "해당 사업장에 할당되어있는 관리자가 있어 삭제가 불가능합니다.", data = false, code = 204 };
 
                 // 해당 사업장인덱스와 BuildingTb의 PlaceId 외래키로 검색해서 있는지 검사 - 삭제조건 [2]
                 List<BuildingTb>? buildingtb = await BuildingInfoRepository.SelectPlaceBuildingList(placeidx).ConfigureAwait(false);
                 if(buildingtb is not null && buildingtb.Any())
-                    return new ResponseUnit<bool?>() { message = "해당 사업장에 할당되어있는 건물이 있어 삭제가 불가능합니다.", data = false, code = 204 };
+                    return new ResponseModel<bool?>() { message = "해당 사업장에 할당되어있는 건물이 있어 삭제가 불가능합니다.", data = false, code = 204 };
                 
                 // 해당 사업장에 사용자가 있는지 검사 삭제조건 [3]
                 foreach(int placeid in placeidx)
@@ -644,15 +644,15 @@ namespace FamTec.Server.Services.Admin.Place
                     List<UsersTb>? UsersTB = await UserInfoRepository.GetPlaceUserList(placeid).ConfigureAwait(false);
 
                     if (UsersTB is [_, ..])
-                        return new ResponseUnit<bool?>() { message = "해당 사업장에 할당되어있는 사용자가 있어 삭제가 불가능합니다.", data = false, code = 204 };
+                        return new ResponseModel<bool?>() { message = "해당 사업장에 할당되어있는 사용자가 있어 삭제가 불가능합니다.", data = false, code = 204 };
                 }
                 
                 bool? DeleteResult = await PlaceInfoRepository.DeletePlaceList(creater, placeidx).ConfigureAwait(false);
                 return DeleteResult switch
                 {
-                    true => new ResponseUnit<bool?> { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                    _ => new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<bool?> { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseModel<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseModel<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
 
             }
@@ -662,7 +662,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
 
@@ -672,25 +672,25 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="placeid">사업장 ID</param>
         /// <returns></returns>
-        public async Task<ResponseList<ManagerListDTO>> NotContainManagerList(int placeid)
+        public async Task<ResponseModel<List<ManagerListDTO>>> NotContainManagerList(int placeid)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<ManagerListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<ManagerListDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 PlaceTb? PlaceCheck = await PlaceInfoRepository.GetByPlaceInfo(placeid).ConfigureAwait(false);
                 if(PlaceCheck is null)
-                    return new ResponseList<ManagerListDTO>() { message = "없는 사업장입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<ManagerListDTO>>() { message = "없는 사업장입니다.", data = null, code = 404 };
 
                 List<ManagerListDTO>? SelectList = await AdminUserInfoRepository.GetNotContainsAdminList(placeid).ConfigureAwait(false);
                 
                 if (SelectList is not null && SelectList.Any())
-                    return new ResponseList<ManagerListDTO>() { message = "요청이 정상 처리되었습니다.", data = SelectList, code = 200 };
+                    return new ResponseModel<List<ManagerListDTO>>() { message = "요청이 정상 처리되었습니다.", data = SelectList, code = 200 };
                 else
-                    return new ResponseList<ManagerListDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
+                    return new ResponseModel<List<ManagerListDTO>>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
             }
             catch (Exception ex)
             {
@@ -698,7 +698,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<ManagerListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<ManagerListDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -708,26 +708,26 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="adminid">관리자 ID</param>
         /// <returns></returns>
-        public async Task<ResponseList<AdminPlaceDTO>> NotContainPlaceList(int adminid)
+        public async Task<ResponseModel<List<AdminPlaceDTO>>> NotContainPlaceList(int adminid)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<AdminPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AdminPlaceDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 관리자 인지 검사
                 AdminTb? adminTB = await AdminUserInfoRepository.GetAdminIdInfo(adminid).ConfigureAwait(false);
                 if(adminTB is null)
-                    return new ResponseList<AdminPlaceDTO>() { message = "없는 관리자입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AdminPlaceDTO>>() { message = "없는 관리자입니다.", data = null, code = 404 };
 
                 List<AdminPlaceDTO>? SelectList = await AdminPlaceInfoRepository.GetNotContainsPlaceList(adminid).ConfigureAwait(false);
                 
                 if (SelectList is not null && SelectList.Any())
-                    return new ResponseList<AdminPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = SelectList, code = 200 };
+                    return new ResponseModel<List<AdminPlaceDTO>>() { message = "요청이 정상 처리되었습니다.", data = SelectList, code = 200 };
                 else
-                    return new ResponseList<AdminPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+                    return new ResponseModel<List<AdminPlaceDTO>>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
             }
             catch(Exception ex)
             {
@@ -735,7 +735,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<AdminPlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<AdminPlaceDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -744,15 +744,15 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<string?>> GetPlaceName(int placeid)
+        public async Task<ResponseModel<string?>> GetPlaceName(int placeid)
         {
             try
             {
                 PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(placeid).ConfigureAwait(false);
                 if (PlaceTB is not null)
-                    return new ResponseUnit<string?>() { message = "요청이 정상 처리되었습니다.", data = PlaceTB.Name, code = 200 };
+                    return new ResponseModel<string?>() { message = "요청이 정상 처리되었습니다.", data = PlaceTB.Name, code = 200 };
                 else
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
             }
             catch(Exception ex)
             {
@@ -760,7 +760,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -770,33 +770,33 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdatePlaceManagerService(UpdatePlaceManagerDTO dto)
+        public async Task<ResponseModel<bool?>> UpdatePlaceManagerService(UpdatePlaceManagerDTO dto)
         {
             try 
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? updater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(updater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(dto.PlaceId).ConfigureAwait(false);
                 if (PlaceTB is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 int? Result = await AdminPlaceInfoRepository.UpdatePlaceManager(dto, updater).ConfigureAwait(false);
 
                 if (Result is 1)
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                    return new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 else if (Result is 0)
-                    return new ResponseUnit<bool?>() { message = "이미 삭제된 데이터가 존재합니다.", data = false, code = 200 };
+                    return new ResponseModel<bool?>() { message = "이미 삭제된 데이터가 존재합니다.", data = false, code = 200 };
                 else if (Result is -1)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 else
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
             catch(Exception ex)
             {
@@ -804,7 +804,7 @@ namespace FamTec.Server.Services.Admin.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 

@@ -1,7 +1,7 @@
-﻿using FamTec.Server.Repository.Building;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.KakaoLog;
 using FamTec.Shared.Model;
-using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 
 namespace FamTec.Server.Services.KakaoLog
@@ -32,22 +32,22 @@ namespace FamTec.Server.Services.KakaoLog
         /// 해당 사업장의 카카오 로그 리스트 기간 조회
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseList<KakaoLogListDTO>> GetKakaoLogDateListService(DateTime StartDate, DateTime EndDate,int isSuccess)
+        public async Task<ResponseModel<List<KakaoLogListDTO>>> GetKakaoLogDateListService(DateTime StartDate, DateTime EndDate,int isSuccess)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<KakaoLogListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseList<KakaoLogListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if (BuildingList is null || !BuildingList.Any())
-                    return new ResponseList<KakaoLogListDTO>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
 
                 List<KakaoLogTb>? KakaoList = await KakaoLogInfoRepository.GetKakaoLogList(Convert.ToInt32(placeid),isSuccess).ConfigureAwait(false);
                 if (KakaoList is not null && KakaoList.Any())
@@ -66,11 +66,11 @@ namespace FamTec.Server.Services.KakaoLog
                                                   .OrderByDescending(m => m.CreateDT)
                                                   .ToList();
 
-                    return new ResponseList<KakaoLogListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
                 {
-                    return new ResponseList<KakaoLogListDTO>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
                 }
             }
             catch(Exception ex)
@@ -79,7 +79,7 @@ namespace FamTec.Server.Services.KakaoLog
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<KakaoLogListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<KakaoLogListDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -88,22 +88,22 @@ namespace FamTec.Server.Services.KakaoLog
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<KakaoLogListDTO>> GetKakaoLogListService(int isSuccess)
+        public async Task<ResponseModel<List<KakaoLogListDTO>>> GetKakaoLogListService(int isSuccess)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<KakaoLogListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if(String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseList<KakaoLogListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if(BuildingList is null || !BuildingList.Any())
-                    return new ResponseList<KakaoLogListDTO>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
 
                 List<KakaoLogTb>? KakaoList = await KakaoLogInfoRepository.GetKakaoLogList(Convert.ToInt32(placeid),isSuccess).ConfigureAwait(false);
                 if (KakaoList is not null && KakaoList.Any())
@@ -122,11 +122,11 @@ namespace FamTec.Server.Services.KakaoLog
                                                   .OrderByDescending(m => m.CreateDT)
                                                   .ToList();
 
-                    return new ResponseList<KakaoLogListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
                 {
-                    return new ResponseList<KakaoLogListDTO>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
                 }
             }
             catch(Exception ex)
@@ -135,7 +135,7 @@ namespace FamTec.Server.Services.KakaoLog
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<KakaoLogListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<KakaoLogListDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -144,21 +144,21 @@ namespace FamTec.Server.Services.KakaoLog
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<int?>> GetKakaoLogCountService()
+        public async Task<ResponseModel<int?>> GetKakaoLogCountService()
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if(String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 int? count = await KakaoLogInfoRepository.GetKakaoLogCount(Int32.Parse(placeid)).ConfigureAwait(false);
-                return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = count, code = 200 };
+                return new ResponseModel<int?>() { message = "요청이 정상 처리되었습니다.", data = count, code = 200 };
             }
             catch(Exception ex)
             {
@@ -166,7 +166,7 @@ namespace FamTec.Server.Services.KakaoLog
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -177,22 +177,22 @@ namespace FamTec.Server.Services.KakaoLog
         /// <param name="pagenumber"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public async Task<ResponseList<KakaoLogListDTO>> GetKakaoLogPageNationListService(int pagenumber, int pagesize)
+        public async Task<ResponseModel<List<KakaoLogListDTO>>> GetKakaoLogPageNationListService(int pagenumber, int pagesize)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<KakaoLogListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseList<KakaoLogListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if (BuildingList is null || !BuildingList.Any())
-                    return new ResponseList<KakaoLogListDTO>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
 
                 List<KakaoLogTb>? KakaoList = await KakaoLogInfoRepository.GetKakaoLogPageNationList(Convert.ToInt32(placeid), pagenumber, pagesize).ConfigureAwait(false);
                 if (KakaoList is not null && KakaoList.Any())
@@ -209,11 +209,11 @@ namespace FamTec.Server.Services.KakaoLog
                                                       VocId = LogTB.VocTbId
                                                   }).ToList();
 
-                    return new ResponseList<KakaoLogListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
                 {
-                    return new ResponseList<KakaoLogListDTO>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
+                    return new ResponseModel<List<KakaoLogListDTO>>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
                 }
             }
             catch(Exception ex)
@@ -222,7 +222,7 @@ namespace FamTec.Server.Services.KakaoLog
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<KakaoLogListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<KakaoLogListDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }     
     }

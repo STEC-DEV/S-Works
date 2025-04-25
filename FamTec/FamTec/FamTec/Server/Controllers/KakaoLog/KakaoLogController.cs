@@ -1,6 +1,8 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.KakaoLog;
+using FamTec.Server.Services.Voc.Kakao;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using Microsoft.AspNetCore.Authorization;
@@ -60,7 +62,7 @@ namespace FamTec.Server.Controllers.KakaoLog
                 if(limit_day is 0)
                     return NoContent();
 
-                ResponseList<KaKaoSenderResult>? model = await KakaoService.KakaoSenderResult(page, pagesize, StartDate, limit_day).ConfigureAwait(false);
+                ResponseModel<List<KaKaoSenderResult>>? model = await KakaoService.KakaoSenderResult(page, pagesize, StartDate, limit_day).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -95,7 +97,7 @@ namespace FamTec.Server.Controllers.KakaoLog
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogListService(isSuccess).ConfigureAwait(false);
+                ResponseModel<List<KakaoLogListDTO>>? model = await KakaoLogService.GetKakaoLogListService(isSuccess).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -129,7 +131,7 @@ namespace FamTec.Server.Controllers.KakaoLog
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogDateListService(StartDate, EndDate, isSuccess).ConfigureAwait(false);
+                ResponseModel<List<KakaoLogListDTO>>? model = await KakaoLogService.GetKakaoLogDateListService(StartDate, EndDate, isSuccess).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -170,7 +172,7 @@ namespace FamTec.Server.Controllers.KakaoLog
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<int?> model = await KakaoLogService.GetKakaoLogCountService().ConfigureAwait(false);
+                ResponseModel<int?> model = await KakaoLogService.GetKakaoLogCountService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -212,7 +214,7 @@ namespace FamTec.Server.Controllers.KakaoLog
                 if (pagenum == 0)
                     return BadRequest(); // 잘못된 요청
 
-                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogPageNationListService(pagenum, pagesize).ConfigureAwait(false);
+                ResponseModel<List<KakaoLogListDTO>>? model = await KakaoLogService.GetKakaoLogPageNationListService(pagenum, pagesize).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)

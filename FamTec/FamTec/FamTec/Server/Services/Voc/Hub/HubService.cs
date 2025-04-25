@@ -8,14 +8,13 @@ using FamTec.Server.Repository.Place;
 using FamTec.Server.Repository.User;
 using FamTec.Server.Repository.Voc;
 using FamTec.Server.Services.Redis;
+using FamTec.Server.Services.Voc.Kakao;
 using FamTec.Shared.Model;
-using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
-using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
 
 namespace FamTec.Server.Services.Voc.Hub
 {
@@ -29,56 +28,47 @@ namespace FamTec.Server.Services.Voc.Hub
         private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
         private readonly IUserInfoRepository UserInfoRepository;
         private readonly IAlarmInfoRepository AlarmInfoRepository;
-
-        IHubContext<BroadcastHub> HubContext;
-        private readonly IKakaoService KakaoService;
-        private readonly IFileService FileService;
-        private readonly ILogService LogService;
-        private readonly ConsoleLogService<HubService> CreateBuilderLogger;
-
-        private readonly AuthCodeService AuthCodeService;
+        private readonly IKakaoService KakaoService; /* 알림톡 서비스 */
+        IHubContext<BroadcastHub> HubContext; /* SignalR 허브 */
+        private readonly IFileService FileService; /* 이미지 서비스 */
+        private readonly IRedisService RedisService; /* Redis 서비스 */
+        private readonly ILogService LogService; /* 파일로그 */
+        private readonly ConsoleLogService<HubService> CreateBuilderLogger; /* 콘솔로그 */
 
         // 파일디렉터리
         private DirectoryInfo? di;
         private string? VocFileFolderPath;
         private string? VocCommentFileFolderPath;
 
-        private readonly IRedisService RedisService;
-
         public HubService(IVocInfoRepository _vocinforepository,
             IVocCommentRepository _voccommentrepository,
             IPlaceInfoRepository _placeinforepository,
             IBuildingInfoRepository _buildinginforepository,
             IBlackListInfoRepository _blacklistinforepository,
-            IUserInfoRepository _userinforepository,
-            IHubContext<BroadcastHub> _hubcontext,
             IKakaoLogInfoRepository _kakaologinforepository,
+            IUserInfoRepository _userinforepository,
             IAlarmInfoRepository _alarminforepository,
             IKakaoService _kakaoservice,
+            IHubContext<BroadcastHub> _hubcontext,
             IFileService _fileservice,
-            ILogService _logservice,
             IRedisService _redisservice,
-            ConsoleLogService<HubService> _createbuilderlogger,
-            AuthCodeService _authcodeservice)
+            ILogService _logservice,
+            ConsoleLogService<HubService> _createbuilderlogger)
         {
             this.VocInfoRepository = _vocinforepository;
             this.VocCommentRepository = _voccommentrepository;
             this.PlaceInfoRepository = _placeinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
             this.BlackListInfoRepository = _blacklistinforepository;
+            this.KakaoLogInfoRepository = _kakaologinforepository;
             this.UserInfoRepository = _userinforepository;
             this.AlarmInfoRepository = _alarminforepository;
-            this.KakaoLogInfoRepository = _kakaologinforepository;
             this.KakaoService = _kakaoservice;
-            
             this.HubContext = _hubcontext;
-            
             this.FileService = _fileservice;
+            this.RedisService = _redisservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
-            this.AuthCodeService = _authcodeservice;
-
-            this.RedisService = _redisservice;
         }
 
         /// <summary>
@@ -86,23 +76,23 @@ namespace FamTec.Server.Services.Voc.Hub
         /// </summary>
         /// <param name="phonenumber"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> AddAuthCodeService(int PlaceId, int BuildingId, string PhoneNumber)
+        public async Task<ResponseModel<bool>> AddAuthCodeService(int PlaceId, int BuildingId, string PhoneNumber)
         {
             try
             {
                 if(String.IsNullOrWhiteSpace(PhoneNumber))
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 if (!String.IsNullOrWhiteSpace(PhoneNumber))
                 {
                     bool PhoneResult = long.TryParse(PhoneNumber, out _);
                     if (!PhoneResult)
-                        return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                        return new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 }
 
                 BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(BuildingId).ConfigureAwait(false);
                 if (buildingtb is null)
-                    return new ResponseUnit<bool>() { message = "존재하지 않는 건물입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool>() { message = "존재하지 않는 건물입니다.", data = false, code = 404 };
 
                 DateTime ThisDate = DateTime.Now;
 
@@ -120,11 +110,11 @@ namespace FamTec.Server.Services.Voc.Hub
                 {
                     //bool result = await AuthCodeService.SaveOrUpdateAuthCode(PhoneNumber, randomCode); // Memory Cache 사용
                     //return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = result, code = 200 }; // Memory Cache 사용
-                    return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 }; // Redis 사용
+                    return new ResponseModel<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 }; // Redis 사용
                 }
                 else
                 {
-                    return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                    return new ResponseModel<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
                 }
             }
             catch(Exception ex)
@@ -133,7 +123,7 @@ namespace FamTec.Server.Services.Voc.Hub
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                return new ResponseModel<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
 
@@ -141,29 +131,29 @@ namespace FamTec.Server.Services.Voc.Hub
         /// 인증코드 검사
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool>> GetVerifyAuthCodeService(string PhoneNumber, string AuthCode)
+        public async Task<ResponseModel<bool>> GetVerifyAuthCodeService(string PhoneNumber, string AuthCode)
         {
             try
             {
                 if (String.IsNullOrWhiteSpace(PhoneNumber) || String.IsNullOrWhiteSpace(AuthCode))
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 if (!String.IsNullOrWhiteSpace(PhoneNumber))
                 {
                     bool PhoneResult = long.TryParse(PhoneNumber, out _);
                     if (!PhoneResult)
-                        return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                        return new ResponseModel<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 }
 
                 //bool result = await AuthCodeService.CheckVerifyAuthCode(PhoneNumber, AuthCode); // Memory Cache 사용
                 bool result = await RedisService.GetValidateCodeAsync(PhoneNumber, AuthCode); // Redis 사용
                 if(result)
                 {
-                    return new ResponseUnit<bool>() { message = "인증 성공하였습니다.", data = true, code = 200 };
+                    return new ResponseModel<bool>() { message = "인증 성공하였습니다.", data = true, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<bool>() { message = "인증 실패하였습니다.", data = false, code = 200 };
+                    return new ResponseModel<bool>() { message = "인증 실패하였습니다.", data = false, code = 200 };
                 }
             }
             catch(Exception ex)
@@ -172,7 +162,7 @@ namespace FamTec.Server.Services.Voc.Hub
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                return new ResponseModel<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
 
@@ -183,24 +173,24 @@ namespace FamTec.Server.Services.Voc.Hub
         /// <param name="dto"></param>
         /// <param name="image"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddVocReturnDTO?>> AddVocServiceV2(AddVocDTOV2 dto, List<IFormFile>? image)
+        public async Task<ResponseModel<AddVocReturnDTO?>> AddVocServiceV2(AddVocDTOV2 dto, List<IFormFile>? image)
         {
             try
             {
                 if (dto is null)
-                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
+                    return new ResponseModel<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
 
                 if (String.IsNullOrEmpty(dto.title) || String.IsNullOrEmpty(dto.contents) || String.IsNullOrEmpty(dto.name))
-                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
+                    return new ResponseModel<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 400 };
 
                 if (dto.buildingId == 0 || dto.placeId == 0)
-                    return new ResponseUnit<AddVocReturnDTO?> { message = "잘못된 요청입니다.", code = 400 };
+                    return new ResponseModel<AddVocReturnDTO?> { message = "잘못된 요청입니다.", code = 400 };
 
                 if (!String.IsNullOrEmpty(dto.phoneNumber))
                 {
                     if (!Regex.IsMatch(dto.phoneNumber ?? "", @"^010\d{8}$"))
                     {
-                        return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 전화번호입니다.", data = null, code = 404 };
+                        return new ResponseModel<AddVocReturnDTO?>() { message = "잘못된 전화번호입니다.", data = null, code = 404 };
                     }
                 }
 
@@ -218,7 +208,7 @@ namespace FamTec.Server.Services.Voc.Hub
 
                 var buildingTB = await BuildingInfoRepository.GetBuildingInfo(dto.buildingId!).ConfigureAwait(false);
                 if (buildingTB is null)
-                    return new ResponseUnit<AddVocReturnDTO?>() { message = "존재하지 않는 건물입니다.", data = null, code = 404 };
+                    return new ResponseModel<AddVocReturnDTO?>() { message = "존재하지 않는 건물입니다.", data = null, code = 404 };
               
                 // 시스템 시간 조회
                 DateTime ThisDate = DateTime.Now;
@@ -278,7 +268,7 @@ namespace FamTec.Server.Services.Voc.Hub
                     catch(DbUpdateException ex) when (IsUniqueViolation(ex))
                     {
                         // 최대 재시도 초과
-                        return new ResponseUnit<AddVocReturnDTO?>
+                        return new ResponseModel<AddVocReturnDTO?>
                         {
                             message = "접수번호 생성에 실패했습니다. 잠시 후 다시 시도해주세요:",
                             data = null,
@@ -303,7 +293,7 @@ namespace FamTec.Server.Services.Voc.Hub
                         // 사업장 정보
                         var PlaceTB = await PlaceInfoRepository.GetBuildingPlace(SaveModel.BuildingTbId).ConfigureAwait(false);
                         if (PlaceTB is null)
-                            return new ResponseUnit<AddVocReturnDTO?>() { message = "존재하지 않는 사업장입니다.", data = null, code = 404 };
+                            return new ResponseModel<AddVocReturnDTO?>() { message = "존재하지 않는 사업장입니다.", data = null, code = 404 };
 
                         // 알림톡
                         string title = SaveModel.Title.Length > 8 ? SaveModel.Title.Substring(0, 8) + "..." : SaveModel.Title;
@@ -375,7 +365,7 @@ namespace FamTec.Server.Services.Voc.Hub
                 await HubContext.Clients.Group($"{dto.placeId}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
 
                 // 9. 최종 응답
-                return new ResponseUnit<AddVocReturnDTO?>
+                return new ResponseModel<AddVocReturnDTO?>
                 {
                     message = "요청이 정상 처리되었습니다.",
                     data = new AddVocReturnDTO
@@ -393,7 +383,7 @@ namespace FamTec.Server.Services.Voc.Hub
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해주세요", data = null, code = 503 };
+                return new ResponseModel<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해주세요", data = null, code = 503 };
             }
             catch (Exception ex)
             {
@@ -401,7 +391,7 @@ namespace FamTec.Server.Services.Voc.Hub
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -412,7 +402,7 @@ namespace FamTec.Server.Services.Voc.Hub
         /// 민원 추가 - 민원인 전용
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddVocReturnDTO?>> AddVocService(AddVocDTO dto, List<IFormFile>? files)
+        public async Task<ResponseModel<AddVocReturnDTO?>> AddVocService(AddVocDTO dto, List<IFormFile>? files)
         {
             try
             {
@@ -427,23 +417,23 @@ namespace FamTec.Server.Services.Voc.Hub
                 }
 
                 if (dto is null)
-                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (String.IsNullOrWhiteSpace(dto.Title) || String.IsNullOrWhiteSpace(dto.Contents) || String.IsNullOrWhiteSpace(dto.Name))
-                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if(!String.IsNullOrWhiteSpace(dto.PhoneNumber))
                 {
                     bool PhoneNumber = long.TryParse(dto.PhoneNumber, out _);
                     if(!PhoneNumber)
-                        return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseModel<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
 
                 DateTime ThisDate = DateTime.Now;
 
                 BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(dto.Buildingid!.Value).ConfigureAwait(false);
                 if (buildingtb is null)
-                    return new ResponseUnit<AddVocReturnDTO?>() { message = "존재하지 않는 건물입니다.", data = null, code = 404 };
+                    return new ResponseModel<AddVocReturnDTO?>() { message = "존재하지 않는 건물입니다.", data = null, code = 404 };
 
                 VocTb? model = new VocTb();
                 model.Title = dto.Title;
@@ -490,7 +480,7 @@ namespace FamTec.Server.Services.Voc.Hub
                 // 여기서 블랙리스트 조회 
                 BlacklistTb? BlackListTB = await BlackListInfoRepository.GetBlackListInfo(model.Phone!).ConfigureAwait(false);
                 if (BlackListTB is not null) // 블랙리스트임.
-                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 VocTb? result = await VocInfoRepository.AddAsync(model).ConfigureAwait(false);
                 if (result is not null)
@@ -515,7 +505,7 @@ namespace FamTec.Server.Services.Voc.Hub
                         PlaceTb? placeTB = await PlaceInfoRepository.GetBuildingPlace(result.BuildingTbId).ConfigureAwait(false);
 
                         if (placeTB is null)
-                            return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                            return new ResponseModel<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                         // 제목
                         string Title = model.Title.Length > 8 ? model.Title.Substring(0, 8) + "..." : model.Title;
@@ -593,7 +583,7 @@ namespace FamTec.Server.Services.Voc.Hub
                     await HubContext.Clients.Group($"{dto.Placeid}_VocStatus").SendAsync("ReceiveVocStatus", "민원의 상태가 변경되었습니다.").ConfigureAwait(false);
 
 
-                    return new ResponseUnit<AddVocReturnDTO?>() { message = "요청이 정상 처리되었습니다.", data = new AddVocReturnDTO
+                    return new ResponseModel<AddVocReturnDTO?>() { message = "요청이 정상 처리되었습니다.", data = new AddVocReturnDTO
                     {
                         ReceiptCode = ReceiptCode, // 접수번호
                         PhoneNumber = result.Phone, // 전화번호
@@ -602,7 +592,7 @@ namespace FamTec.Server.Services.Voc.Hub
                 }
                 else
                 {
-                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
             }
             catch (Exception ex)
@@ -611,7 +601,7 @@ namespace FamTec.Server.Services.Voc.Hub
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -619,20 +609,20 @@ namespace FamTec.Server.Services.Voc.Hub
         /// 민원 조회 - 민원인 전용
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<VocUserDetailDTO?>> GetVocRecord(string? voccode, bool isMobile)
+        public async Task<ResponseModel<VocUserDetailDTO?>> GetVocRecord(string? voccode, bool isMobile)
         {
             try
             {
                 if (String.IsNullOrWhiteSpace(voccode))
-                    return new ResponseUnit<VocUserDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<VocUserDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 VocTb? VocModel = await VocInfoRepository.GetVocInfoByCode(voccode).ConfigureAwait(false);
                 if (VocModel is null)
-                    return new ResponseUnit<VocUserDetailDTO?>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
+                    return new ResponseModel<VocUserDetailDTO?>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
 
                 BuildingTb? BuildingModel = await BuildingInfoRepository.GetBuildingInfo(VocModel.BuildingTbId).ConfigureAwait(false);
                 if (BuildingModel is null)
-                    return new ResponseUnit<VocUserDetailDTO?>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
+                    return new ResponseModel<VocUserDetailDTO?>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
 
                 VocUserDetailDTO dto = new VocUserDetailDTO();
                 dto.Id = VocModel.Id; // 민원 인덱스
@@ -713,7 +703,7 @@ namespace FamTec.Server.Services.Voc.Hub
                         }
                     }
 
-                    return new ResponseUnit<VocUserDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<VocUserDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
                 {
@@ -764,7 +754,7 @@ namespace FamTec.Server.Services.Voc.Hub
                         }
                     }
 
-                    return new ResponseUnit<VocUserDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<VocUserDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
             }
             catch (Exception ex)
@@ -773,7 +763,7 @@ namespace FamTec.Server.Services.Voc.Hub
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<VocUserDetailDTO?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<VocUserDetailDTO?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -781,24 +771,24 @@ namespace FamTec.Server.Services.Voc.Hub
       /// 민원 댓글조회 - 민원인 전용
       /// </summary>
       /// <returns></returns>
-      public async Task<ResponseList<VocCommentListDTO>?> GetVocCommentList(string? voccode, bool isMobile)
+      public async Task<ResponseModel<List<VocCommentListDTO>>?> GetVocCommentList(string? voccode, bool isMobile)
       {
           try
           {
               if (String.IsNullOrWhiteSpace(voccode))
-                  return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                  return new ResponseModel<List<VocCommentListDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
               VocTb? VocTB = await VocInfoRepository.GetVocInfoByCode(voccode).ConfigureAwait(false);
               if(VocTB is null)
-                  return new ResponseList<VocCommentListDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 404 };
+                    return new ResponseModel<List<VocCommentListDTO>>() { message = "데이터가 존재하지 않습니다.", data = null, code = 404 };
 
               List<CommentTb>? model = await VocCommentRepository.GetCommentList(VocTB.Id).ConfigureAwait(false);
               if(model is null || model.Count == 0)
-                  return new ResponseList<VocCommentListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<VocCommentListDTO>(), code = 200 };
+                    return new ResponseModel<List<VocCommentListDTO>>() { message = "데이터가 존재하지 않습니다.", data = new List<VocCommentListDTO>(), code = 200 };
 
               BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB.BuildingTbId).ConfigureAwait(false);
               if(BuildingTB is null)
-                  return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<VocCommentListDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
               VocCommentFileFolderPath = Path.Combine(Common.FileServer, BuildingTB!.PlaceTbId.ToString(), "Voc", VocTB.Id.ToString(), "VocComment");
 
@@ -869,7 +859,7 @@ namespace FamTec.Server.Services.Voc.Hub
                         dto.Add(dtoModel);
                     }
 
-                    return new ResponseList<VocCommentListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<List<VocCommentListDTO>>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else // PC
                 {
@@ -934,8 +924,8 @@ namespace FamTec.Server.Services.Voc.Hub
 
                         dto.Add(dtoModel);
                     }
-                    
-                    return new ResponseList<VocCommentListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+
+                    return new ResponseModel<List<VocCommentListDTO>>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
             }
             catch(Exception ex)
@@ -944,7 +934,7 @@ namespace FamTec.Server.Services.Voc.Hub
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<VocCommentListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<VocCommentListDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -952,24 +942,24 @@ namespace FamTec.Server.Services.Voc.Hub
         /// 민원댓글 상세보기 - 민원인 전용
         /// </summary>
         /// <returns></returns>
-        public async Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(int? commentid, bool isMobile)
+        public async Task<ResponseModel<VocCommentDetailDTO?>> GetVocCommentDetail(int? commentid, bool isMobile)
         {
             try
             {
                 if (commentid is null)
-                    return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 CommentTb? model = await VocCommentRepository.GetCommentInfo(commentid.Value).ConfigureAwait(false);
                 if(model is null)
-                    return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 VocTb? VocTB = await VocInfoRepository.GetVocInfoById(model.VocTbId).ConfigureAwait(false);
                 if(VocTB is null)
-                    return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
                 PlaceTb? PlaceTB = await PlaceInfoRepository.GetBuildingPlace(VocTB.BuildingTbId).ConfigureAwait(false);
                 if (PlaceTB is null)
-                    return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 VocCommentDetailDTO dto = new VocCommentDetailDTO();
                 dto.VocCommentId = model.Id; // VOC 댓글 ID
@@ -1033,7 +1023,7 @@ namespace FamTec.Server.Services.Voc.Hub
                         }
                     }
 
-                    return new ResponseUnit<VocCommentDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<VocCommentDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
                 {
@@ -1085,7 +1075,7 @@ namespace FamTec.Server.Services.Voc.Hub
                         }
                     }
 
-                    return new ResponseUnit<VocCommentDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<VocCommentDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
             }
             catch(Exception ex)
@@ -1094,7 +1084,7 @@ namespace FamTec.Server.Services.Voc.Hub
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<VocCommentDetailDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<VocCommentDetailDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -1110,6 +1100,5 @@ namespace FamTec.Server.Services.Voc.Hub
                 return true;
             return false;
         }
-
     }
 }

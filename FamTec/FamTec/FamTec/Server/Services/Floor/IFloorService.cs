@@ -1,4 +1,5 @@
-﻿using FamTec.Shared.Server.DTO;
+﻿using FamTec.Server.Helpers;
+using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Floor;
 
 namespace FamTec.Server.Services.Floor
@@ -10,14 +11,14 @@ namespace FamTec.Server.Services.Floor
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<FloorDTO>> AddFloorService(FloorDTO dto);
+        public Task<ResponseModel<FloorDTO>> AddFloorService(FloorDTO dto);
 
         /// <summary>
         /// 건물에 속해있는 층 리스트 반환
         /// </summary>
         /// <param name="buildingtbid"></param>
         /// <returns></returns>
-        public Task<ResponseList<FloorDTO>> GetFloorListService(int buildingtbid);
+        public Task<ResponseModel<List<FloorDTO>>> GetFloorListService(int buildingtbid);
 
         /// <summary>
         /// 층 수정
@@ -25,7 +26,7 @@ namespace FamTec.Server.Services.Floor
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> UpdateFloorService(UpdateFloorDTO dto);
+        public Task<ResponseModel<bool?>> UpdateFloorService(UpdateFloorDTO dto);
 
         /// <summary>
         /// 층 삭제
@@ -33,7 +34,7 @@ namespace FamTec.Server.Services.Floor
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        Task<ResponseUnit<bool?>> DeleteFloorService(List<int> del);
+        Task<ResponseModel<bool?>> DeleteFloorService(List<int> del);
 
     }
 }

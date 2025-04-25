@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Alarm;
 using FamTec.Shared.Server.DTO;
@@ -41,7 +42,7 @@ namespace FamTec.Server.Controllers.Alarm
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<AlarmDTO> model = await AlarmService.GetAllAlarmService().ConfigureAwait(false);
+                ResponseModel<List<AlarmDTO>> model = await AlarmService.GetAllAlarmService().ConfigureAwait(false);
       
                 if (model is null)
                     return BadRequest();
@@ -80,7 +81,7 @@ namespace FamTec.Server.Controllers.Alarm
 
                 DateTime StartDate = DateTime.Now;
 
-                ResponseList<AlarmDTO> model = await AlarmService.GetAllAlarmByDateService(StartDate).ConfigureAwait(false);
+                ResponseModel<List<AlarmDTO>> model = await AlarmService.GetAllAlarmByDateService(StartDate).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -114,7 +115,7 @@ namespace FamTec.Server.Controllers.Alarm
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<bool?> model = await AlarmService.AllAlarmDelete().ConfigureAwait(false);
+                ResponseModel<bool?> model = await AlarmService.AllAlarmDelete().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -148,7 +149,7 @@ namespace FamTec.Server.Controllers.Alarm
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<bool?> model = await AlarmService.AlarmDelete(delId).ConfigureAwait(false);
+                ResponseModel<bool?> model = await AlarmService.AlarmDelete(delId).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

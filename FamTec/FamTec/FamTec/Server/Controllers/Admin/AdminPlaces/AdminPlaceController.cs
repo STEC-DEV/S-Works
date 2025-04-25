@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Admin.Place;
 using FamTec.Shared.Server.DTO;
@@ -78,7 +79,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
 
-                ResponseList<AllPlaceDTO> model = await AdminPlaceService.GetAllWorksService().ConfigureAwait(false);
+                ResponseModel<List<AllPlaceDTO>> model = await AdminPlaceService.GetAllWorksService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -115,7 +116,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
 
-                ResponseList<ManagerListDTO> model = await AdminPlaceService.GetAllManagerListService().ConfigureAwait(false);
+                ResponseModel<List<ManagerListDTO>> model = await AdminPlaceService.GetAllManagerListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -150,7 +151,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
 
-                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksService(adminid).ConfigureAwait(false);
+                ResponseModel<List<AdminPlaceDTO>> model = await AdminPlaceService.GetMyWorksService(adminid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -189,7 +190,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
 
-                ResponseUnit<PlaceDetailDTO> model = await AdminPlaceService.GetPlaceService(placeid).ConfigureAwait(false);
+                ResponseModel<PlaceDetailDTO> model = await AdminPlaceService.GetPlaceService(placeid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -225,7 +226,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
 
-                ResponseUnit<int?> model = await AdminPlaceService.AddPlaceService(dto).ConfigureAwait(false);
+                ResponseModel<int?> model = await AdminPlaceService.AddPlaceService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -264,7 +265,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (dto.PlaceId is 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await AdminPlaceService.UpdatePlaceManagerService(dto).ConfigureAwait(false);
+                ResponseModel<bool?> model = await AdminPlaceService.UpdatePlaceManagerService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -305,7 +306,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (placeidx.Count == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await AdminPlaceService.DeletePlaceService(placeidx).ConfigureAwait(false);
+                ResponseModel<bool?> model = await AdminPlaceService.DeletePlaceService(placeidx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -405,7 +406,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if(dto.PlacePerm.PermVoc is null)
                     return NoContent();
 
-                ResponseUnit<UpdatePlaceDTO> model = await AdminPlaceService.UpdatePlaceService(dto).ConfigureAwait(false);
+                ResponseModel<UpdatePlaceDTO> model = await AdminPlaceService.UpdatePlaceService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -446,7 +447,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (placeid is 0)
                     return NoContent();
 
-                ResponseList<ManagerListDTO> model = await AdminPlaceService.NotContainManagerList(placeid).ConfigureAwait(false);
+                ResponseModel<List<ManagerListDTO>> model = await AdminPlaceService.NotContainManagerList(placeid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -484,7 +485,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (adminid is 0)
                     return NoContent();
 
-                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.NotContainPlaceList(adminid).ConfigureAwait(false);
+                ResponseModel<List<AdminPlaceDTO>> model = await AdminPlaceService.NotContainPlaceList(adminid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -533,7 +534,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                         return NoContent();
                 }
 
-                ResponseUnit<bool?> model = await AdminPlaceService.AddPlaceManagerService(placemanager).ConfigureAwait(false);
+                ResponseModel<bool?> model = await AdminPlaceService.AddPlaceManagerService(placemanager).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -582,7 +583,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                         return NoContent();
                 }
 
-                ResponseUnit<bool?> model = await AdminPlaceService.DeleteManagerPlaceService(dto).ConfigureAwait(false);
+                ResponseModel<bool?> model = await AdminPlaceService.DeleteManagerPlaceService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);

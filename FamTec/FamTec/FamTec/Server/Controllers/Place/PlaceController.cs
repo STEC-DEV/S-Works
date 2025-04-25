@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Admin.Place;
 using FamTec.Server.Services.User;
@@ -43,7 +44,7 @@ namespace FamTec.Server.Controllers.Place
                 if (placeid is 0)
                     return NoContent();
 
-                ResponseUnit<string?> model = await AdminPlaceService.GetPlaceName(placeid).ConfigureAwait(false);
+                ResponseModel<string?> model = await AdminPlaceService.GetPlaceName(placeid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -72,7 +73,7 @@ namespace FamTec.Server.Controllers.Place
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<PlacePermissionDTO?> model = await UserService.GetMenuPermService().ConfigureAwait(false);
+                ResponseModel<PlacePermissionDTO?> model = await UserService.GetMenuPermService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)

@@ -1,4 +1,5 @@
-﻿using FamTec.Shared.Server.DTO;
+﻿using FamTec.Server.Helpers;
+using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Meter;
 
 namespace FamTec.Server.Services.Meter
@@ -11,14 +12,14 @@ namespace FamTec.Server.Services.Meter
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<AddMeterDTO>> AddMeterService(AddMeterDTO dto);
+        public Task<ResponseModel<AddMeterDTO>> AddMeterService(AddMeterDTO dto);
 
         /// <summary>
         /// 해당 사업장의 검침기 전체조회
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<MeterDTO>> GetAllMeterListService();
+        public Task<ResponseModel<List<MeterDTO>>> GetAllMeterListService();
 
     }
 }

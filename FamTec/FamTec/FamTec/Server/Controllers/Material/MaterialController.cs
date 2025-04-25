@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Material;
 using FamTec.Shared.Server.DTO;
@@ -45,7 +46,7 @@ namespace FamTec.Server.Controllers.Material
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<ShowMaterialIdxDTO>? model = await MaterialService.GetMaterialIndexService().ConfigureAwait(false);
+                ResponseModel<List<ShowMaterialIdxDTO>>? model = await MaterialService.GetMaterialIndexService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -78,7 +79,7 @@ namespace FamTec.Server.Controllers.Material
                 if (MaterialIdx is null || MaterialIdx.Count == 0)
                     return BadRequest();
 
-                ResponseUnit<bool>? model = await MaterialService.SetDashBoardMaterialService(MaterialIdx).ConfigureAwait(false);
+                ResponseModel<bool>? model = await MaterialService.SetDashBoardMaterialService(MaterialIdx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -115,7 +116,7 @@ namespace FamTec.Server.Controllers.Material
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<MaterialCountDTO>? model = await MaterialService.GetMaterialCountService().ConfigureAwait(false);
+                ResponseModel<List<MaterialCountDTO>>? model = await MaterialService.GetMaterialCountService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -189,14 +190,14 @@ namespace FamTec.Server.Controllers.Material
                     bool extensioncheck = Common.XlsxAllowedExtensions.Contains(extension);
                     if (!extensioncheck)
                     {
-                        return Ok(new ResponseUnit<bool>() { message = "지원하지 않는 파일형식입니다.", data = false, code = 204 });
+                        return Ok(new ResponseModel<bool>() { message = "지원하지 않는 파일형식입니다.", data = false, code = 204 });
                     }
                 }
 
                 if (files.Length > Common.MEGABYTE_10)
-                    return Ok(new ResponseUnit<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
+                    return Ok(new ResponseModel<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
 
-                ResponseUnit<bool> model = await MaterialService.ImportMaterialService(files).ConfigureAwait(false);
+                ResponseModel<bool> model = await MaterialService.ImportMaterialService(files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -246,7 +247,7 @@ namespace FamTec.Server.Controllers.Material
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_10)
-                        return Ok(new ResponseUnit<AddMaterialDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                        return Ok(new ResponseModel<AddMaterialDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
@@ -258,12 +259,12 @@ namespace FamTec.Server.Controllers.Material
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<AddMaterialDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseModel<AddMaterialDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
 
-                ResponseUnit<AddMaterialDTO> model = await MaterialService.AddMaterialService(dto, files).ConfigureAwait(false);
+                ResponseModel<AddMaterialDTO> model = await MaterialService.AddMaterialService(dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -302,7 +303,7 @@ namespace FamTec.Server.Controllers.Material
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialListService(isMobile).ConfigureAwait(false);
+                ResponseModel<List<MaterialListDTO>> model = await MaterialService.GetPlaceMaterialListService(isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -336,7 +337,7 @@ namespace FamTec.Server.Controllers.Material
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<MaterialSearchListDTO> model = await MaterialService.GetAllPlaecMaterialSearchService().ConfigureAwait(false);
+                ResponseModel<List<MaterialSearchListDTO>> model = await MaterialService.GetAllPlaecMaterialSearchService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -368,7 +369,7 @@ namespace FamTec.Server.Controllers.Material
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<int?> model = await MaterialService.GetPlaceMaterialCountService().ConfigureAwait(false);
+                ResponseModel<int?> model = await MaterialService.GetPlaceMaterialCountService().ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -408,7 +409,7 @@ namespace FamTec.Server.Controllers.Material
                 if (pagesize == 0)
                     return BadRequest(); // 잘못된 요청
 
-                ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialPageNationListService(pagenum, pagesize).ConfigureAwait(false);
+                ResponseModel<List<MaterialListDTO>> model = await MaterialService.GetPlaceMaterialPageNationListService(pagenum, pagesize).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -473,7 +474,7 @@ namespace FamTec.Server.Controllers.Material
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<DetailMaterialDTO> model = await MaterialService.GetDetailMaterialService(materialid, isMobile).ConfigureAwait(false);
+                ResponseModel<DetailMaterialDTO> model = await MaterialService.GetDetailMaterialService(materialid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -516,7 +517,7 @@ namespace FamTec.Server.Controllers.Material
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_10)
-                        return Ok(new ResponseUnit<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                        return Ok(new ResponseModel<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
@@ -528,12 +529,12 @@ namespace FamTec.Server.Controllers.Material
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseModel<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
 
-                ResponseUnit<bool?> model = await MaterialService.UpdateMaterialService(dto, files).ConfigureAwait(false);
+                ResponseModel<bool?> model = await MaterialService.UpdateMaterialService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -572,7 +573,7 @@ namespace FamTec.Server.Controllers.Material
                 if(delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await MaterialService.DeleteMaterialService(delIdx).ConfigureAwait(false);
+                ResponseModel<bool?> model = await MaterialService.DeleteMaterialService(delIdx).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -606,7 +607,7 @@ namespace FamTec.Server.Controllers.Material
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<MaterialSearchListDTO>? model = await MaterialService.GetMaterialSearchService(searchData).ConfigureAwait(false);
+                ResponseModel<List<MaterialSearchListDTO>>? model = await MaterialService.GetMaterialSearchService(searchData).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)

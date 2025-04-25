@@ -1,7 +1,7 @@
-﻿using FamTec.Server.Repository.Building;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Floor;
 using FamTec.Shared.Model;
-using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Floor;
 
 namespace FamTec.Server.Services.Floor
@@ -32,24 +32,24 @@ namespace FamTec.Server.Services.Floor
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<FloorDTO>> AddFloorService(FloorDTO dto)
+        public async Task<ResponseModel<FloorDTO>> AddFloorService(FloorDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
-                    return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
+                    return new ResponseModel<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
 
                 DateTime ThisDate = DateTime.Now;
 
                 BuildingTb? BuildingInfo = await BuildingInfoRepository.GetBuildingInfo(dto.BuildingTBID!.Value).ConfigureAwait(false);
                 if (BuildingInfo is null)
-                    return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
+                    return new ResponseModel<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
 
                 string? creator = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creator))
-                    return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
+                    return new ResponseModel<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
 
                 FloorTb? model = new FloorTb()
                 {
@@ -64,9 +64,9 @@ namespace FamTec.Server.Services.Floor
                 FloorTb? result = await FloorInfoRepository.AddAsync(model).ConfigureAwait(false);
 
                 if (result is not null)
-                    return new ResponseUnit<FloorDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseModel<FloorDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 else
-                    return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
+                    return new ResponseModel<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
             }
             catch(Exception ex)
             {
@@ -74,7 +74,7 @@ namespace FamTec.Server.Services.Floor
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<FloorDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FloorDTO(), code = 500 };
+                return new ResponseModel<FloorDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FloorDTO(), code = 500 };
             }
         }
 
@@ -83,7 +83,7 @@ namespace FamTec.Server.Services.Floor
         /// </summary>
         /// <param name="buildingtbid"></param>
         /// <returns></returns>
-        public async Task<ResponseList<FloorDTO>> GetFloorListService(int buildingtbid)
+        public async Task<ResponseModel<List<FloorDTO>>> GetFloorListService(int buildingtbid)
         {
             try
             {
@@ -98,10 +98,10 @@ namespace FamTec.Server.Services.Floor
                         BuildingTBID = e.BuildingTbId
                     }).ToList();
 
-                    return new ResponseList<FloorDTO>() { message = "요청이 정상 처리되었습니다.", data = ListData, code = 200 };
+                    return new ResponseModel<List<FloorDTO>>() { message = "요청이 정상 처리되었습니다.", data = ListData, code = 200 };
                 }
 
-                return new ResponseList<FloorDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<FloorDTO>(), code = 200 };
+                return new ResponseModel<List<FloorDTO>>() { message = "데이터가 존재하지 않습니다.", data = new List<FloorDTO>(), code = 200 };
             }
             catch(Exception ex)
             {
@@ -109,7 +109,7 @@ namespace FamTec.Server.Services.Floor
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<FloorDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<FloorDTO>(), code = 500 };
+                return new ResponseModel<List<FloorDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<FloorDTO>(), code = 500 };
             }
         }
 
@@ -119,24 +119,24 @@ namespace FamTec.Server.Services.Floor
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> UpdateFloorService(UpdateFloorDTO dto)
+        public async Task<ResponseModel<bool?>> UpdateFloorService(UpdateFloorDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 DateTime ThisDate = DateTime.Now;
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 FloorTb? model = await FloorInfoRepository.GetFloorInfo(dto.FloorID!.Value).ConfigureAwait(false);
                 if(model is null)
-                    return new ResponseUnit<bool?>() { message = "존재하지 않는 데이터입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "존재하지 않는 데이터입니다.", data = null, code = 404 };
 
                 model.Name = dto.Name!;
                 model.UpdateDt = ThisDate;
@@ -145,9 +145,9 @@ namespace FamTec.Server.Services.Floor
                 bool? FloorUpdateResult = await FloorInfoRepository.UpdateFloorInfo(model).ConfigureAwait(false);
                 return FloorUpdateResult switch
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
+                    _ => new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
             }
             catch(Exception ex)
@@ -156,43 +156,43 @@ namespace FamTec.Server.Services.Floor
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
 
         // 층삭제
         // 층에 물려있는 공간이 있으면 삭제 XX
-        public async Task<ResponseUnit<bool?>> DeleteFloorService(List<int> del)
+        public async Task<ResponseModel<bool?>> DeleteFloorService(List<int> del)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (del is null || del.Count == 0)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 삭제검사 - Check
                 foreach(int FloorId in del)
                 {
                     bool? DelCheck = await FloorInfoRepository.DelFloorCheck(FloorId).ConfigureAwait(false);
                     if (DelCheck == true)
-                        return new ResponseUnit<bool?>() { message = "해당 층을 참조하고있는 데이터가 있어 삭제가 불가능합니다.", data = null, code = 201 };
+                        return new ResponseModel<bool?>() { message = "해당 층을 참조하고있는 데이터가 있어 삭제가 불가능합니다.", data = null, code = 201 };
                 }
 
                 bool? DeleteResult = await FloorInfoRepository.DeleteFloorInfo(del, creater).ConfigureAwait(false);
                 return DeleteResult switch
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
             }
             catch(Exception ex)
@@ -201,7 +201,7 @@ namespace FamTec.Server.Services.Floor
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
     }

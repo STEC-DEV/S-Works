@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Facility.Key;
 using FamTec.Shared.Server.DTO;
@@ -37,7 +38,7 @@ namespace FamTec.Server.Controllers.Facility.Group
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<AddKeyDTO> model = await FacilityKeyService.AddKeyService(dto).ConfigureAwait(false);
+                ResponseModel<AddKeyDTO> model = await FacilityKeyService.AddKeyService(dto).ConfigureAwait(false);
 
                 if (dto.GroupID is null)
                     return NoContent();
@@ -88,7 +89,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (String.IsNullOrWhiteSpace(dto.Itemkey))
                     return NoContent();
 
-                ResponseUnit<UpdateKeyDTO> model = await FacilityKeyService.UpdateKeyService(dto).ConfigureAwait(false);
+                ResponseModel<UpdateKeyDTO> model = await FacilityKeyService.UpdateKeyService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -124,7 +125,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if(keylist.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await FacilityKeyService.DeletKeyListService(keylist).ConfigureAwait(false);
+                ResponseModel<bool?> model = await FacilityKeyService.DeletKeyListService(keylist).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -154,7 +155,7 @@ namespace FamTec.Server.Controllers.Facility.Group
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<bool?> model = await FacilityKeyService.DeleteKeyService(keyid).ConfigureAwait(false);
+                ResponseModel<bool?> model = await FacilityKeyService.DeleteKeyService(keyid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

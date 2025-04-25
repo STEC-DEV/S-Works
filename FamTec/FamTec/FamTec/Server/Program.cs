@@ -83,6 +83,7 @@ using FamTec.Server.Repository.DapperTemp;
 using FamTec.Server.Helpers;
 using StackExchange.Redis;
 using FamTec.Server.Services.Redis;
+using FamTec.Server.Services.Voc.Kakao;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,5 +1,6 @@
 ﻿using FamTec.Shared.Server.DTO.Facility;
 using FamTec.Shared.Server.DTO;
+using FamTec.Server.Helpers;
 
 namespace FamTec.Server.Services.Facility.Type.Contstruct
 {
@@ -18,7 +19,7 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool>> ImportConstructFacilityService(IFormFile? file);
+        public Task<ResponseModel<bool>> ImportConstructFacilityService(IFormFile? file);
 
         /// <summary>
         /// 설비 추가
@@ -26,21 +27,21 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<FacilityDTO>> AddConstructFacilityService(FacilityDTO dto, IFormFile? files);
+        public Task<ResponseModel<FacilityDTO>> AddConstructFacilityService(FacilityDTO dto, IFormFile? files);
 
         /// <summary>
         /// 해당 사업장의 모든 설비 리스트 조회
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<FacilityListDTO>> GetConstructFacilityListService();
+        public Task<ResponseModel<List<FacilityListDTO>>> GetConstructFacilityListService();
 
         /// <summary>
         /// 설비ID의 설비 모델 조회
         /// </summary>
         /// <param name="facilityId"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<FacilityDetailDTO>> GetConstructDetailFacilityService(int facilityId, bool isMobile);
+        public Task<ResponseModel<FacilityDetailDTO>> GetConstructDetailFacilityService(int facilityId, bool isMobile);
 
         /// <summary>
         /// 설비 정보 수정
@@ -48,7 +49,7 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> UpdateConstructFacilityService(FacilityDTO dto, IFormFile? files);
+        public Task<ResponseModel<bool?>> UpdateConstructFacilityService(FacilityDTO dto, IFormFile? files);
 
         /// <summary>
         /// 설비 정보 삭제
@@ -56,6 +57,6 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
         /// <param name="context"></param>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> DeleteConstructFacilityService(List<int> delIdx);
+        public Task<ResponseModel<bool?>> DeleteConstructFacilityService(List<int> delIdx);
     }
 }

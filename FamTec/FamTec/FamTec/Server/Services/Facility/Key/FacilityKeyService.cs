@@ -1,8 +1,8 @@
-﻿using FamTec.Server.Repository.Facility.Group;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Repository.Facility.Group;
 using FamTec.Server.Repository.Facility.ItemKey;
 using FamTec.Server.Repository.Facility.ItemValue;
 using FamTec.Shared.Model;
-using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility.Group;
 
 namespace FamTec.Server.Services.Facility.Key
@@ -32,27 +32,27 @@ namespace FamTec.Server.Services.Facility.Key
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-        public async Task<ResponseUnit<AddKeyDTO>> AddKeyService(AddKeyDTO dto)
+        public async Task<ResponseModel<AddKeyDTO>> AddKeyService(AddKeyDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
-                    return new ResponseUnit<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
+                    return new ResponseModel<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
+                    return new ResponseModel<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
                 if(dto.GroupID == null)
-                    return new ResponseUnit<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
+                    return new ResponseModel<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
                 DateTime ThisTime = DateTime.Now;
 
                 FacilityItemGroupTb? GroupTb = await FacilityGroupItemInfoRepository.GetGroupInfo(dto.GroupID.Value).ConfigureAwait(false);
                 if(GroupTb is null) // 기존의 GroupTB가 존재하는지 Check
-                    return new ResponseUnit<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
+                    return new ResponseModel<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
                 FacilityItemKeyTb KeyTb = new FacilityItemKeyTb();
                 KeyTb.Name = dto.Name ?? ""; // 키 명칭
@@ -65,7 +65,7 @@ namespace FamTec.Server.Services.Facility.Key
 
                 FacilityItemKeyTb? AddKeyResult = await FacilityItemKeyInfoRepository.AddAsync(KeyTb).ConfigureAwait(false);
                 if(AddKeyResult is null)
-                    return new ResponseUnit<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
+                    return new ResponseModel<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
 
                 if(dto.ItemValues is [_, ..])
                 {
@@ -82,12 +82,12 @@ namespace FamTec.Server.Services.Facility.Key
                         FacilityItemValueTb? result = await FacilityItemValueInfoRepository.AddAsync(ValueTB).ConfigureAwait(false);
                         if(result is null)
                         {
-                            return new ResponseUnit<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
+                            return new ResponseModel<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
                         }
                     }
                 }
 
-                return new ResponseUnit<AddKeyDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                return new ResponseModel<AddKeyDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
             }
             catch(Exception ex)
             {
@@ -95,33 +95,33 @@ namespace FamTec.Server.Services.Facility.Key
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
+                return new ResponseModel<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
             }
         }
 
-        public async Task<ResponseUnit<UpdateKeyDTO>> UpdateKeyService(UpdateKeyDTO dto)
+        public async Task<ResponseModel<UpdateKeyDTO>> UpdateKeyService(UpdateKeyDTO dto)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || dto is null)
-                    return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
+                    return new ResponseModel<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
                 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
+                    return new ResponseModel<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
 
                 FacilityItemKeyTb? KeyTB = await FacilityItemKeyInfoRepository.GetKeyInfo(dto.ID!.Value).ConfigureAwait(false);
                 if(KeyTB is null)
-                    return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
+                    return new ResponseModel<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
                 
                 bool? UpdateResult = await FacilityItemKeyInfoRepository.UpdateKeyInfo(dto, creater).ConfigureAwait(false);
                 return UpdateResult switch
                 {
-                    true => new ResponseUnit<UpdateKeyDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 },
-                    false => new ResponseUnit<UpdateKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 },
-                    _ => new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 }
+                    true => new ResponseModel<UpdateKeyDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 },
+                    false => new ResponseModel<UpdateKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 },
+                    _ => new ResponseModel<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 }
                 };
             }
             catch(Exception ex)
@@ -130,29 +130,29 @@ namespace FamTec.Server.Services.Facility.Key
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<UpdateKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 };
+                return new ResponseModel<UpdateKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 };
             }
         }
 
 
-        public async Task<ResponseUnit<bool?>> DeleteKeyService(int KeyId)
+        public async Task<ResponseModel<bool?>> DeleteKeyService(int KeyId)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 DateTime ThisTime = DateTime.Now;
 
                 FacilityItemKeyTb? KeyTB = await FacilityItemKeyInfoRepository.GetKeyInfo(KeyId).ConfigureAwait(false);
                 if(KeyTB is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 KeyTB.DelDt = ThisTime;
                 KeyTB.DelUser = creater;
@@ -162,7 +162,7 @@ namespace FamTec.Server.Services.Facility.Key
 
                 if(DeleteKeyResult != true)
                 {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
 
                 List<FacilityItemValueTb>? ItemTB = await FacilityItemValueInfoRepository.GetAllValueList(KeyId).ConfigureAwait(false);
@@ -177,11 +177,11 @@ namespace FamTec.Server.Services.Facility.Key
                         bool? DeleteValueResult = await FacilityItemValueInfoRepository.DeleteValueInfo(Item).ConfigureAwait(false);
                         if(DeleteValueResult != true)
                         {
-                            return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                            return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                         }
                     }
                 }
-                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                return new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
             }
             catch(Exception ex)
             {
@@ -189,7 +189,7 @@ namespace FamTec.Server.Services.Facility.Key
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -199,25 +199,25 @@ namespace FamTec.Server.Services.Facility.Key
         /// <param name="context"></param>
         /// <param name="KeyId"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> DeletKeyListService(List<int> KeyId)
+        public async Task<ResponseModel<bool?>> DeletKeyListService(List<int> KeyId)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 bool? DeleteResult = await FacilityItemKeyInfoRepository.DeleteKeyList(KeyId, creater).ConfigureAwait(false);
                 return DeleteResult switch
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
             }
             catch(Exception ex)
@@ -226,7 +226,7 @@ namespace FamTec.Server.Services.Facility.Key
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Unit;
 using FamTec.Shared.Server.DTO;
@@ -41,7 +42,7 @@ namespace FamTec.Server.Controllers.Unit
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<UnitsDTO> model = await UnitService.GetUnitList().ConfigureAwait(false);
+                ResponseModel<List<UnitsDTO>> model = await UnitService.GetUnitList().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -77,7 +78,7 @@ namespace FamTec.Server.Controllers.Unit
                 if (String.IsNullOrWhiteSpace(dto.Unit))
                     return NoContent();
 
-                ResponseUnit<UnitsDTO>? model = await UnitService.AddUnitService(dto).ConfigureAwait(false);
+                ResponseModel<UnitsDTO>? model = await UnitService.AddUnitService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -114,7 +115,7 @@ namespace FamTec.Server.Controllers.Unit
                 if (unitid.Count == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await UnitService.DeleteUnitService(unitid).ConfigureAwait(false);
+                ResponseModel<bool?> model = await UnitService.DeleteUnitService(unitid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -149,7 +150,7 @@ namespace FamTec.Server.Controllers.Unit
                 if(String.IsNullOrWhiteSpace(dto.Unit))
                     return NoContent();
 
-                ResponseUnit<UnitsDTO> model = await UnitService.UpdateUnitService(dto).ConfigureAwait(false);
+                ResponseModel<UnitsDTO> model = await UnitService.UpdateUnitService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

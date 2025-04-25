@@ -1,4 +1,4 @@
-﻿using FamTec.Shared.Server.DTO;
+﻿using FamTec.Server.Helpers;
 using FamTec.Shared.Server.DTO.Building.Group.Key.Value;
 
 namespace FamTec.Server.Services.Building.Value
@@ -12,7 +12,7 @@ namespace FamTec.Server.Services.Building.Value
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<AddValueDTO>> AddValueService(AddValueDTO dto);
+        public Task<ResponseModel<AddValueDTO>> AddValueService(AddValueDTO dto);
 
         /// <summary>
         /// value - 업데이트 (단일)
@@ -20,7 +20,7 @@ namespace FamTec.Server.Services.Building.Value
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<UpdateValueDTO>> UpdateValueService(UpdateValueDTO dto);
+        public Task<ResponseModel<UpdateValueDTO>> UpdateValueService(UpdateValueDTO dto);
 
 
         /// <summary>
@@ -29,6 +29,6 @@ namespace FamTec.Server.Services.Building.Value
         /// <param name="context"></param>
         /// <param name="valueid"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> DeleteValueService(int valueid);
+        public Task<ResponseModel<bool?>> DeleteValueService(int valueid);
     }
 }

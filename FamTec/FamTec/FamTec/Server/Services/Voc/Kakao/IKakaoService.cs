@@ -1,7 +1,8 @@
-﻿using FamTec.Shared.Server.DTO;
+﻿using FamTec.Server.Helpers;
+using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 
-namespace FamTec.Server.Services
+namespace FamTec.Server.Services.Voc.Kakao
 {
     public interface IKakaoService
     {
@@ -58,6 +59,6 @@ namespace FamTec.Server.Services
         /// <param name="StartDate"></param>
         /// <param name="limit_day"></param>
         /// <returns></returns>
-        public Task<ResponseList<KaKaoSenderResult>?> KakaoSenderResult(int page, int pagesize, DateTime StartDate, int limit_day);
+        public Task<ResponseModel<List<KaKaoSenderResult>>?> KakaoSenderResult(int page, int pagesize, DateTime StartDate, int limit_day);
     }
 }

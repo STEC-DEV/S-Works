@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
 using FamTec.Server.Middleware;
 using System.ComponentModel.DataAnnotations;
+using FamTec.Server.Helpers;
 
 namespace FamTec.Server.Controllers.Admin
 {
@@ -67,7 +68,7 @@ namespace FamTec.Server.Controllers.Admin
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_10)
-                        return Ok(new ResponseUnit<int?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                        return Ok(new ResponseModel<int?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                     string? extension = FileService.GetExtension(files);
                     if(String.IsNullOrWhiteSpace(extension))
@@ -79,7 +80,7 @@ namespace FamTec.Server.Controllers.Admin
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseModel<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
@@ -87,7 +88,7 @@ namespace FamTec.Server.Controllers.Admin
                 dto.UserId = CommService.getRemoveWhiteSpace(dto.UserId);
                 dto.Password = CommService.getRemoveWhiteSpace(dto.Password);
 
-                ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(dto, files).ConfigureAwait(false);
+                ResponseModel<int?> model = await AdminAccountService.AdminRegisterService(dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -127,7 +128,7 @@ namespace FamTec.Server.Controllers.Admin
 
                 bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<DManagerDTO>? model = await AdminAccountService.DetailAdminService(adminid, isMobile).ConfigureAwait(false);
+                ResponseModel<DManagerDTO>? model = await AdminAccountService.DetailAdminService(adminid, isMobile).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -163,7 +164,7 @@ namespace FamTec.Server.Controllers.Admin
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<bool?> model = await AdminPlaceService.AddManagerPlaceSerivce(dto).ConfigureAwait(false);
+                ResponseModel<bool?> model = await AdminPlaceService.AddManagerPlaceSerivce(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -205,7 +206,7 @@ namespace FamTec.Server.Controllers.Admin
                 if (adminidx.Count == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await AdminAccountService.DeleteAdminService(adminidx).ConfigureAwait(false);
+                ResponseModel<bool?> model = await AdminAccountService.DeleteAdminService(adminidx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -266,7 +267,7 @@ namespace FamTec.Server.Controllers.Admin
                     }
                 }
 
-                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminImageService(adminid, files).ConfigureAwait(false);
+                ResponseModel<bool?> model = await AdminAccountService.UpdateAdminImageService(adminid, files).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -321,7 +322,7 @@ namespace FamTec.Server.Controllers.Admin
                 dto.UserId = CommService.getRemoveWhiteSpace(dto.UserId);
                 dto.Password = CommService.getRemoveWhiteSpace(dto.Password);
 
-                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminService(dto).ConfigureAwait(false);
+                ResponseModel<bool?> model = await AdminAccountService.UpdateAdminService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -361,7 +362,7 @@ namespace FamTec.Server.Controllers.Admin
                 if (String.IsNullOrWhiteSpace(userid))
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await AdminAccountService.UserIdCheckService(CommService.getRemoveWhiteSpace(userid)).ConfigureAwait(false);
+                ResponseModel<bool?> model = await AdminAccountService.UserIdCheckService(CommService.getRemoveWhiteSpace(userid)).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();

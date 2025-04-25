@@ -1,4 +1,5 @@
-﻿using FamTec.Shared.Client.DTO.Normal.Users;
+﻿using FamTec.Server.Helpers;
+using FamTec.Shared.Client.DTO.Normal.Users;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Login;
 using FamTec.Shared.Server.DTO.Place;
@@ -28,7 +29,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool>> ImportUserService(IFormFile? file);
+        public Task<ResponseModel<bool>> ImportUserService(IFormFile? file);
 
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<string?>> GetQRLogin(QRLoginDTO dto);
+        public Task<ResponseModel<string?>> GetQRLogin(QRLoginDTO dto);
 
         /// <summary>
         /// Refresh Token
@@ -50,7 +51,7 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<string?>> UserLoginService(LoginDTO dto);
+        public Task<ResponseModel<string?>> UserLoginService(LoginDTO dto);
 
         /// <summary>
         /// 관리자가 일반페이지 접속시 사업장 선택 후 토큰 발급되는 서비스
@@ -58,14 +59,14 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<string?>> LoginSelectPlaceService(int placeid);
+        public Task<ResponseModel<string?>> LoginSelectPlaceService(int placeid);
 
         /// <summary>
         /// 해당사업장의 USERLIST 출력
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public Task<ResponseList<ListUser>> GetPlaceUserList();
+        public Task<ResponseModel<List<ListUser>>> GetPlaceUserList();
 
         /// <summary>
         /// 사용자 상세정보 보기
@@ -73,7 +74,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<UsersDTO>> GetUserDetails(int id, bool isMobile);
+        public Task<ResponseModel<UsersDTO>> GetUserDetails(int id, bool isMobile);
 
 
         /// <summary>
@@ -81,7 +82,7 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<UsersDTO>> AddUserService(UsersDTO dto, IFormFile? files);
+        public Task<ResponseModel<UsersDTO>> AddUserService(UsersDTO dto, IFormFile? files);
 
         /// <summary>
         /// 사용자 삭제 서비스
@@ -89,7 +90,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> DeleteUserService(List<int> del);
+        public Task<ResponseModel<bool?>> DeleteUserService(List<int> del);
 
         /// <summary>
         /// 사용자 데이터 수정
@@ -97,16 +98,13 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<UsersDTO>> UpdateUserService(UsersDTO dto, IFormFile? files);
-
-  
+        public Task<ResponseModel<UsersDTO>> UpdateUserService(UsersDTO dto, IFormFile? files);
 
         /// <summary>
         /// 사업장 메뉴권한 리턴
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<PlacePermissionDTO?>> GetMenuPermService();
+        public Task<ResponseModel<PlacePermissionDTO?>> GetMenuPermService();
 
         // --------------- V2
 
@@ -114,33 +112,33 @@ namespace FamTec.Server.Services.User
         /// [웹] - 액세스 토큰 발급서비스 [V2]
         /// </summary>
         /// <returns></returns>
-        public Task<ResponseUnit<TokenDTOV2>?> WebUserLoginService(LoginDTO dto);
+        public Task<ResponseModel<TokenDTOV2>?> WebUserLoginService(LoginDTO dto);
 
         /// <summary>
         /// [웹] QR로그인 [V2]
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<TokenDTOV2>?> WebQRLoginService(QRLoginDTO dto);
+        public Task<ResponseModel<TokenDTOV2>?> WebQRLoginService(QRLoginDTO dto);
 
         /// <summary>
         /// [웹] - 관리자가 일반페이지 접속했을때 선택한 사업장 포함한 액세스 토큰 재생성
         /// </summary>
         /// <returns></returns>
-        public Task<ResponseUnit<TokenDTOV2?>> WebLoginSelectPlaceService(int placeid, string sessionId);
+        public Task<ResponseModel<TokenDTOV2?>> WebLoginSelectPlaceService(int placeid, string sessionId);
 
         /// <summary>
         /// [웹] - 재발급 토큰 서비스 [V2]
         /// </summary>
         /// <returns></returns>
-        public Task<ResponseUnit<TokenDTOV2>?> WebLoginRefreshTokenService(RefreshTokenDTOV2 dto);
+        public Task<ResponseModel<TokenDTOV2>?> WebLoginRefreshTokenService(RefreshTokenDTOV2 dto);
 
         /// <summary>
         /// [웹] - 로그아웃 [V2]
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool>> WebLogoutService(LogoutDTO dto);
+        public Task<ResponseModel<bool>> WebLogoutService(LogoutDTO dto);
 
     
     }

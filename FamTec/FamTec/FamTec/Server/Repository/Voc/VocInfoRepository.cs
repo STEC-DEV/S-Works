@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Helpers;
 using FamTec.Server.Services;
+using FamTec.Server.Services.Voc.Kakao;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Voc;

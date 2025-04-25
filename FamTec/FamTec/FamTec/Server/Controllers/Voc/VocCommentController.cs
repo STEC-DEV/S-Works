@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Voc;
 using FamTec.Shared.Server.DTO;
@@ -57,7 +58,7 @@ namespace FamTec.Server.Controllers.Voc
                     foreach(IFormFile file in files)
                     {
                         if (file.Length > Common.MEGABYTE_10)
-                            return Ok(new ResponseUnit<AddVocCommentDTOV2?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                            return Ok(new ResponseModel<AddVocCommentDTOV2?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                         string? extension = FileService.GetExtension(file);
                         if(String.IsNullOrEmpty(extension))
@@ -69,7 +70,7 @@ namespace FamTec.Server.Controllers.Voc
                             bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                             if(!extensioncheck)
                             {
-                                return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                                return Ok(new ResponseModel<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                             }
                         }
                     }
@@ -77,7 +78,7 @@ namespace FamTec.Server.Controllers.Voc
 
 
                 // 밑에 추가로 작성
-                ResponseUnit<AddVocCommentDTOV2?> model = await VocCommentService.AddVocCommentServiceV2(dto, files).ConfigureAwait(false);
+                ResponseModel<AddVocCommentDTOV2?> model = await VocCommentService.AddVocCommentServiceV2(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -133,7 +134,7 @@ namespace FamTec.Server.Controllers.Voc
                     foreach(IFormFile file in files)
                     {
                         if (file.Length > Common.MEGABYTE_10)
-                            return Ok(new ResponseUnit<AddVocCommentDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                            return Ok(new ResponseModel<AddVocCommentDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                         string? extension = FileService.GetExtension(file);
                         if (String.IsNullOrWhiteSpace(extension))
@@ -145,14 +146,14 @@ namespace FamTec.Server.Controllers.Voc
                             bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                             if (!extensioncheck)
                             {
-                                return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                                return Ok(new ResponseModel<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                             }
                         }
                     }
                 }
 
                 // 밑에 추가로 작성
-                ResponseUnit<AddVocCommentDTO?> model = await VocCommentService.AddVocCommentService(dto, files).ConfigureAwait(false);
+                ResponseModel<AddVocCommentDTO?> model = await VocCommentService.AddVocCommentService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -188,7 +189,7 @@ namespace FamTec.Server.Controllers.Voc
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseList<VocCommentListDTO>? model = await VocCommentService.GetVocCommentList(vocid, isMobile).ConfigureAwait(false);
+                ResponseModel<List<VocCommentListDTO>>? model = await VocCommentService.GetVocCommentList(vocid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -224,7 +225,7 @@ namespace FamTec.Server.Controllers.Voc
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<VocCommentDetailDTO?> model = await VocCommentService.GetVocCommentDetail(commentid, isMobile).ConfigureAwait(false);
+                ResponseModel<VocCommentDetailDTO?> model = await VocCommentService.GetVocCommentDetail(commentid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -274,7 +275,7 @@ namespace FamTec.Server.Controllers.Voc
                     foreach (IFormFile file in files)
                     {
                         if (file.Length > Common.MEGABYTE_10)
-                            return Ok(new ResponseUnit<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                            return Ok(new ResponseModel<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                         string? extension = FileService.GetExtension(file);
                         if (String.IsNullOrWhiteSpace(extension))
@@ -292,7 +293,7 @@ namespace FamTec.Server.Controllers.Voc
                     }
                 }
 
-                ResponseUnit<bool?> model = await VocCommentService.UpdateCommentService(dto, files).ConfigureAwait(false);
+                ResponseModel<bool?> model = await VocCommentService.UpdateCommentService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)

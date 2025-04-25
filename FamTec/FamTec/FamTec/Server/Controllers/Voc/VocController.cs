@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Voc;
 using FamTec.Shared.Server.DTO;
@@ -157,7 +158,7 @@ namespace FamTec.Server.Controllers.Voc
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<VocDaysStatusCountDTO>? model = await VocService.GetVocDaysStatusDataService().ConfigureAwait(false);
+                ResponseModel<VocDaysStatusCountDTO>? model = await VocService.GetVocDaysStatusDataService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -190,7 +191,7 @@ namespace FamTec.Server.Controllers.Voc
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<VocWeekStatusCountDTO>? model = await VocService.GetVocWeeksStatusDataService().ConfigureAwait(false);
+                ResponseModel<List<VocWeekStatusCountDTO>>? model = await VocService.GetVocWeeksStatusDataService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -224,7 +225,7 @@ namespace FamTec.Server.Controllers.Voc
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<VocDaysCountDTO>? model = await VocService.GetVocDashBoardDaysDataService().ConfigureAwait(false);
+                ResponseModel<VocDaysCountDTO>? model = await VocService.GetVocDashBoardDaysDataService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -256,7 +257,7 @@ namespace FamTec.Server.Controllers.Voc
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<VocWeekCountDTO>? model = await VocService.GetVocDashBoardWeeksDataService().ConfigureAwait(false);
+                ResponseModel<List<VocWeekCountDTO>>? model = await VocService.GetVocDashBoardWeeksDataService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -326,7 +327,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (searchType == 0)
                 {
                     // 월간 Service API 호출
-                    ResponseList<VocListDTOV2>? model = await VocService.GetMonthVocSearchListV2(type, status, buildingid, division, searchdate).ConfigureAwait(false);
+                    ResponseModel<List<VocListDTOV2>>? model = await VocService.GetMonthVocSearchListV2(type, status, buildingid, division, searchdate).ConfigureAwait(false);
                     if (model is null)
                         return BadRequest();
                     if (model.code == 200)
@@ -337,7 +338,7 @@ namespace FamTec.Server.Controllers.Voc
                 else if (searchType == 1)
                 {
                     // 기간 Service API 호출
-                    ResponseList<VocListDTOV2>? model = await VocService.GetDateVocSearchListV2(type, status, buildingid, division, StartDate!.Value, EndDate!.Value).ConfigureAwait(false);
+                    ResponseModel<List<VocListDTOV2>>? model = await VocService.GetDateVocSearchListV2(type, status, buildingid, division, StartDate!.Value, EndDate!.Value).ConfigureAwait(false);
                     if (model is null)
                         return BadRequest();
                     if (model.code == 200)
@@ -408,7 +409,7 @@ namespace FamTec.Server.Controllers.Voc
                 if(searchType == 0)
                 {
                     // 월간 Service API 호출
-                    ResponseList<VocListDTO>? model = await VocService.GetMonthVocSearchList(type, status, buildingid, division, searchdate).ConfigureAwait(false);
+                    ResponseModel<List<VocListDTO>>? model = await VocService.GetMonthVocSearchList(type, status, buildingid, division, searchdate).ConfigureAwait(false);
                     if (model is null)
                         return BadRequest();
                     if (model.code == 200)
@@ -419,7 +420,7 @@ namespace FamTec.Server.Controllers.Voc
                 else if(searchType == 1)
                 {
                     // 기간 Service API 호출
-                    ResponseList<VocListDTO>? model = await VocService.GetDateVocSearchList(type, status, buildingid, division, StartDate!.Value, EndDate!.Value).ConfigureAwait(false);
+                    ResponseModel<List<VocListDTO>>? model = await VocService.GetDateVocSearchList(type, status, buildingid, division, StartDate!.Value, EndDate!.Value).ConfigureAwait(false);
                     if (model is null)
                         return BadRequest();
                     if (model.code == 200)
@@ -458,7 +459,7 @@ namespace FamTec.Server.Controllers.Voc
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<AllVocListDTO> model = await VocService.GetVocList(type, status, buildingid, division).ConfigureAwait(false);
+                ResponseModel<List<AllVocListDTO>> model = await VocService.GetVocList(type, status, buildingid, division).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -513,7 +514,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (buildingid.Count == 0)
                     return NoContent();
 
-                ResponseList<VocListDTO>? model = await VocService.GetVocFilterList(StartDate, EndDate, type, status, buildingid, division).ConfigureAwait(false);
+                ResponseModel<List<VocListDTO>>? model = await VocService.GetVocFilterList(StartDate, EndDate, type, status, buildingid, division).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -551,7 +552,7 @@ namespace FamTec.Server.Controllers.Voc
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<VocEmployeeDetailDTO> model = await VocService.GetVocDetail(VocId, isMobile).ConfigureAwait(false);
+                ResponseModel<VocEmployeeDetailDTO> model = await VocService.GetVocDetail(VocId, isMobile).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -591,7 +592,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (dto.Type is null)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await VocService.UpdateVocTypeService(dto).ConfigureAwait(false);
+                ResponseModel<bool?> model = await VocService.UpdateVocTypeService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

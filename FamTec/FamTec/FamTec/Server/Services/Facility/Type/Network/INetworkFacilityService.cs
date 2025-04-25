@@ -1,6 +1,7 @@
 ﻿using FamTec.Shared.Server.DTO.Facility;
 using FamTec.Shared.Server.DTO;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using FamTec.Server.Helpers;
 
 namespace FamTec.Server.Services.Facility.Type.Network
 {
@@ -19,7 +20,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool>> ImportNetworkFacilityService(IFormFile? file);
+        public Task<ResponseModel<bool>> ImportNetworkFacilityService(IFormFile? file);
 
         /// <summary>
         /// 설비 추가
@@ -27,21 +28,21 @@ namespace FamTec.Server.Services.Facility.Type.Network
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<FacilityDTO>> AddNetworkFacilityService(FacilityDTO dto, IFormFile? files);
+        public Task<ResponseModel<FacilityDTO>> AddNetworkFacilityService(FacilityDTO dto, IFormFile? files);
 
         /// <summary>
         /// 해당 사업장의 모든 설비 리스트 조회
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<FacilityListDTO>> GetNetworkFacilityListService();
+        public Task<ResponseModel<List<FacilityListDTO>>> GetNetworkFacilityListService();
 
         /// <summary>
         /// 설비ID의 설비 모델 조회
         /// </summary>
         /// <param name="facilityId"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<FacilityDetailDTO>> GetNetworkDetailFacilityService(int facilityId, bool isMobile);
+        public Task<ResponseModel<FacilityDetailDTO>> GetNetworkDetailFacilityService(int facilityId, bool isMobile);
 
         /// <summary>
         /// 설비 정보 수정
@@ -49,7 +50,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> UpdateNetworkFacilityService(FacilityDTO dto, IFormFile? files);
+        public Task<ResponseModel<bool?>> UpdateNetworkFacilityService(FacilityDTO dto, IFormFile? files);
 
         /// <summary>
         /// 설비 정보 삭제
@@ -57,6 +58,6 @@ namespace FamTec.Server.Services.Facility.Type.Network
         /// <param name="context"></param>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<bool?>> DeleteNetworkFacilityService(List<int> delIdx);
+        public Task<ResponseModel<bool?>> DeleteNetworkFacilityService(List<int> delIdx);
     }
 }

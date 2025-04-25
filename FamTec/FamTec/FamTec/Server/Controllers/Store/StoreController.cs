@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Store;
 using FamTec.Shared.Server.DTO;
@@ -43,7 +44,7 @@ namespace FamTec.Server.Controllers.Store
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<InOutListDTO?> model = await InStoreService.GetDashBoardInOutListData().ConfigureAwait(false);
+                ResponseModel<InOutListDTO?> model = await InStoreService.GetDashBoardInOutListData().ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -79,7 +80,7 @@ namespace FamTec.Server.Controllers.Store
                 if (MaterialIdx is null || MaterialIdx.Count == 0)
                     return NoContent();
 
-                ResponseList<InventoryAmountDTO>? model = await InStoreService.GetDashBoardInvenAmountData(MaterialIdx).ConfigureAwait(false);
+                ResponseModel<List<InventoryAmountDTO>>? model = await InStoreService.GetDashBoardInvenAmountData(MaterialIdx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -170,7 +171,7 @@ namespace FamTec.Server.Controllers.Store
                         return NoContent();
                 }
 
-                ResponseUnit<int?> model = await InStoreService.AddInStoreService(dto).ConfigureAwait(false);
+                ResponseModel<int?> model = await InStoreService.AddInStoreService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -217,7 +218,7 @@ namespace FamTec.Server.Controllers.Store
                         return NoContent();
                 }
 
-                ResponseUnit<FailResult?> model = await InStoreService.OutInventoryService(dto).ConfigureAwait(false);
+                ResponseModel<FailResult?> model = await InStoreService.OutInventoryService(dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -255,7 +256,7 @@ namespace FamTec.Server.Controllers.Store
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<InOutHistoryListDTO>? model = await InStoreService.GetInOutHistoryService().ConfigureAwait(false);
+                ResponseModel<List<InOutHistoryListDTO>>? model = await InStoreService.GetInOutHistoryService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -296,7 +297,7 @@ namespace FamTec.Server.Controllers.Store
                 if(pagesize == 0 || pagesize > 100)
                     return NoContent();
 
-                ResponseList<InOutHistoryListDTO>? model = await InStoreService.GetInoutPageNationHistoryService(pagenum, pagesize).ConfigureAwait(false);
+                ResponseModel<List<InOutHistoryListDTO>>? model = await InStoreService.GetInoutPageNationHistoryService(pagenum, pagesize).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -329,7 +330,7 @@ namespace FamTec.Server.Controllers.Store
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseUnit<int?> model = await InStoreService.GetPlaceInOutCountService().ConfigureAwait(false);
+                ResponseModel<int?> model = await InStoreService.GetPlaceInOutCountService().ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -369,7 +370,7 @@ namespace FamTec.Server.Controllers.Store
                 if(materialid.Count() == 0)
                     return NoContent();
 
-                ResponseList<MaterialHistory>? model = await InStoreService.GetPlaceInventoryRecordService(materialid, type).ConfigureAwait(false);
+                ResponseModel<List<MaterialHistory>>? model = await InStoreService.GetPlaceInventoryRecordService(materialid, type).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -407,7 +408,7 @@ namespace FamTec.Server.Controllers.Store
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<PeriodicDTO>? model = await InStoreService.PeriodicInventoryRecordService(materialid, Startdate, EndDate).ConfigureAwait(false);
+                ResponseModel<List<PeriodicDTO>>? model = await InStoreService.PeriodicInventoryRecordService(materialid, Startdate, EndDate).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -444,7 +445,7 @@ namespace FamTec.Server.Controllers.Store
                 if (materialid is 0)
                     return NoContent();
 
-                ResponseList<InOutLocationDTO> model = await InStoreService.GetMaterialRoomNumService(materialid, buildingid).ConfigureAwait(false);
+                ResponseModel<List<InOutLocationDTO>> model = await InStoreService.GetMaterialRoomNumService(materialid, buildingid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -485,7 +486,7 @@ namespace FamTec.Server.Controllers.Store
                 if (roomid is 0)
                     return NoContent();
 
-                ResponseUnit<InOutLocationDTO> model = await InStoreService.GetMaterialRoomInventoryNumService(materialid, roomid).ConfigureAwait(false);
+                ResponseModel<InOutLocationDTO> model = await InStoreService.GetMaterialRoomInventoryNumService(materialid, roomid).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -530,7 +531,7 @@ namespace FamTec.Server.Controllers.Store
                 if(outcount is 0)
                     return NoContent();
 
-                ResponseUnit<InOutInventoryDTO>? model = await InStoreService.AddOutStoreList(roomid, materialid, outcount).ConfigureAwait(false);
+                ResponseModel<InOutInventoryDTO>? model = await InStoreService.AddOutStoreList(roomid, materialid, outcount).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)

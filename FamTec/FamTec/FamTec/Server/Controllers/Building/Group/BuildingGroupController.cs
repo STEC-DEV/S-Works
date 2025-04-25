@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Building.Group;
 using FamTec.Shared.Server.DTO;
@@ -42,7 +43,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                ResponseUnit<AddGroupInfoDTO> model = await GroupService.AddBuildingGroupInfoService(dto).ConfigureAwait(false);
+                ResponseModel<AddGroupInfoDTO> model = await GroupService.AddBuildingGroupInfoService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -98,7 +99,7 @@ namespace FamTec.Server.Controllers.Building.Group
                     }
                 }
 
-                ResponseUnit<bool> model = await GroupService.AddBuildingGroupService(dto).ConfigureAwait(false);
+                ResponseModel<bool> model = await GroupService.AddBuildingGroupService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -140,7 +141,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
 
-                ResponseList<GroupListDTO?> model = await GroupService.GetBuildingGroupListService(buildingid).ConfigureAwait(false);
+                ResponseModel<List<GroupListDTO?>> model = await GroupService.GetBuildingGroupListService(buildingid).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -182,7 +183,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (String.IsNullOrWhiteSpace(dto.GroupName))
                     return NoContent();
 
-                ResponseUnit<bool?> model = await GroupService.UpdateGroupNameService(dto).ConfigureAwait(false);
+                ResponseModel<bool?> model = await GroupService.UpdateGroupNameService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -213,7 +214,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
 
-                ResponseUnit<bool?> model = await GroupService.DeleteGroupService(groupid).ConfigureAwait(false);
+                ResponseModel<bool?> model = await GroupService.DeleteGroupService(groupid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

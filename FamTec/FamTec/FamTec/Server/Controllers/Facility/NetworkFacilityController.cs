@@ -7,6 +7,7 @@ using FamTec.Server.Services;
 using FamTec.Server.Middleware;
 using FamTec.Server.Services.Facility.Type.Machine;
 using System.ComponentModel.DataAnnotations;
+using FamTec.Server.Helpers;
 
 namespace FamTec.Server.Controllers.Facility
 {
@@ -87,14 +88,14 @@ namespace FamTec.Server.Controllers.Facility
                     bool extensioncheck = Common.XlsxAllowedExtensions.Contains(extension);
                     if (!extensioncheck)
                     {
-                        return Ok(new ResponseUnit<bool>() { message = "지원하지 않는 파일형식입니다.", data = false, code = 204 });
+                        return Ok(new ResponseModel<bool>() { message = "지원하지 않는 파일형식입니다.", data = false, code = 204 });
                     }
                 }
 
                 if (files.Length > Common.MEGABYTE_10)
-                    return Ok(new ResponseUnit<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
+                    return Ok(new ResponseModel<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
 
-                ResponseUnit<bool> model = await NetworkFacilityService.ImportNetworkFacilityService(files).ConfigureAwait(false);
+                ResponseModel<bool> model = await NetworkFacilityService.ImportNetworkFacilityService(files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -137,7 +138,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_10)
-                        return Ok(new ResponseUnit<FacilityDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                        return Ok(new ResponseModel<FacilityDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
@@ -149,12 +150,12 @@ namespace FamTec.Server.Controllers.Facility
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<FacilityDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseModel<FacilityDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
 
-                ResponseUnit<FacilityDTO>? model = await NetworkFacilityService.AddNetworkFacilityService(dto, files).ConfigureAwait(false);
+                ResponseModel<FacilityDTO>? model = await NetworkFacilityService.AddNetworkFacilityService(dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -183,7 +184,7 @@ namespace FamTec.Server.Controllers.Facility
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<FacilityListDTO>? model = await NetworkFacilityService.GetNetworkFacilityListService().ConfigureAwait(false);
+                ResponseModel<List<FacilityListDTO>>? model = await NetworkFacilityService.GetNetworkFacilityListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -215,7 +216,7 @@ namespace FamTec.Server.Controllers.Facility
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<FacilityDetailDTO> model = await NetworkFacilityService.GetNetworkDetailFacilityService(facilityid, isMobile).ConfigureAwait(false);
+                ResponseModel<FacilityDetailDTO> model = await NetworkFacilityService.GetNetworkDetailFacilityService(facilityid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -258,7 +259,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_10)
-                        return Ok(new ResponseUnit<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                        return Ok(new ResponseModel<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
@@ -270,12 +271,12 @@ namespace FamTec.Server.Controllers.Facility
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseModel<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
 
-                ResponseUnit<bool?> model = await NetworkFacilityService.UpdateNetworkFacilityService(dto, files).ConfigureAwait(false);
+                ResponseModel<bool?> model = await NetworkFacilityService.UpdateNetworkFacilityService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -310,7 +311,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await NetworkFacilityService.DeleteNetworkFacilityService(delIdx).ConfigureAwait(false);
+                ResponseModel<bool?> model = await NetworkFacilityService.DeleteNetworkFacilityService(delIdx).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();

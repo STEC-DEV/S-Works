@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.UseMaintenence;
 using FamTec.Shared.Server.DTO;
@@ -48,7 +49,7 @@ namespace FamTec.Server.Controllers.UseMaintenence
                 if (roomid is 0)
                     return NoContent();
 
-                ResponseUnit<UseMaterialDetailDTO>? model = await UseMaintenenceService.GetDetailUseMaterialService(useid, materialid, roomid).ConfigureAwait(false);
+                ResponseModel<UseMaterialDetailDTO>? model = await UseMaintenenceService.GetDetailUseMaterialService(useid, materialid, roomid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -87,8 +88,8 @@ namespace FamTec.Server.Controllers.UseMaintenence
 
                 if (dto.UseMaintanceID is 0)
                     return NoContent();
-                
-                ResponseUnit<bool?> model = await UseMaintenenceService.UpdateDetailUseMaterialService(dto).ConfigureAwait(false);
+
+                ResponseModel<bool?> model = await UseMaintenenceService.UpdateDetailUseMaterialService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

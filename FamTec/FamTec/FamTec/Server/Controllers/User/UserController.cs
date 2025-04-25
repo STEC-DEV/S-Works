@@ -8,6 +8,7 @@ using FamTec.Server.Services;
 using FamTec.Server.Middleware;
 using FamTec.Server.Services.Admin.Account;
 using System.ComponentModel.DataAnnotations;
+using FamTec.Server.Helpers;
 
 namespace FamTec.Server.Controllers.User
 {
@@ -122,11 +123,11 @@ namespace FamTec.Server.Controllers.User
                     bool extensioncheck = Common.XlsxAllowedExtensions.Contains(extension); // 파일 확장자 검사
                     if(!extensioncheck)
                     {
-                        return Ok(new ResponseUnit<bool>() { message = "지원하지 않는 파일형식입니다.", data = false, code = 204 });
+                        return Ok(new ResponseModel<bool>() { message = "지원하지 않는 파일형식입니다.", data = false, code = 204 });
                     }
                 }
 
-                ResponseUnit<bool> model = await UserService.ImportUserService(files).ConfigureAwait(false);
+                ResponseModel<bool> model = await UserService.ImportUserService(files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -162,7 +163,7 @@ namespace FamTec.Server.Controllers.User
 #if DEBUG
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
-                ResponseList<ListUser>? model = await UserService.GetPlaceUserList().ConfigureAwait(false);
+                ResponseModel<List<ListUser>>? model = await UserService.GetPlaceUserList().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -228,7 +229,7 @@ namespace FamTec.Server.Controllers.User
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_10)
-                        return Ok(new ResponseUnit<UsersDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                        return Ok(new ResponseModel<UsersDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
@@ -240,7 +241,7 @@ namespace FamTec.Server.Controllers.User
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<UsersDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseModel<UsersDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
@@ -248,7 +249,7 @@ namespace FamTec.Server.Controllers.User
                 dto.USERID = CommService.getRemoveWhiteSpace(dto.USERID);
                 dto.PASSWORD = CommService.getRemoveWhiteSpace(dto.PASSWORD);
 
-                ResponseUnit<UsersDTO> model = await UserService.AddUserService(dto, files).ConfigureAwait(false);
+                ResponseModel<UsersDTO> model = await UserService.AddUserService(dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -282,7 +283,7 @@ namespace FamTec.Server.Controllers.User
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<UsersDTO> model = await UserService.GetUserDetails(id, isMobile).ConfigureAwait(false);
+                ResponseModel<UsersDTO> model = await UserService.GetUserDetails(id, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -316,7 +317,7 @@ namespace FamTec.Server.Controllers.User
                 if (delIdx.Count == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await UserService.DeleteUserService(delIdx).ConfigureAwait(false);
+                ResponseModel<bool?> model = await UserService.DeleteUserService(delIdx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -375,7 +376,7 @@ namespace FamTec.Server.Controllers.User
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_10)
-                        return Ok(new ResponseUnit<UsersDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                        return Ok(new ResponseModel<UsersDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
@@ -387,7 +388,7 @@ namespace FamTec.Server.Controllers.User
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<UsersDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseModel<UsersDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
@@ -395,7 +396,7 @@ namespace FamTec.Server.Controllers.User
                 dto.USERID = CommService.getRemoveWhiteSpace(dto.USERID);
                 dto.PASSWORD = CommService.getRemoveWhiteSpace(dto.PASSWORD);
 
-                ResponseUnit<UsersDTO>? model = await UserService.UpdateUserService(dto, files).ConfigureAwait(false);
+                ResponseModel<UsersDTO>? model = await UserService.UpdateUserService(dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -433,7 +434,7 @@ namespace FamTec.Server.Controllers.User
                 if (String.IsNullOrWhiteSpace(userid))
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await AdminAccountService.UserIdCheckService(CommService.getRemoveWhiteSpace(userid)).ConfigureAwait(false);
+                ResponseModel<bool?> model = await AdminAccountService.UserIdCheckService(CommService.getRemoveWhiteSpace(userid)).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

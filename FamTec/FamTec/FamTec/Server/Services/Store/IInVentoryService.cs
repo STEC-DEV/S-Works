@@ -1,5 +1,4 @@
-﻿using FamTec.Shared.Model;
-using FamTec.Shared.Server.DTO;
+﻿using FamTec.Server.Helpers;
 using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Material;
 using FamTec.Shared.Server.DTO.Store;
@@ -14,21 +13,21 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<int?>> AddInStoreService(List<InOutInventoryDTO> dto);
+        public Task<ResponseModel<int?>> AddInStoreService(List<InOutInventoryDTO> dto);
 
         /// <summary>
         /// 입출고 이력
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<InOutHistoryListDTO>> GetInOutHistoryService();
+        public Task<ResponseModel<List<InOutHistoryListDTO>>> GetInOutHistoryService();
 
         /// <summary>
         /// 사업장의 입-출고 이력 개수 반환
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<int?>> GetPlaceInOutCountService();
+        public Task<ResponseModel<int?>> GetPlaceInOutCountService();
 
         /// <summary>
         /// 입-출고 이력 페이지네이션 조회
@@ -37,7 +36,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="pagenum"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public Task<ResponseList<InOutHistoryListDTO>> GetInoutPageNationHistoryService(int pagenum, int pagesize);
+        public Task<ResponseModel<List<InOutHistoryListDTO>>> GetInoutPageNationHistoryService(int pagenum, int pagesize);
 
         /// <summary>
         /// 출고 등록
@@ -45,7 +44,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<FailResult?>> OutInventoryService(List<InOutInventoryDTO> dto);
+        public Task<ResponseModel<FailResult?>> OutInventoryService(List<InOutInventoryDTO> dto);
 
         /// <summary>
         /// 품목별 기간별 입출고내역
@@ -55,7 +54,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public Task<ResponseList<PeriodicDTO>> PeriodicInventoryRecordService(List<int> materialid, DateTime startDate, DateTime endDate);
+        public Task<ResponseModel<List<PeriodicDTO>>> PeriodicInventoryRecordService(List<int> materialid, DateTime startDate, DateTime endDate);
 
         /// <summary>
         /// 사업장별 재고 현황
@@ -64,7 +63,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="materialid"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public Task<ResponseList<MaterialHistory>> GetPlaceInventoryRecordService(List<int> materialid, bool type);
+        public Task<ResponseModel<List<MaterialHistory>>> GetPlaceInventoryRecordService(List<int> materialid, bool type);
 
         /// <summary>
         /// 해당 품목의 재고수량 반환
@@ -72,7 +71,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="MaterialId"></param>
         /// <returns></returns>
-        public Task<ResponseList<InOutLocationDTO>> GetMaterialRoomNumService(int MaterialId, int buildingid);
+        public Task<ResponseModel<List<InOutLocationDTO>>> GetMaterialRoomNumService(int MaterialId, int buildingid);
 
         /// <summary>
         /// 해당 품목의 재고수량 반환
@@ -81,7 +80,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="MaterialId"></param>
         /// <param name="RoomId"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<InOutLocationDTO>> GetMaterialRoomInventoryNumService(int MaterialId, int RoomId);
+        public Task<ResponseModel<InOutLocationDTO>> GetMaterialRoomInventoryNumService(int MaterialId, int RoomId);
 
         /// <summary>
         /// 출고할 품목 LIST 반환 - FRONT용
@@ -91,27 +90,27 @@ namespace FamTec.Server.Services.Store
         /// <param name="materialid"></param>
         /// <param name="outcount"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<InOutInventoryDTO>> AddOutStoreList(int roomid, int materialid, int outcount);
+        public Task<ResponseModel<InOutInventoryDTO>> AddOutStoreList(int roomid, int materialid, int outcount);
 
         /// <summary>
         /// DashBoard용 일주일치 자재별 입출고 카운트
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<MaterialWeekCountDTO>?> GetInoutDashBoardDataService();
+        public Task<ResponseModel<List<MaterialWeekCountDTO>>?> GetInoutDashBoardDataService();
 
         /// <summary>
         /// 대쉬보드용 금일 입출고 내역
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<InOutListDTO?>> GetDashBoardInOutListData();
+        public Task<ResponseModel<InOutListDTO?>> GetDashBoardInOutListData();
 
         /// <summary>
         /// 대쉬보드용 품목별 재고현황
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<InventoryAmountDTO>?> GetDashBoardInvenAmountData(List<int> MaterialIdx);
+        public Task<ResponseModel<List<InventoryAmountDTO>>?> GetDashBoardInvenAmountData(List<int> MaterialIdx);
     }
 }

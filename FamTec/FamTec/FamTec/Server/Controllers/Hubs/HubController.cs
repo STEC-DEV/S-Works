@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Voc.Hub;
 using FamTec.Shared.Server.DTO;
@@ -54,7 +55,7 @@ namespace FamTec.Server.Controllers.Hubs
                 if (String.IsNullOrWhiteSpace(PhoneNumber))
                     return NoContent();
 
-                ResponseUnit<bool> model = await HubService.AddAuthCodeService(PlaceId, BuildingId, PhoneNumber).ConfigureAwait(false);
+                ResponseModel<bool> model = await HubService.AddAuthCodeService(PlaceId, BuildingId, PhoneNumber).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -90,7 +91,7 @@ namespace FamTec.Server.Controllers.Hubs
                 if (String.IsNullOrWhiteSpace(PhoneNumber) || String.IsNullOrWhiteSpace(AuthCode))
                     return NoContent();
 
-                ResponseUnit<bool> model = await HubService.GetVerifyAuthCodeService(PhoneNumber, AuthCode).ConfigureAwait(false);
+                ResponseModel<bool> model = await HubService.GetVerifyAuthCodeService(PhoneNumber, AuthCode).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -137,7 +138,7 @@ namespace FamTec.Server.Controllers.Hubs
                     foreach (IFormFile file in files)
                     {
                         if (file.Length > Common.MEGABYTE_10)
-                            return Ok(new ResponseUnit<AddVocReturnDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                            return Ok(new ResponseModel<AddVocReturnDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                         string? extension = Path.GetExtension(file.FileName);
                         if (String.IsNullOrWhiteSpace(extension))
@@ -148,12 +149,12 @@ namespace FamTec.Server.Controllers.Hubs
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<AddVocReturnDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseModel<AddVocReturnDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
 
-                ResponseUnit<AddVocReturnDTO?> model = await HubService.AddVocServiceV2(dto, files).ConfigureAwait(false);
+                ResponseModel<AddVocReturnDTO?> model = await HubService.AddVocServiceV2(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200) // OK
@@ -212,7 +213,7 @@ namespace FamTec.Server.Controllers.Hubs
                     foreach(IFormFile file in files)
                     {
                         if (file.Length > Common.MEGABYTE_10)
-                            return Ok(new ResponseUnit<AddVocReturnDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+                            return Ok(new ResponseModel<AddVocReturnDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
 
                         string? extension = Path.GetExtension(file.FileName);
                         if(String.IsNullOrWhiteSpace(extension))
@@ -223,12 +224,12 @@ namespace FamTec.Server.Controllers.Hubs
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<AddVocReturnDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseModel<AddVocReturnDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
 
-                ResponseUnit<AddVocReturnDTO?> model = await HubService.AddVocService(dto, files).ConfigureAwait(false);
+                ResponseModel<AddVocReturnDTO?> model = await HubService.AddVocService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -265,7 +266,7 @@ namespace FamTec.Server.Controllers.Hubs
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<VocUserDetailDTO?> model = await HubService.GetVocRecord(voccode, isMobile).ConfigureAwait(false);
+                ResponseModel<VocUserDetailDTO?> model = await HubService.GetVocRecord(voccode, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -305,7 +306,7 @@ namespace FamTec.Server.Controllers.Hubs
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseList<VocCommentListDTO>? model = await HubService.GetVocCommentList(voccode, isMobile).ConfigureAwait(false);
+                ResponseModel<List<VocCommentListDTO>>? model = await HubService.GetVocCommentList(voccode, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -345,7 +346,7 @@ namespace FamTec.Server.Controllers.Hubs
                 // 모바일 여부
                 bool isMobile = CommService.MobileConnectCheck();
 
-                ResponseUnit<VocCommentDetailDTO?> model = await HubService.GetVocCommentDetail(commentid, isMobile).ConfigureAwait(false);
+                ResponseModel<VocCommentDetailDTO?> model = await HubService.GetVocCommentDetail(commentid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)

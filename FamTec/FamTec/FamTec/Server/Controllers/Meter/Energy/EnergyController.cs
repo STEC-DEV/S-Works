@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Repository.Meter.Energy;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Meter.Energy;
@@ -39,9 +40,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        //[HttpGet]
         [Route("sign/AddEnergy")]
-        //public async Task<IActionResult> AddEnergy()
         public async Task<IActionResult> AddEnergy([FromBody]AddEnergyDTO dto)
         {
             try
@@ -49,7 +48,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
                 if (dto.MeterID is 0)
                     return NoContent();
 
-                ResponseUnit<AddEnergyDTO>? model = await EnergyService.AddEnergyService(dto);
+                ResponseModel<AddEnergyDTO>? model = await EnergyService.AddEnergyService(dto);
                 if (model is null)
                     return BadRequest();
 

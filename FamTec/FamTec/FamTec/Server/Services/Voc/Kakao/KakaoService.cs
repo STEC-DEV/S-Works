@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.KakaoLog;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Repository.KakaoLog;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using Newtonsoft.Json.Linq;
@@ -6,13 +7,13 @@ using System;
 using System.Net.Http.Headers;
 using System.Text;
 
-namespace FamTec.Server.Services
+namespace FamTec.Server.Services.Voc.Kakao
 {
     public class KakaoService : IKakaoService
     {
         private readonly IHttpClientFactory HttpClientFactory; /* HttpClient 객체 */
         private FormUrlEncodedContent? Content;
-        private string? HttpResponseResult = String.Empty; /* Http 요청결과 */
+        private string? HttpResponseResult = string.Empty; /* Http 요청결과 */
         private readonly IHttpContextAccessor HttpContextAccessor; /* HttpContext 의존성 주입 */
         private readonly ILogService LogService; /* 파일로그 */
         private readonly ConsoleLogService<KakaoService> CreateBuilderLogger; /* 콘솔로그 */
@@ -22,22 +23,22 @@ namespace FamTec.Server.Services
             ILogService _logservice,
             ConsoleLogService<KakaoService> _createbuilderlogger)
         {
-            this.HttpClientFactory = _httpclientfactory;
-            this.HttpContextAccessor = _httpcontextaccessor;
-            this.LogService = _logservice;
-            this.CreateBuilderLogger = _createbuilderlogger;
+            HttpClientFactory = _httpclientfactory;
+            HttpContextAccessor = _httpcontextaccessor;
+            LogService = _logservice;
+            CreateBuilderLogger = _createbuilderlogger;
         }
 
 
         // 카카오 메시지결과 테스트
-        public async Task<ResponseList<KaKaoSenderResult>?> KakaoSenderResult(int page, int pagesize, DateTime StartDate, int limit_day)
+        public async Task<ResponseModel<List<KaKaoSenderResult>>?> KakaoSenderResult(int page, int pagesize, DateTime StartDate, int limit_day)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<KaKaoSenderResult>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<KaKaoSenderResult>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // [1]. 토큰생성
                 Content = new FormUrlEncodedContent(new Dictionary<string, string>()
@@ -62,14 +63,14 @@ namespace FamTec.Server.Services
                     JToken? AligoList = Jobj["list"];
 
                     if (AligoList is null)
-                        return new ResponseList<KaKaoSenderResult>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+                        return new ResponseModel<List<KaKaoSenderResult>>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
 
                     int count = AligoList.Count();
                     foreach (JToken token in AligoList)
                     {
                         KaKaoSenderResult item = new KaKaoSenderResult();
-                        item.Sender = token["sender"]?.ToString() ?? String.Empty;
-                        item.Message = token["msg"]?.ToString() ?? String.Empty;
+                        item.Sender = token["sender"]?.ToString() ?? string.Empty;
+                        item.Message = token["msg"]?.ToString() ?? string.Empty;
                         item.SendDate = DateTime.Parse(token["reg_date"]!.ToString());
                         if (token["fail_count"]!.ToString() == "0")
                             item.Result = "성공";
@@ -80,15 +81,15 @@ namespace FamTec.Server.Services
                     }
                 }
 
-                return new ResponseList<KaKaoSenderResult>() { message = "요청이 정상 처리되었습니다.", data = SenderList, code = 200};
+                return new ResponseModel<List<KaKaoSenderResult>>() { message = "요청이 정상 처리되었습니다.", data = SenderList, code = 200 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<KaKaoSenderResult>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<KaKaoSenderResult>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -294,7 +295,7 @@ namespace FamTec.Server.Services
         /// <param name="authcode"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<bool> AddVerifyAuthCodeAnser(string buildingname,string phonenumber, string authcode)
+        public async Task<bool> AddVerifyAuthCodeAnser(string buildingname, string phonenumber, string authcode)
         {
             try
             {
@@ -310,10 +311,10 @@ namespace FamTec.Server.Services
 
                 using var tokenResponse = await client.PostAsync("akv10/token/create/30/s/", tokenContent).ConfigureAwait(false);
                 var tokenResponseResult = await tokenResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                
+
                 JObject? Jobj = JObject.Parse(tokenResponseResult);
                 string? token = Convert.ToString(Jobj["token"]);
-                if (String.IsNullOrWhiteSpace(token))
+                if (string.IsNullOrWhiteSpace(token))
                     return false;
 
                 string message = $"인증번호는 {authcode} 입니다.";
@@ -424,8 +425,8 @@ namespace FamTec.Server.Services
 
                 return VertifyBuilder.ToString();
             }
-            
-          
+
+
             public string RandomPassword()
             {
                 var passwordBuilder = new StringBuilder();

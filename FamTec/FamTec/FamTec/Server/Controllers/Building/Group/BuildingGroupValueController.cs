@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Building.Value;
 using FamTec.Shared.Server.DTO;
@@ -44,7 +45,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (String.IsNullOrWhiteSpace(dto.Value))
                     return NoContent();
 
-                ResponseUnit<AddValueDTO> model = await BuildingValueService.AddValueService(dto).ConfigureAwait(false);
+                ResponseModel<AddValueDTO> model = await BuildingValueService.AddValueService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -81,7 +82,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (String.IsNullOrWhiteSpace(dto.ItemValue))
                     return NoContent();
 
-                ResponseUnit<UpdateValueDTO> model = await BuildingValueService.UpdateValueService(dto).ConfigureAwait(false);
+                ResponseModel<UpdateValueDTO> model = await BuildingValueService.UpdateValueService(dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -113,7 +114,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 CreateBuilderLogger.ConsoleText($"{HttpContext.Request.Path.Value}");
 #endif
 
-                ResponseUnit<bool?> model = await BuildingValueService.DeleteValueService(valueid).ConfigureAwait(false);
+                ResponseModel<bool?> model = await BuildingValueService.DeleteValueService(valueid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

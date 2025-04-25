@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Alarm;
+﻿using FamTec.Server.Helpers;
+using FamTec.Server.Repository.Alarm;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Alarm;
 
@@ -27,24 +28,24 @@ namespace FamTec.Server.Services.Alarm
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<AlarmDTO>> GetAllAlarmService()
+        public async Task<ResponseModel<List<AlarmDTO>>> GetAllAlarmService()
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<AlarmDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AlarmDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
                 if(String.IsNullOrWhiteSpace(UserIdx))
-                    return new ResponseList<AlarmDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AlarmDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<AlarmDTO>? model = await AlarmInfoRepository.GetAlarmList(Convert.ToInt32(UserIdx)).ConfigureAwait(false);
                 if (model is not null && model.Any())
-                    return new ResponseList<AlarmDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseModel<List<AlarmDTO>>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
-                    return new ResponseList<AlarmDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseModel<List<AlarmDTO>>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
             }
             catch(Exception ex)
             {
@@ -52,7 +53,7 @@ namespace FamTec.Server.Services.Alarm
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<AlarmDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<AlarmDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -62,24 +63,24 @@ namespace FamTec.Server.Services.Alarm
         /// <param name="context"></param>
         /// <param name="StartDate"></param>
         /// <returns></returns>
-        public async Task<ResponseList<AlarmDTO>> GetAllAlarmByDateService(DateTime StartDate)
+        public async Task<ResponseModel<List<AlarmDTO>>> GetAllAlarmByDateService(DateTime StartDate)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseList<AlarmDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AlarmDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
                 if (String.IsNullOrWhiteSpace(UserIdx))
-                    return new ResponseList<AlarmDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<List<AlarmDTO>>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<AlarmDTO>? model = await AlarmInfoRepository.GetAlarmListByDate(Convert.ToInt32(UserIdx), StartDate).ConfigureAwait(false);
                 if (model is not null && model.Any())
-                    return new ResponseList<AlarmDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseModel<List<AlarmDTO>>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
-                    return new ResponseList<AlarmDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseModel<List<AlarmDTO>>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
             }
             catch (Exception ex)
             {
@@ -87,7 +88,7 @@ namespace FamTec.Server.Services.Alarm
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<AlarmDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<List<AlarmDTO>>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -96,29 +97,29 @@ namespace FamTec.Server.Services.Alarm
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> AllAlarmDelete()
+        public async Task<ResponseModel<bool?>> AllAlarmDelete()
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
                 string? deleter = Convert.ToString(context.Items["Name"]);
 
                 if (String.IsNullOrWhiteSpace(UserIdx) || String.IsNullOrWhiteSpace(deleter))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 여기수정
                 bool? result = await AlarmInfoRepository.AllAlarmDelete(Convert.ToInt32(UserIdx), deleter).ConfigureAwait(false);
                 
                 return result switch
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    true => new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
+                    _ => new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
             }
             catch(Exception ex)
@@ -127,7 +128,7 @@ namespace FamTec.Server.Services.Alarm
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -136,25 +137,25 @@ namespace FamTec.Server.Services.Alarm
         /// </summary>
         /// <param name="alarmid"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<bool?>> AlarmDelete(int? alarmid)
+        public async Task<ResponseModel<bool?>> AlarmDelete(int? alarmid)
         {
             try
             {
                 var context = HttpContextAccessor.HttpContext;
 
                 if (context is null || alarmid is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? deleter = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(deleter))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 bool? result = await AlarmInfoRepository.AlarmDelete(alarmid.Value, deleter).ConfigureAwait(false);
                 return result switch
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 }, // 성공
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 }, // 실패
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 } // 잘못된 요청
+                    true => new ResponseModel<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 }, // 성공
+                    false => new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 }, // 실패
+                    _ => new ResponseModel<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 } // 잘못된 요청
                 };
             }
             catch (Exception ex)
@@ -163,7 +164,7 @@ namespace FamTec.Server.Services.Alarm
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseModel<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 

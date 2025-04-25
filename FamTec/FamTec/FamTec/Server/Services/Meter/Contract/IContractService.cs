@@ -1,4 +1,5 @@
-﻿using FamTec.Shared.Server.DTO;
+﻿using FamTec.Server.Helpers;
+using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Meter.Contract;
 
 namespace FamTec.Server.Services.Meter.Contract
@@ -11,14 +12,14 @@ namespace FamTec.Server.Services.Meter.Contract
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<AddContractDTO>> AddContractService(AddContractDTO dto);
+        public Task<ResponseModel<AddContractDTO>> AddContractService(AddContractDTO dto);
 
         /// <summary>
         /// 계약종류 전체 조회
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<ContractDTO>> GetAllContractListService();
+        public Task<ResponseModel<List<ContractDTO>>> GetAllContractListService();
 
         
     }
